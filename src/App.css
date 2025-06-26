@@ -43,4 +43,16 @@
   background-color: rgb(189, 216, 145);
 }
 
+.carousel-item > .row > .col {
+  transition: transform 0.5s;
+}
 
+.carousel-img-wrapper {
+  height: 400px;
+  overflow: hidden;
+}
+
+.carousel-img {
+  height: 100%;
+  object-fit: cover;
+}

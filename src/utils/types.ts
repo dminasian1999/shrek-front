@@ -1,5 +1,5 @@
-// --------------
-// --------------
+import { Address } from "node:cluster"
+
 export interface NavItemT {
     title: string,
     route: string
@@ -90,6 +90,7 @@ export interface UserProfile {
     firstName: string,
     lastName: string,
     roles: string[]
+    address?: AddressT
 }
 
 
@@ -108,4 +109,50 @@ export interface UserEditData {
 export interface UserUpdatePassword {
     newPassword: string,
     oldPassword: string
+}
+export interface AddressT {
+  fullName: string;
+  street: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
+  phone: string;
+}
+export interface Order {
+  orderId: string,
+  userId: string,
+  status: 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled',
+  orderItems: [OrderItem],
+  totalAmount: 0,
+  shippingAddress: AddressT,
+  paymentMethod: 'card' | 'paypal' | 'bank' | 'cash',
+  paymentStatus: 'unpaid' | 'paid' | 'failed',
+  createdAt: Date
+}
+export interface OrderItem {
+  id: string,
+  orderId: string,
+  productId: string,
+  quantity: 0,
+  priceAtPurchase: 0
+}
+export interface Cart {
+  id: string
+  userId: string
+  items: [CartItem]
+}
+export interface CartItem {
+  id: string // UUID
+  cartId: string // UUID
+  productId: string // UUID
+  quantity: 0
+}
+export interface ShipmentTracking {
+  id: string // UUID
+  orderId: string // UUID
+  courier: string // String
+  trackingNumber: string // String
+  status: "processing" | "shipped" | "in_transit" | "delivered"
+  estimatedDelivery: Date // Date
 }

@@ -1,11 +1,23 @@
 import {createRoot} from "react-dom/client"
 import {Provider} from "react-redux"
 import {store} from "./app/store"
+import '@fortawesome/fontawesome-free/css/all.css'
+
+import "./css/plugins.css"
+
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
-import '@fortawesome/fontawesome-free/css/all.css'
+import "./css/style.css"
+
+
+
+
+
+
+
 import "./index.css"
-import App from "./App.tsx";
+import App from "./App.tsx"
+
 import {BrowserRouter} from "react-router-dom";
 
 const container = document.getElementById("root")
@@ -17,7 +29,13 @@ if (container) {
         // <StrictMode>
             <BrowserRouter>
                 <Provider store={store}>
-                    <App/>
+                  {/*<body className="template-index home2-default">*/}
+                  {/*<div id="pre-loader">*/}
+                  {/*  <img src="assets/images/loader.gif" alt="Loading..." />*/}
+                  {/*</div>*/}
+                  <App />
+                  {/*</body>*/}
+
                 </Provider>
             </BrowserRouter>
         // </StrictMode>

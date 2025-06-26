@@ -1,7 +1,7 @@
 import {RootState} from "../../app/store";
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import {baseUrl, createToken} from "../../utils/constants";
-import { UserEditData, UserRegister, UserUpdatePassword} from "../../utils/types";
+import { AddressT, UserEditData, UserProfile, UserRegister, UserUpdatePassword } from "../../utils/types"
 
 export const registerUser = createAsyncThunk(
     'user/register',
@@ -64,7 +64,7 @@ export const fetchAllUsers = async () => {
 export const updateUser = createAsyncThunk<any, UserEditData, { state: RootState }>(
     'user/update',
     async (user, {getState}) => {
-        const res = await fetch(`${baseUrl}/user`, {
+        const res = await fetch(baseUrl, {
             method: "Put",
             body: JSON.stringify(user),
             headers: {
@@ -133,4 +133,22 @@ export const changePassword = createAsyncThunk<string, UserUpdatePassword, { sta
         }
         return createToken(getState().user.profile.login, password.newPassword)
     }
+)
+export const updateAddress = createAsyncThunk<any, AddressT, { state: RootState }>(
+  'user/address',
+  async (address, {getState}) => {
+    const res = await fetch(`${baseUrl}/address/${getState().user.profile.login}`, {
+      method: "Post",
+      body: JSON.stringify(address),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": getState().token,
+      }
+    })
+    if (!res.ok) {
+      throw new Error(`Oops,something went wrong!`)
+    }
+    const data = await res.json();
+    return data
+  }
 )
