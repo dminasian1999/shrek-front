@@ -8,7 +8,6 @@ import {
 import Breadcrumb from "../Breadcrumb.tsx"
 import Address from "./Address.tsx"
 import PaymentInfo from "./PaymentInfo.tsx"
-import UserProfileAccordion from "./UserProfileAccordion.tsx"
 
 const Account = () => {
   // const handleImageChange = (idx: any)=> {
@@ -160,7 +159,9 @@ const Account = () => {
                           </label>
                           <ul>
                             {profile.roles.map((role, idx) => (
-                              <li key={idx} className="h6">{role}</li>
+                              <li key={idx} className="h6">
+                                {role}
+                              </li>
                             ))}
                           </ul>
                         </div>
@@ -176,10 +177,10 @@ const Account = () => {
                     type="button"
                     className="btn btn-outline-secondary"
                     onClick={() => {
-                      setUser({} as typeof user);
-                      handleClickClear();
-                      setEdit(false);
-                      setUpdatePassword(false);
+                      setUser({} as typeof user)
+                      handleClickClear()
+                      setEdit(false)
+                      setUpdatePassword(false)
                     }}
                   >
                     Cancel
@@ -188,12 +189,12 @@ const Account = () => {
                     type="button"
                     className="btn btn-primary"
                     onClick={() => {
-                      if (edit) dispatch(updateUser(user));
-                      if (updatePassword) handleClickSave();
-                      setUser({} as typeof user);
-                      handleClickClear();
-                      setEdit(false);
-                      setUpdatePassword(false);
+                      if (edit) dispatch(updateUser(user))
+                      if (updatePassword) handleClickSave()
+                      setUser({} as typeof user)
+                      handleClickClear()
+                      setEdit(false)
+                      setUpdatePassword(false)
                     }}
                   >
                     Save

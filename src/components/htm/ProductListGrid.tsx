@@ -2,17 +2,17 @@ import React, { useContext, useEffect, useState } from "react"
 import { ProductsContext } from "../../utils/context.ts"
 import ProductItem from "./ProductItem.tsx"
 import { useParams } from "react-router-dom"
+import { ProductT } from "../../utils/types.ts"
 
 const ProductListGrid = () => {
   const {id} = useParams<{ id: string }>();
-  const [post, setPost] = useState<PostT | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const { products,setProducts } = useContext(ProductsContext)
 
   useEffect(() => {
     if (id) {
-      const prod = products.map(p => p.category === id)
+      const  prod:ProductT[] = products.map(p => p.category === id)
       setProducts(prod)
     }
   }, [id])

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaEdit, FaTrash } from "react-icons/fa";
 import { baseUrlBlog } from "../../utils/constants.ts";
 import { useAppSelector } from "../../app/hooks.ts";
 import { ProductT } from "../../utils/types.ts";

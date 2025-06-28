@@ -52,7 +52,6 @@ const eslintConfig = config(
         },
       },
       rules: {
-        "no-undef": [0],
         "@typescript-eslint/consistent-type-definitions": [2, "type"],
         "@typescript-eslint/consistent-type-imports": [
           2,
@@ -60,19 +59,6 @@ const eslintConfig = config(
             prefer: "type-imports",
             fixStyle: "separate-type-imports",
             disallowTypeAnnotations: true,
-          },
-        ],
-        "no-restricted-imports": [
-          2,
-          {
-            paths: [
-              {
-                name: "react-redux",
-                importNames: ["useSelector", "useStore", "useDispatch"],
-                message:
-                    "Please use pre-typed versions from `src/app/hooks.ts` instead.",
-              },
-            ],
           },
         ],
       },
