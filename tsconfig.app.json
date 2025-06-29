@@ -11,16 +11,16 @@
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
-    "moduleDetection": "auto",
+    "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
 
     /* Linting */
-//    "strict": false,
-//    "noUnusedLocals": false,
-//    "noUnusedParameters": true,
-//    "noFallthroughCasesInSwitch": true,
-//    "noUncheckedSideEffectImports": true
+    "strict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
   },
   "include": ["src"]
 }
