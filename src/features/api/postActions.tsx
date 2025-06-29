@@ -90,12 +90,12 @@ export      const postProduct = async (product: ProductT, user: UserProfile, tok
 // };
 //
 //
-// export const getPostById = async (postId: string) => {
-//     const response = await fetch(`${baseUrlBlog}/post/${postId}`);
-//     if (!response.ok) throw new Error(`Failed: ${response.statusText}`);
-//     const res: PostT = await response.json();
-//     return res;
-// };
+export const getPostById = async (postId: string) => {
+    const response = await fetch(`${baseUrlBlog}/post/${postId}`);
+    if (!response.ok) throw new Error(`Failed: ${response.statusText}`);
+    const res: ProductT = await response.json();
+    return res;
+};
 //
 //
 // export const uploadFiles = async (files: File[], token: string) => {

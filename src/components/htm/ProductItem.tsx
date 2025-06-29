@@ -4,7 +4,7 @@ const ProductItem = ({ p}:{p:ProductT}) => {
   return (
     <div className="col-6 col-sm-6 col-md-4 col-lg-3 item ">
       <div className="product-image">
-        <a href="#"
+        <a href={'/product/'+p.id}
         >
 
           <img
@@ -39,7 +39,7 @@ const ProductItem = ({ p}:{p:ProductT}) => {
           method="post"
         >
           <button className="btn btn-addto-cart" type="button">
-            Select Options
+            Add To Cart
           </button>
         </form>
         <div className="button-set">

@@ -8,7 +8,7 @@ const Slideshow = () => {
         <div className="carousel-item active">
           <div className="carousel-img-wrapper">
             <img
-              src="src/images/slideshow-banners/belle-banner1.jpg"
+              src="src/images/slideshow-banners/banner1.jpg"
               className="d-block w-100 carousel-img"
               alt="Slide 1"
             />
@@ -17,7 +17,7 @@ const Slideshow = () => {
         <div className="carousel-item">
           <div className="carousel-img-wrapper">
             <img
-              src="http://localhost:63342/belle-multipurpose-bootstrap-html-template/assets/images/slideshow-banners/home2-default-banner2.jpg"
+              src="src/images/slideshow-banners/banner2.jpg"
               className="d-block w-100 carousel-img"
               alt="Slide 2"
             />
@@ -27,7 +27,16 @@ const Slideshow = () => {
         <div className="carousel-item">
           <div className="carousel-img-wrapper">
             <img
-              src="http://localhost:63342/belle-multipurpose-bootstrap-html-template/assets/images/product-images/product-image3-1.jpg"
+              src="src/images/slideshow-banners/banner3.jpg"
+              className="d-block w-100 carousel-img"
+              alt="Slide 3"
+            />
+          </div>
+        </div>
+        <div className="carousel-item">
+          <div className="carousel-img-wrapper">
+            <img
+              src="src/images/slideshow-banners/banner4.jpg"
               className="d-block w-100 carousel-img"
               alt="Slide 3"
             />
