@@ -1,26 +1,32 @@
-import type { ProductT } from "../../utils/types.ts"
+import React from "react";
+import type { ProductT } from "../../utils/types.ts";
+import { baseUrl } from "../../utils/constants.ts";
+import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
+import { addWishlist } from "../../features/api/accountActions.ts"
 
-const ProductItem = ({ p}:{p:ProductT}) => {
+const ProductItem = ({ p }: { p: ProductT }) => {
+  const user = useAppSelector((state) => state.user.profile);
+  const token = useAppSelector((state) => state.token);
+const dispatch= useAppDispatch()
+
+
   return (
-    <div className="col-6 col-sm-6 col-md-4 col-lg-3 item ">
+    <div className="col-6 col-sm-6 col-md-4 col-lg-3 item">
       <div className="product-image">
-        <a href={'/product/'+p.id}
-        >
-
+        <a href={`/product/${p.id}`}>
           <img
             className="primary blur-up lazyload h-100 w-100 object-fit-cover"
-            data-src="src/images/product-images/product-image1.jpg"
+            data-src={p.imageUrl}
             src={p.imageUrl}
-            alt="image"
-            title="product"
+            alt={p.name}
+            title={p.name}
           />
-          {/*src="src/images/product-images/product-image1.jpg" alt="image" title="product" />*/}
           <img
             className="hover blur-up lazyload h-100 w-100 object-fit-cover"
-            data-src="src/images/product-images/product-image1-1.jpg"
+            data-src={p.imageUrl}
             src={p.imageUrl}
-            alt="image"
-            title="product"
+            alt={p.name}
+            title={p.name}
           />
           <div className="product-labels rectangular">
             <span className="lbl on-sale">-16%</span>
@@ -28,44 +34,46 @@ const ProductItem = ({ p}:{p:ProductT}) => {
           </div>
         </a>
 
-        <div
-          className="saleTime desktop"
-          data-countdown="2022/03/01"
-        ></div>
-        <form
-          className="variants add"
-          action="#"
-          // onclick="window.location.href='cart.html'"
-          method="post"
-        >
+        <div className="saleTime desktop" data-countdown="2025/12/31"></div>
+
+        <form className="variants add" action="#" method="post">
           <button className="btn btn-addto-cart" type="button">
             Add To Cart
           </button>
         </form>
+
         <div className="button-set">
           <a
-            href="javascript:void(0)"
+            href="#"
             title="Quick View"
             className="quick-view-popup quick-view"
             data-toggle="modal"
             data-target="#content_quickview"
+            onClick={(e) => e.preventDefault()}
           >
             <i className="icon anm anm-search-plus-r"></i>
           </a>
-          <div className="wishlist-btn">
+
+          <div
+            onClick={()=>(addWishlist(token,user.login,p.id!))}
+            className="wishlist-btn"
+          >
             <a
               className="wishlist add-to-wishlist"
               href="#"
               title="Add to Wishlist"
+              onClick={(e) => e.preventDefault()}
             >
               <i className="icon anm anm-heart-l"></i>
             </a>
           </div>
+
           <div className="compare-btn">
             <a
               className="compare add-to-compare"
-              href="compare.html"
+              href="#"
               title="Add to Compare"
+              onClick={(e) => e.preventDefault()}
             >
               <i className="icon anm anm-random-r"></i>
             </a>
@@ -79,9 +87,8 @@ const ProductItem = ({ p}:{p:ProductT}) => {
         </div>
         <div className="product-price">
           <span className="old-price">$500.00</span>
-          <span className="price">{p.sell}</span>
+          <span className="price">${p.sell}</span>
         </div>
-
         <div className="product-review">
           <i className="font-13 fa fa-star"></i>
           <i className="font-13 fa fa-star"></i>
@@ -90,53 +97,22 @@ const ProductItem = ({ p}:{p:ProductT}) => {
           <i className="font-13 fa fa-star-o"></i>
         </div>
         <ul className="swatches">
-          <li className="swatch medium rounded">
-            <img
-              src="src/images/product-images/variant1.jpg"
-              alt="image"
-            />
-          </li>
-          <li className="swatch medium rounded">
-            <img
-              src="src/images/product-images/variant2.jpg"
-              alt="image"
-            />
-          </li>
-          <li className="swatch medium rounded">
-            <img
-              src="src/images/product-images/variant3.jpg"
-              alt="image"
-            />
-          </li>
-          <li className="swatch medium rounded">
-            <img
-              src="src/images/product-images/variant4.jpg"
-              alt="image"
-            />
-          </li>
-          <li className="swatch medium rounded">
-            <img
-              src="src/images/product-images/variant5.jpg"
-              alt="image"
-            />
-          </li>
-          <li className="swatch medium rounded">
-            <img
-              src="src/images/product-images/variant6.jpg"
-              alt="image"
-            />
-          </li>
+          {[1, 2, 3, 4, 5, 6].map((n) => (
+            <li className="swatch medium rounded" key={n}>
+              <img
+                src={`src/images/product-images/variant${n}.jpg`}
+                alt={`variant ${n}`}
+              />
+            </li>
+          ))}
         </ul>
       </div>
+
       <div className="timermobile">
-        <div
-          className="saleTime desktop"
-          data-countdown="2022/03/01"
-        ></div>
+        <div className="saleTime mobile" data-countdown="2025/12/31"></div>
       </div>
     </div>
-
   );
-
 };
+
 export default ProductItem;

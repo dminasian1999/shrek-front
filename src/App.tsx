@@ -10,7 +10,6 @@ import { useEffect, useState } from "react"
 import { ProductsContext } from "./utils/context.ts"
 import Footer from "./components/htm/Footer.tsx"
 import QuickViewPopup from "./components/htm/QuickViewPopup.tsx"
-import NewsletterPopup from "./components/htm/NewsletterPopup.tsx"
 
 const App = () => {
   const [selectedId, setSelectedId] = useState<string>(
@@ -56,20 +55,25 @@ const App = () => {
     // fetchReceipts()
   }, [])
   return (
-    <ProductsContext.Provider value={{
-      selectedId, setSelectedId,
+    <ProductsContext.Provider
+      value={{
+        selectedId,
+        setSelectedId,
 
-      products, setProducts,
-      receipts, setReceipts
-    }}>
-    <div className="emplate-index home2-default  container-fluid  p-0">
-      <div className="pageWrapper row">
-        {/*  <Notification />*/}
-        {/*  <SearchForm/>*/}
-        <TopHeader />
-        <Header3 />
-        {/*  <MobileMenu />*/}
-        <Main />
+        products,
+        setProducts,
+        receipts,
+        setReceipts,
+      }}
+    >
+      <div className="emplate-index home2-default  container-fluid  p-0">
+        <div className="pageWrapper row">
+          {/*  <SearchForm/>*/}
+          <TopHeader />
+          <Header3 />
+          {/*  <MobileMenu />*/}
+          <Main />
+
           <Footer />
           <span
             id="site-scroll"
@@ -78,11 +82,10 @@ const App = () => {
             <i className="text-xl">↑</i>
           </span>
           <QuickViewPopup />
-          <NewsletterPopup />
+          {/*<NewsletterPopup />*/}
+        </div>
       </div>
-    </div>
     </ProductsContext.Provider>
-
   )
 }
 

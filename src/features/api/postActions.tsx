@@ -1,17 +1,17 @@
-import {baseUrlBlog} from "../../utils/constants.ts";
-import {ProductT, UserProfile} from "../../utils/types.ts";
+import { baseUrlBlog } from "../../utils/constants.ts"
+import { ProductT, UserProfile } from "../../utils/types.ts"
 
-export     const uploadImage1 = async (file: File,token:string) => {
-    const fd = new FormData();
-    fd.append('file', file);
-    const res = await fetch(`${baseUrlBlog}/post/file/upload`, {
-        method: 'POST',
-        headers: { Authorization: token },
-        body: fd
-    });
-    if (!res.ok) throw new Error('Image upload failed');
-    return await res.json();
-};
+export const uploadImage1 = async (file: File, token: string) => {
+  const fd = new FormData()
+  fd.append("file", file)
+  const res = await fetch(`${baseUrlBlog}/post/file/upload`, {
+    method: "POST",
+    headers: { Authorization: token },
+    body: fd
+  })
+  if (!res.ok) throw new Error("Image upload failed")
+  return await res.json()
+}
 
 // export const uploadImage = async (file: File,token:string) => {
 //     const formData = new FormData();
@@ -50,29 +50,33 @@ export     const uploadImage1 = async (file: File,token:string) => {
 // };
 
 export const uploadImage = async (file: File, token: string): Promise<string> => {
-    const fd = new FormData()
-    fd.append('file', file)
-    const res = await fetch(`${baseUrlBlog}/post/file/upload`, {
-        method: 'POST',
-        headers: { Authorization: token },
-        body: fd,
-    })
-    if (!res.ok) throw new Error('Image upload failed')
-    const text = await res.text()
-    try { return JSON.parse(text).url } catch { return text.trim() }
+  const fd = new FormData()
+  fd.append("file", file)
+  const res = await fetch(`${baseUrlBlog}/post/file/upload`, {
+    method: "POST",
+    headers: { Authorization: token },
+    body: fd
+  })
+  if (!res.ok) throw new Error("Image upload failed")
+  const text = await res.text()
+  try {
+    return JSON.parse(text).url
+  } catch {
+    return text.trim()
+  }
 }
 
-export      const postProduct = async (product: ProductT, user: UserProfile, token: string) => {
-    const res = await fetch(`${baseUrlBlog}/post/${user.login}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: token,
-        },
-        body: JSON.stringify(product),
-    });
-    if (!res.ok) throw new Error(`Save failed: ${product.name}`);
-};
+export const postProduct = async (product: ProductT, user: UserProfile, token: string) => {
+  const res = await fetch(`${baseUrlBlog}/post/${user.login}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token
+    },
+    body: JSON.stringify(product)
+  })
+  if (!res.ok) throw new Error(`Save failed: ${product.name}`)
+}
 // import {baseUrlBlog} from "../../utils/constants";
 //
 // export const fetchPosts = async (filters?: any) => {
@@ -91,11 +95,35 @@ export      const postProduct = async (product: ProductT, user: UserProfile, tok
 //
 //
 export const getPostById = async (postId: string) => {
-    const response = await fetch(`${baseUrlBlog}/post/${postId}`);
-    if (!response.ok) throw new Error(`Failed: ${response.statusText}`);
-    const res: ProductT = await response.json();
-    return res;
+  const response = await fetch(`${baseUrlBlog}/post/${postId}`)
+  if (!response.ok) throw new Error(`Failed: ${response.statusText}`)
+  const res: ProductT = await response.json()
+  return res
+}
+
+
+
+export const getPostByIds = async (ids: string[], token: string) => {
+  const response = await fetch(`${baseUrlBlog}/posts/wishList`, { // ✅ removed stray `}`
+    method: "POST",
+    headers: {
+      "Authorization": token,
+      "Content-Type": "application/json",
+
+    },
+    body: JSON.stringify(ids)
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed: ${response.status} ${response.statusText}`);
+  }
+
+  const res = await response.json();
+  return res;
 };
+
+
+
 //
 //
 // export const uploadFiles = async (files: File[], token: string) => {
@@ -158,20 +186,20 @@ export const getPostById = async (postId: string) => {
 //
 //
 export const deletePost = async (id: string, token: string) => {
-    const response = await fetch(`${baseUrlBlog}/post/${id}`, {
-        method: 'DELETE',
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token,
-        },
-    })
-    if (!response.ok) {
-        throw new Error(`Failed to delete post: ${response.statusText}`);
+  const response = await fetch(`${baseUrlBlog}/post/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": token
     }
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to delete post: ${response.statusText}`)
+  }
 
-    const res: ProductT = await response.json()
-    return res;
-};
+  const res: ProductT = await response.json()
+  return res
+}
 // export const searchPost = async (sortField: string, asc: boolean, query: QueryT) => {
 //     const response = await fetch(`${baseUrlBlog}/post/search/${sortField}/${asc}`, {
 //         method: 'POST',

@@ -5,7 +5,7 @@ import {
   changePassword,
   updateUser,
 } from "../../features/api/accountActions.ts"
-import Breadcrumb from "../Breadcrumb.tsx"
+import Breadcrumb from "./Breadcrumb.tsx"
 import Address from "./Address.tsx"
 import PaymentInfo from "./PaymentInfo.tsx"
 

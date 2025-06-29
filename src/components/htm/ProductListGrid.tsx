@@ -10,6 +10,7 @@ const ProductListGrid = () => {
   const [loading, setLoading] = useState(true);
   const { products,setProducts } = useContext(ProductsContext)
 
+
   return (
     <div className="grid-products grid--view-items">
       <div className="row">
@@ -66,7 +67,8 @@ const ProductListGrid = () => {
               >
                 <i className="icon anm anm-search-plus-r"></i>
               </a>
-              <div className="wishlist-btn">
+              <div className="wishlist-btn"
+              >
                 <a
                   className="wishlist add-to-wishlist"
                   href="#"

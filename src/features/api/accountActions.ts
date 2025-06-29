@@ -152,3 +152,23 @@ export const updateAddress = createAsyncThunk<any, AddressT, { state: RootState 
     return data
   }
 )
+export  const addWishlist = (token:string,login:string,id: string) => {
+  fetch(`${baseUrl}/${login}/wishList/${id}`, {
+    method: "PUT",
+    headers: {
+      "Authorization": token,
+    },
+  }).catch((err) => {
+    console.error("Failed to add wishlist", err);
+  });
+};
+export const removeWishlist = (token:string,login:string,productId: string) => {
+  fetch(`${baseUrl}/${login}/wishList/${productId}`, {
+    method: "Delete",
+    headers: {
+      "Authorization": token,
+    },
+  }).catch((err) => {
+    console.error("Failed to delete wishlist", err);
+  });
+};

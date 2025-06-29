@@ -1,5 +1,5 @@
 import {useAppSelector} from "../../app/hooks.ts";
-import Navigation2 from "../Navigation2.tsx";
+import Navigation from "../Navigation.tsx";
 
 const Profile = () => {
 
@@ -7,7 +7,7 @@ const Profile = () => {
     return (
         <div className=''>
                 {/*<Header2/>*/}
-                <Navigation2/>
+                <Navigation/>
                 <div className="app-footer">
                     <div className="container">
                         <span>© Bootstrap Gallery 2024</span>

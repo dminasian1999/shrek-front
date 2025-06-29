@@ -3,7 +3,6 @@ import { useAppSelector } from "../app/hooks.ts"
 import Account from "./htm/Account.tsx"
 import Guest from "./Guest"
 import AddProduct from "./htm/AddProduct.tsx"
-import Store from "./Store.tsx"
 import ReceiptsList from "./ReceiptsList.tsx"
 import ContactUs from "./ContactUs.tsx"
 import ForgotPassword from "./ForgotPassword.tsx"
@@ -33,7 +32,6 @@ const Main = () => {
         {[`/`, `/${navItems[0].route}`].map(path => (
           <Route key={path} path={path} element={<Home />} />
         ))}
-        <Route path="/product" element={<ProductPage />} />
         <Route path="/products" element={<Products />} />
         <Route path="/cart" element={<CarrPage />} />
 
@@ -54,7 +52,6 @@ const Main = () => {
           path={"/register"}
           element={token ? <Navigate to={"/profile"} /> : <Register />}
         ></Route>
-        <Route path={"/store/:id"} element={token ? <Store /> : <Guest />} />
         <Route path={"/sells"} element={token ? <Sells /> : <Guest />} />
         <Route path={"/new"} element={token ? <AddProduct /> : <Guest />} />
 
