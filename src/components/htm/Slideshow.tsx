@@ -1,4 +1,5 @@
 import React from "react";
+import { banner1Img, banner2Img, banner3Img, banner4Img } from "../../utils/constants.ts"
 
 const Slideshow = () => {
   return (
@@ -8,7 +9,7 @@ const Slideshow = () => {
         <div className="carousel-item active">
           <div className="carousel-img-wrapper">
             <img
-              src="src/images/slideshow-banners/banner1.jpg"
+              src={banner1Img}
               className="d-block w-100 carousel-img"
               alt="Slide 1"
             />
@@ -17,7 +18,7 @@ const Slideshow = () => {
         <div className="carousel-item">
           <div className="carousel-img-wrapper">
             <img
-              src="src/images/slideshow-banners/banner2.jpg"
+              src={banner2Img}
               className="d-block w-100 carousel-img"
               alt="Slide 2"
             />
@@ -27,7 +28,7 @@ const Slideshow = () => {
         <div className="carousel-item">
           <div className="carousel-img-wrapper">
             <img
-              src="src/images/slideshow-banners/banner3.jpg"
+              src={banner3Img}
               className="d-block w-100 carousel-img"
               alt="Slide 3"
             />
@@ -36,7 +37,7 @@ const Slideshow = () => {
         <div className="carousel-item">
           <div className="carousel-img-wrapper">
             <img
-              src="src/images/slideshow-banners/banner4.jpg"
+              src={banner4Img}
               className="d-block w-100 carousel-img"
               alt="Slide 3"
             />

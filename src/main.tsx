@@ -1,13 +1,14 @@
 import {createRoot} from "react-dom/client"
 import {Provider} from "react-redux"
 import {store} from "./app/store"
-import '@fortawesome/fontawesome-free/css/all.css'
-
+// import '@fortawesome/fontawesome-free/css/all.css'
+//
 import "./css/plugins.css"
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import "./css/style.css"
+import "./css/responsive.css"
 
 
 

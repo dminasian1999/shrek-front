@@ -1,6 +1,5 @@
 import React from "react"
-import { navItems } from "../../utils/constants.ts"
-import NavItem from "../NavItem.tsx"
+import { logoImg, navItems } from "../../utils/constants.ts"
 
 const Header3 = () => {
   return (
@@ -18,7 +17,7 @@ const Header3 = () => {
         <a className="navbar-brand" href="/">
           <img
             height={70}
-            src="/src/images/logo/logo.jpg"
+            src={logoImg}
             alt="Belle Multipurpose Html Template"
             title="Belle Multipurpose Html Template"
           />
@@ -44,55 +43,13 @@ const Header3 = () => {
 
           <div className="offcanvas-body  ">
             <ul className="navbar-nav justify-content-center flex-grow-1 pe-3 hidearrow ">
-
-              {navItems.map((item) => (
+              {navItems.map(item => (
                 <li className="nav-item p-0 m-0">
-                  <a href={`/${item.route}`}
-                     className="nav-link" >
+                  <a href={`/${item.route}`} className="nav-link">
                     {item.title}
                   </a>
-                </li>              ))}
-              {/*<li className="nav-item">*/}
-              {/*  <a className="nav-link active" href="#">*/}
-              {/*    Home*/}
-              {/*  </a>*/}
-              {/*</li>*/}
-              {/*<li className="nav-item">*/}
-              {/*  <a className="nav-link" href="#">*/}
-              {/*    Link*/}
-              {/*  </a>*/}
-              {/*</li>*/}
-              {/*<li className="nav-item dropdown">*/}
-              {/*  <a*/}
-              {/*    className="nav-link dropdown-toggle"*/}
-              {/*    href="#"*/}
-              {/*    role="button"*/}
-              {/*    data-bs-toggle="dropdown"*/}
-              {/*    aria-expanded="false"*/}
-              {/*  >*/}
-              {/*    Dropdown*/}
-              {/*  </a>*/}
-              {/*  <ul className="dropdown-menu">*/}
-              {/*    <li>*/}
-              {/*      <a className="dropdown-item" href="#">*/}
-              {/*        Action*/}
-              {/*      </a>*/}
-              {/*    </li>*/}
-              {/*    <li>*/}
-              {/*      <a className="dropdown-item" href="#">*/}
-              {/*        Another action*/}
-              {/*      </a>*/}
-              {/*    </li>*/}
-              {/*    <li>*/}
-              {/*      <hr className="dropdown-divider" />*/}
-              {/*    </li>*/}
-              {/*    <li>*/}
-              {/*      <a className="dropdown-item" href="#">*/}
-              {/*        Something else*/}
-              {/*      </a>*/}
-              {/*    </li>*/}
-              {/*  </ul>*/}
-              {/*</li>*/}
+                </li>
+              ))}
             </ul>
           </div>
         </div>
