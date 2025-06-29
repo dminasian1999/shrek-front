@@ -28,11 +28,11 @@ export const categories = [
     {title: 'Jewelry', imageUrl: jewelry}
 
 ];
+// export const baseUrl = "http://localhost:8080/users";
+// export const baseUrlBlog = "http://localhost:8080";
 
-export const baseUrl = "http://localhost:8080/users";
-// export const baseUrl = "https://products-back-6k2j.onrender.com/museum";
-export const baseUrlBlog = "http://localhost:8080";
-// export const baseUrlBlog = "https://products-back-6k2j.onrender.com/museum/blog";
+export const baseUrl = "http://ecom-back-bafx.onrender.com/users";
+export const baseUrlBlog = "http://ecom-back-bafx.onrender.com";
 export const createToken = (login: string, password: string) => `Basic ${window.btoa(login + ':' + password)}`
 
 export const defaultPic =''
