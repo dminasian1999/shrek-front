@@ -1,4 +1,5 @@
-import {Action, configureStore, ThunkAction} from '@reduxjs/toolkit';
+import type {Action, ThunkAction} from '@reduxjs/toolkit';
+import { configureStore} from '@reduxjs/toolkit';
 import token from "../features/slices/tokenSlice.ts"
 import user from "../features/slices/userSlice"
 

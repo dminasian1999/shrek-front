@@ -10,12 +10,6 @@ const ProductListGrid = () => {
   const [loading, setLoading] = useState(true);
   const { products,setProducts } = useContext(ProductsContext)
 
-  useEffect(() => {
-    if (id) {
-      const  prod:ProductT[] = products.map(p => p.category === id)
-      setProducts(prod)
-    }
-  }, [id])
   return (
     <div className="grid-products grid--view-items">
       <div className="row">
