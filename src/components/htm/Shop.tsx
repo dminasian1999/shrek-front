@@ -1,72 +1,54 @@
-import React, { useContext, useEffect, useState } from "react"
-import SideBar from "./SideBar.tsx"
-import PruductList from "./PruductList.tsx"
-import { useParams } from "react-router-dom"
+import React from "react";
+import SideBar from "./SideBar.tsx";
+import ProductList from "./ProductList.tsx"; // Check spelling: ProductList?
+import { useParams } from "react-router-dom";
+import { banner3Img } from "../../utils/constants.ts"
 
 const Shop = () => {
-
-
   return (
     <div id="page-content">
-      <div className="collection-header">
-        <div className="collection-hero">
-          <div className="collection-hero__image">
-            <img
-              className="blur-up lazyload h-100 w-100"
-              data-src="src/images/cat-women.jpg"
-              src="src/images/cat-women.jpg"
-              alt="Women"
-              title="Women"
-            />
-          </div>
-          <div className="collection-hero__title-wrapper">
-            <h1 className="collection-hero__title page-width">
-              Shop Left Sidebar
-            </h1>
+      {/* Hero Section */}
+      <div className="collection-header mb-4">
+        <div className="collection-hero position-relative">
+          <img
+            className="img-fluid w-100"
+            src={banner3Img}
+            alt="Shop banner"
+            style={{ objectFit: "cover", maxHeight: "300px" }}
+          />
+          <div className="position-absolute top-50 start-50 translate-middle text-white text-center">
           </div>
         </div>
       </div>
 
+      {/* Main Content */}
       <div className="container">
         <div className="row">
           <SideBar />
-
-          <div className=" col-sm-12 col-md-9 col-lg-9 main-col">
-            <div className="category-description">
+          <div className="col-sm-12 col-md-9 col-lg-9 main-col">
+            <div className="category-description mb-4">
               <h3>Category Description</h3>
               <p>
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
-                text ever since the 1500s, when an unknown printer took a galley
-                of type and scrambled it to make a type specimen book. It has
-                survived not only five centuries, but also the leap into
-                electronic typesetting, remaining essentially unchanged. It was
-                popularised in the 1960s with the release of Letraset sheets
-                containing.
-              </p>
-              <p>
-                Contrary to popular belief, Lorem Ipsum is not simply random
-                text. It has roots in a piece of classNameical Latin literature
-                from 45 BC, making it over 2000 years old. Richard McClintock, a
-                Latin professor at Hampden-Sydney College in Virginia, looked up
-                one of the more obscure Latin words, consectetur, from a Lorem
-                Ipsum passage, and going through the cites of the word in
-                classNameical literature, discovered the undoubtable source.
+                Discover a wide variety of categories with handpicked items that
+                meet your taste and needs. Whether you're into fashion, art, or
+                essentials — we have something for you.
               </p>
             </div>
+
             <hr />
-            <PruductList />
-            <div className="infinitpaginOuter">
-              <div className="infinitpagin">
-                <a href="#" className="btn loadMore">
-                  Load More
-                </a>
-              </div>
+            <ProductList />
+
+            {/* Load More */}
+            <div className="infinitpaginOuter text-center mt-4">
+              <button className="btn btn-outline-dark btn-sm">
+                Load More
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
-}
-export default Shop
+  );
+};
+
+export default Shop;

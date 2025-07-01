@@ -2,7 +2,7 @@ import React from "react"
 import ProductListToolbar from "./ProductListToolbar.tsx"
 import ProductListGrid from "./ProductListGrid.tsx"
 
-const PruductList = () => {
+const ProductList = () => {
   return (
     <div className="productList product-load-more">
       <button
@@ -18,4 +18,4 @@ const PruductList = () => {
   )
 }
 
-export default PruductList
+export default ProductList

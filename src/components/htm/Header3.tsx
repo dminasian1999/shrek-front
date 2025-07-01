@@ -70,7 +70,7 @@ const Header3 = () => {
               <ul className="mini-products-list">
                 {[
                   {
-                    img: "assets/images/product-images/cape-dress-1.jpg",
+                    img: "src/images/product-images/cape-dress-1.jpg",
                     name: "Sleeve Kimono Dress",
                     variant: "Black / XL",
                     price: "$59.00",

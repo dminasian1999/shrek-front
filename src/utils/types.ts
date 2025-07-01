@@ -76,6 +76,11 @@ export enum UpdateMode {
   editUser = "editUser",
   changePassword = "changePassword",
 }
+export interface cartItem {
+  productID: string
+
+quantity: number
+}
 
 export interface UserProfile {
   login: string
@@ -83,11 +88,8 @@ export interface UserProfile {
   lastName: string
   roles: string[]
   address?: AddressT
-  cart?: {
-    quantity: number
-    product: ProductT
-  }
-  wishList: string[]
+  cart?: any
+  wishList?: string[]
   orders?: Order[]
 }
 

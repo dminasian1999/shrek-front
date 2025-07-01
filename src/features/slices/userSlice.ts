@@ -1,8 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit"
 import {
+  addCartList,
   addWishlist,
   fetchUser,
-  registerUser, removeWishlist,
+  registerUser, removeCartList,
+  removeWishlist,
   updateAddress,
   updateUser
 } from "../api/accountActions"
@@ -72,30 +74,54 @@ const userSlice = createSlice({
         state.loading = false
         state.errorMessage = action.error.message || "Address update failed!"
       })
-      // .addCase(addWishlist.pending, state => {
-      //   state.loading = true
-      //   state.errorMessage = "" // Clear any previous errors
-      // })
-      // .addCase(addWishlist.fulfilled, (state, action) => {
-      //   state.profile  = action.payload
-      //   state.loading = false
-      // })
-      // .addCase(addWishlist.rejected, (state, action) => {
-      //   state.loading = false
-      //   state.errorMessage = action.error.message || "addWishlist failed!"
-      // })
-      // .addCase(removeWishlist.pending, state => {
-      //   state.loading = true
-      //   state.errorMessage = "" // Clear any previous errors
-      // })
-      // .addCase(removeWishlist.fulfilled, (state, action) => {
-      //   state.profile  = action.payload
-      //   state.loading = false
-      // })
-      // .addCase(removeWishlist.rejected, (state, action) => {
-      //   state.loading = false
-      //   state.errorMessage = action.error.message || "removeWishlist failed!"
-      // })
+      .addCase(addWishlist.pending, state => {
+        state.loading = true
+        state.errorMessage = "" // Clear any previous errors
+      })
+      .addCase(addWishlist.fulfilled, (state, action) => {
+        state.profile  = action.payload
+        state.loading = false
+      })
+      .addCase(addWishlist.rejected, (state, action) => {
+        state.loading = false
+        state.errorMessage = action.error.message || "addWishlist failed!"
+      })
+      .addCase(removeWishlist.pending, state => {
+        state.loading = true
+        state.errorMessage = "" // Clear any previous errors
+      })
+      .addCase(removeWishlist.fulfilled, (state, action) => {
+        state.profile  = action.payload
+        state.loading = false
+      })
+      .addCase(removeWishlist.rejected, (state, action) => {
+        state.loading = false
+        state.errorMessage = action.error.message || "removeWishlist failed!"
+      })
+      .addCase(addCartList.pending, state => {
+        state.loading = true
+        state.errorMessage = "" // Clear any previous errors
+      })
+      .addCase(addCartList.fulfilled, (state, action) => {
+        state.profile  = action.payload
+        state.loading = false
+      })
+      .addCase(addCartList.rejected, (state, action) => {
+        state.loading = false
+        state.errorMessage = action.error.message || "addCartlist failed!"
+      })
+      .addCase(removeCartList.pending, state => {
+        state.loading = true
+        state.errorMessage = "" // Clear any previous errors
+      })
+      .addCase(removeCartList.fulfilled, (state, action) => {
+        state.profile  = action.payload
+        state.loading = false
+      })
+      .addCase(removeCartList.rejected, (state, action) => {
+        state.loading = false
+        state.errorMessage = action.error.message || "removeCartlist failed!"
+      })
   },
 })
 

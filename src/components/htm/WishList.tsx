@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
 import { ProductT } from "../../utils/types.ts"
 import { getPostByIds } from "../../features/api/postActions.tsx"
-import { baseUrl } from "../../utils/constants.ts"
 import { removeWishlist } from "../../features/api/accountActions.ts"
 
 const WishList = () => {
@@ -12,12 +11,12 @@ const WishList = () => {
   const dispatch = useAppDispatch()
   useEffect(() => {
     // if (user?.wishList?.length) {
-      getPostByIds(user.wishList, token).then(setProducts)
+    getPostByIds(user.wishList, token).then(setProducts)
     // }
     // else {
     //   setProducts([]); // clear when wishlist is empty
     // }
-  }, [setProducts,user.wishList.length])
+  }, [setProducts, user.wishList.length])
 
   return (
     <div id="page-content">
@@ -65,9 +64,10 @@ const WishList = () => {
                           {/*<a href="#" onClick={(e) => e.preventDefault()}>*/}
                           <div
                             className={"btn btn-sm"}
-                            onClick={() =>
-                              removeWishlist(token, user.login, p.id!)
-                            }
+                            // onClick={() =>
+                            //   // removeWishlist(token, user.login, p.id!)
+                            // }
+                            onClick={() => dispatch(removeWishlist(p.id!))}
                           >
                             <i className="icon icon anm fa-2x anm-times-l"></i>
                           </div>

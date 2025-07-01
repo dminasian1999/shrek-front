@@ -16,12 +16,12 @@ import Register from "./htm/Register.tsx"
 import Login from "./htm/Login.tsx"
 import Shop from "./htm/Shop.tsx"
 import ProductPage from "./htm/ProductPage.tsx"
-import CarrPage from "./htm/CarrPage.tsx"
 import CheckOut from "./htm/CheckOut.tsx"
 import About from "./htm/About.tsx"
 import Contact from "./htm/Contact.tsx"
 import WishList from "./htm/WishList.tsx"
 import Products from "./htm/Products.tsx"
+import CartPage from "./htm/CartPage.tsx"
 
 const Main = () => {
   const token = useAppSelector(state => state.token)
@@ -33,7 +33,7 @@ const Main = () => {
           <Route key={path} path={path} element={<Home />} />
         ))}
         <Route path="/products" element={<Products />} />
-        <Route path="/cart" element={<CarrPage />} />
+        <Route path="/cart" element={<CartPage />} />
 
         <Route path="/shop" element={<Shop />} />
         <Route path="/product/:id" element={<ProductPage />} />

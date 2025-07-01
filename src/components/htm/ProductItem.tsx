@@ -2,7 +2,7 @@ import React from "react";
 import type { ProductT } from "../../utils/types.ts";
 import { baseUrl } from "../../utils/constants.ts";
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
-import { addWishlist } from "../../features/api/accountActions.ts"
+import { addCartList, addWishlist } from "../../features/api/accountActions.ts"
 
 const ProductItem = ({ p }: { p: ProductT }) => {
   const user = useAppSelector((state) => state.user.profile);
@@ -37,14 +37,17 @@ const dispatch= useAppDispatch()
         <div className="saleTime desktop" data-countdown="2025/12/31"></div>
 
         <form className="variants add" action="#" method="post">
-          <button className="btn btn-addto-cart" type="button">
+          <button
+            onClick={()=>(dispatch(addCartList(p.id!)))}
+
+            className="btn btn-addto-cart" type="button">
             Add To Cart
           </button>
         </form>
 
         <div className="button-set">
           <a
-            href="#"
+            // href="#"
             title="Quick View"
             className="quick-view-popup quick-view"
             data-toggle="modal"
@@ -55,14 +58,16 @@ const dispatch= useAppDispatch()
           </a>
 
           <div
-            onClick={()=>(addWishlist(token,user.login,p.id!))}
+            // onClick={()=>(addWishlist(token,user.login,p.id!))}
+            onClick={()=>(dispatch(addWishlist(p.id!)))}
             className="wishlist-btn"
           >
             <a
               className="wishlist add-to-wishlist"
               href="#"
               title="Add to Wishlist"
-              onClick={(e) => e.preventDefault()}
+
+              // onClick={(e) => e.preventDefault()}
             >
               <i className="icon anm anm-heart-l"></i>
             </a>
@@ -86,26 +91,28 @@ const dispatch= useAppDispatch()
           <a href="#">{p.name}</a>
         </div>
         <div className="product-price">
-          <span className="old-price">$500.00</span>
+          <span className="old-price">${(p.sell + p.sell / 3).toFixed(2)}</span>
+
+          {/*<span className="old-price">$500.00</span>*/}
           <span className="price">${p.sell}</span>
         </div>
-        <div className="product-review">
-          <i className="font-13 fa fa-star"></i>
-          <i className="font-13 fa fa-star"></i>
-          <i className="font-13 fa fa-star"></i>
-          <i className="font-13 fa fa-star-o"></i>
-          <i className="font-13 fa fa-star-o"></i>
-        </div>
-        <ul className="swatches">
-          {[1, 2, 3, 4, 5, 6].map((n) => (
-            <li className="swatch medium rounded" key={n}>
-              <img
-                src={`src/images/product-images/variant${n}.jpg`}
-                alt={`variant ${n}`}
-              />
-            </li>
-          ))}
-        </ul>
+        {/*<div className="product-review">*/}
+        {/*  <i className="font-13 fa fa-star"></i>*/}
+        {/*  <i className="font-13 fa fa-star"></i>*/}
+        {/*  <i className="font-13 fa fa-star"></i>*/}
+        {/*  <i className="font-13 fa fa-star-o"></i>*/}
+        {/*  <i className="font-13 fa fa-star-o"></i>*/}
+        {/*</div>*/}
+        {/*<ul className="swatches">*/}
+        {/*  {[1, 2, 3, 4, 5, 6].map((n) => (*/}
+        {/*    <li className="swatch medium rounded" key={n}>*/}
+        {/*      <img*/}
+        {/*        src={`src/images/product-images/variant${n}.jpg`}*/}
+        {/*        alt={`variant ${n}`}*/}
+        {/*      />*/}
+        {/*    </li>*/}
+        {/*  ))}*/}
+        {/*</ul>*/}
       </div>
 
       <div className="timermobile">

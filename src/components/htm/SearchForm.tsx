@@ -1,48 +1,53 @@
-import { useState } from "react"
+import React from "react";
+import SideBar from "./SideBar.tsx";
+import ProductList from "./ProductList.tsx";
+import { useParams } from "react-router-dom";
 
-const SearchForm = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const Shop = () => {
   return (
-    // <>
-    //   <div className="site-header__search md:hidden">
-    //     <button type="button" className="search-trigger" onClick={() => setIsOpen(true)}>
-    //       <i className="text-xl"><span className="fa fa-search"></span></i>
-    //     </button>
-    //   </div>
-    //   {isOpen && (
-    //     <div className="search fixed top-0 left-0 right-0 bottom-0 bg-white z-50">
-    //       <div className="search__form p-4">
-    //         <form className="search-bar__form flex items-center">
-    //           <button className="go-btn search__button mr-2" type="submit">
-    //             <i className="text-xl">🔍</i>
-    //           </button>
-    //           <input
-    //             className="search__input flex-1 p-2 border"
-    //             type="search"
-    //             name="q"
-    //             placeholder="Search entire store..."
-    //             aria-label="Search"
-    //             autoComplete="off"
-    //           />
-    //         </form>
-    //         <button type="button" className="search-trigger close-btn absolute top-4 right-4" onClick={() => setIsOpen(false)}>
-    //           <i className="text-xl">×</i>
-    //         </button>
-    //       </div>
-    //     </div>
-    //   )}
-    // </>
-    <div className="search">
-      <div className="search__form">
-        <form className="search-bar__form" action="#">
-          <button className="go-btn search__button" type="submit"><i className="icon anm anm-search-l"></i></button>
-          <input className="search__input" type="search" name="q" value="" placeholder="Search entire store..."
-                 aria-label="Search" autoComplete="off" />
-        </form>
-        <button type="button" className="search-trigger close-btn"><i className="anm anm-times-l"></i></button>
+    <div id="page-content" className="bg-gray-100 min-h-screen">
+      {/* Hero Section */}
+      <div className="relative w-full max-h-[400px] overflow-hidden mb-8">
+        <img
+          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+          src="/images/cat-women.jpg"
+          alt="Shop banner"
+        />
+        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-black/50 to-transparent">
+          <h1 className="text-white text-4xl md:text-6xl font-bold tracking-tight drop-shadow-lg">
+            Shop
+          </h1>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="container mx-auto px-4 md:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row gap-8">
+          <SideBar />
+          <main className="flex-1">
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                Explore Our Collections
+              </h2>
+              <p className="text-sm text-gray-600 max-w-3xl leading-relaxed">
+                Discover a wide variety of categories with handpicked items that
+                meet your taste and needs. Whether you're into fashion, art, or
+                essentials — we have something for you.
+              </p>
+            </section>
+
+            <ProductList />
+
+            <div className="mt-8 text-center">
+              <button className="bg-blue-600 text-white py-2.5 px-8 rounded-lg hover:bg-blue-700 transition duration-200 text-sm font-medium">
+                Load More
+              </button>
+            </div>
+          </main>
+        </div>
       </div>
     </div>
   );
 };
 
-export default SearchForm;
+export default Shop;
