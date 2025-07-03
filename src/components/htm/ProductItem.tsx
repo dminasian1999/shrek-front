@@ -1,14 +1,12 @@
-import React from "react";
-import type { ProductT } from "../../utils/types.ts";
-import { baseUrl } from "../../utils/constants.ts";
+import React from "react"
+import type { ProductT } from "../../utils/types.ts"
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
 import { addCartList, addWishlist } from "../../features/api/accountActions.ts"
 
 const ProductItem = ({ p }: { p: ProductT }) => {
-  const user = useAppSelector((state) => state.user.profile);
-  const token = useAppSelector((state) => state.token);
-const dispatch= useAppDispatch()
-
+  const user = useAppSelector(state => state.user.profile)
+  const token = useAppSelector(state => state.token)
+  const dispatch = useAppDispatch()
 
   return (
     <div className="col-6 col-sm-6 col-md-4 col-lg-3 item">
@@ -38,9 +36,17 @@ const dispatch= useAppDispatch()
 
         <form className="variants add" action="#" method="post">
           <button
-            onClick={()=>(dispatch(addCartList(p.id!)))}
-
-            className="btn btn-addto-cart" type="button">
+            onClick={() =>
+              dispatch(
+                addCartList({
+                  product: p,
+                  quantity: 1,
+                }),
+              )
+            }
+            className="btn btn-addto-cart"
+            type="button"
+          >
             Add To Cart
           </button>
         </form>
@@ -52,14 +58,14 @@ const dispatch= useAppDispatch()
             className="quick-view-popup quick-view"
             data-toggle="modal"
             data-target="#content_quickview"
-            onClick={(e) => e.preventDefault()}
+            onClick={e => e.preventDefault()}
           >
             <i className="icon anm anm-search-plus-r"></i>
           </a>
 
           <div
             // onClick={()=>(addWishlist(token,user.login,p.id!))}
-            onClick={()=>(dispatch(addWishlist(p.id!)))}
+            onClick={() => dispatch(addWishlist(p.id!))}
             className="wishlist-btn"
           >
             <a
@@ -78,7 +84,7 @@ const dispatch= useAppDispatch()
               className="compare add-to-compare"
               href="#"
               title="Add to Compare"
-              onClick={(e) => e.preventDefault()}
+              onClick={e => e.preventDefault()}
             >
               <i className="icon anm anm-random-r"></i>
             </a>
@@ -119,7 +125,7 @@ const dispatch= useAppDispatch()
         <div className="saleTime mobile" data-countdown="2025/12/31"></div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProductItem;
+export default ProductItem

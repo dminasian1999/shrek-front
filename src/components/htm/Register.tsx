@@ -1,61 +1,115 @@
-import React from "react"
+import React, { useState } from 'react';
+import { useAppDispatch } from "../../app/hooks";
+import { registerUser } from "../../features/api/accountActions";
 
 const Register = () => {
-  return (
-    <div id="page-content">
-      <div className="page section-header text-center">
-        <div className="page-title">
-          <div className="wrapper"><h1 className="page-width">Create an Account</h1></div>
-        </div>
-      </div>
+  const dispatch = useAppDispatch();
 
-      <div className="container">
-        <div className="row">
-          <div className="col-12 col-sm-12 col-md-6 col-lg-6 main-col offset-md-3">
-            <div className="mb-4">
-              <form method="post" action="#" id="CustomerLoginForm" accept-charset="UTF-8" className="contact-form">
-                <div className="row">
-                  <div className="col-12 col-sm-12 col-md-12 col-lg-12">
-                    <div className="form-group">
-                      <label htmlFor="FirstName">First Name</label>
-                      <input type="text" name="customer[first_name]" placeholder="" id="FirstName" autoFocus/>
-                    </div>
-                  </div>
-                  <div className="col-12 col-sm-12 col-md-12 col-lg-12">
-                    <div className="form-group">
-                      <label htmlFor="LastName">Last Name</label>
-                      <input type="text" name="customer[last_name]" placeholder="" id="LastName" />
-                    </div>
-                  </div>
-                  <div className="col-12 col-sm-12 col-md-12 col-lg-12">
-                    <div className="form-group">
-                      <label htmlFor="CustomerEmail">Email</label>
-                      <input type="email" name="customer[email]" placeholder="" id="CustomerEmail" className=""
-                             autoCorrect="off" autoCapitalize="off" autoFocus />
-                    </div>
-                  </div>
-                  <div className="col-12 col-sm-12 col-md-12 col-lg-12">
-                    <div className="form-group">
-                      <label htmlFor="CustomerPassword">Password</label>
-                      <input type="password" value="" name="customer[password]" placeholder="" id="CustomerPassword"
-                             className="" />
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="text-center col-12 col-sm-12 col-md-12 col-lg-12">
-                    <input type="submit" className="btn mb-3" value="Create" />
-                  </div>
-                </div>
-              </form>
-            </div>
+  const [login, setLogin] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [agreed, setAgreed] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!login || !password || !firstName || !lastName) {
+      alert("All fields are required.");
+      return;
+    }
+
+    if (!agreed) {
+      alert("You must agree to the terms and conditions.");
+      return;
+    }
+
+    dispatch(registerUser({ login, password, firstName, lastName }));
+  };
+
+  return (
+    <>
+      <h2 className="mt-4 mb-4 text-center">Create an Account</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label className="form-label">Email</label>
+          <input
+            className="form-control"
+            type="email"
+            placeholder="Enter your email"
+            value={login}
+            onChange={(e) => setLogin(e.target.value.trim())}
+            required
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Password</label>
+          <div className="input-group">
+            <input
+              type={showPassword ? "text" : "password"}
+              className="form-control"
+              placeholder="Enter password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value.trim())}
+              required
+            />
+            <span
+              className="input-group-text"
+              role="button"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              <i className={`icon-eye${showPassword ? "-off" : ""}`}></i>
+            </span>
           </div>
         </div>
-      </div>
 
-    </div>
+        <div className="mb-3">
+          <label className="form-label">First Name</label>
+          <input
+            className="form-control"
+            type="text"
+            placeholder="Enter First Name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value.trim())}
+            required
+          />
+        </div>
 
-  )
-}
+        <div className="mb-3">
+          <label className="form-label">Last Name</label>
+          <input
+            className="form-control"
+            type="text"
+            placeholder="Enter Last Name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value.trim())}
+            required
+          />
+        </div>
 
-export default Register
+        <div className="form-check mb-3">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            id="termsConditions"
+            checked={agreed}
+            onChange={(e) => setAgreed(e.target.checked)}
+          />
+          <label className="form-check-label" htmlFor="termsConditions">
+            I agree to the terms and conditions
+          </label>
+        </div>
+
+        <div className="d-grid">
+          <button type="submit" className="btn btn-lg btn-primary">
+            SIGN UP
+          </button>
+        </div>
+      </form>
+    </>
+  );
+};
+
+export default Register;

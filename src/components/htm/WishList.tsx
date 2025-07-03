@@ -10,13 +10,8 @@ const WishList = () => {
   const [products, setProducts] = useState([] as ProductT[])
   const dispatch = useAppDispatch()
   useEffect(() => {
-    // if (user?.wishList?.length) {
-    getPostByIds(user.wishList, token).then(setProducts)
-    // }
-    // else {
-    //   setProducts([]); // clear when wishlist is empty
-    // }
-  }, [setProducts, user.wishList.length])
+    getPostByIds(user.wishList!, token).then(setProducts)
+  }, [setProducts, token, user.wishList])
 
   return (
     <div id="page-content">

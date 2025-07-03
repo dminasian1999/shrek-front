@@ -88,7 +88,7 @@ export interface UserProfile {
   lastName: string
   roles: string[]
   address?: AddressT
-  cart?: any
+  cart: Cart
   wishList?: string[]
   orders?: Order[]
 }
@@ -141,16 +141,14 @@ export interface OrderItem {
 }
 
 export interface Cart {
-  id: string
   userId: string
-  items: [CartItem]
+  items: CartItem[]
+  totalPrice: number
 }
 
 export interface CartItem {
-  id: string // UUID
-  cartId: string // UUID
-  productId: string // UUID
-  quantity: 0
+   product: ProductT;
+  quantity : number;
 }
 
 export interface ShipmentTracking {

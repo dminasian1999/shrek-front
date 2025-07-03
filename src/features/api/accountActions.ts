@@ -2,8 +2,9 @@ import { RootState } from "../../app/store"
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import { baseUrl, createToken } from "../../utils/constants"
 import {
-  AddressT,
-  UserEditData, UserProfile,
+  AddressT, CartItem,
+  UserEditData,
+  UserProfile,
   UserRegister,
   UserUpdatePassword
 } from "../../utils/types"
@@ -30,29 +31,53 @@ export const registerUser = createAsyncThunk(
   },
 )
 export const fetchUser = createAsyncThunk(
-  "user/login",
+  'user/login',
   async (token: string) => {
     const res = await fetch(`${baseUrl}/login`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        Authorization: token,
-      },
-    })
+        "Authorization": token,
+      }
+    });
 
     if (!res.ok) {
       if (res.status === 404) {
-        throw new Error("Account not found!")
+        throw new Error("Account not found!");
       } else if (res.status === 403) {
-        throw new Error("Invalid credentials!")
+        throw new Error("Invalid credentials!");
       } else {
-        throw new Error("An error occurred during login!")
+        throw new Error("An error occurred during login!");
       }
     }
 
-    const data = await res.json()
-    return { data, token }
-  },
-)
+    const data = await res.json();
+    return {data, token};
+  }
+);
+// export const fetchUser = createAsyncThunk(
+//   "user/login",
+//   async (token: string) => {
+//     const res = await fetch(`${baseUrl}/login`, {
+//       method: "POST",
+//       headers: {
+//         "Authorization": token,
+//       },
+//     })
+//
+//     if (!res.ok) {
+//       if (res.status === 404) {
+//         throw new Error("Account not found!")
+//       } else if (res.status === 403) {
+//         throw new Error("Invalid credentials!")
+//       } else {
+//         throw new Error("An error occurred during login!")
+//       }
+//     }
+//
+//     const data = await res.json()
+//     return { data, token }
+//   },
+// )
 export const fetchAllUsers = async () => {
   const response = await fetch(`${baseUrl}/users`, {
     // method: 'Get',
@@ -166,28 +191,26 @@ export const updateAddress = createAsyncThunk<
   return data
 })
 
-export const addWishlist = createAsyncThunk<
-  any,
-  string,
-  { state: RootState }
->("user/addWishList", async (id, { getState }) => {
-  const res = await fetch(
-    `${baseUrl}/${getState().user.profile.login}/wishList/${id}`,
-    {
-      method: "PUT",
-      headers: {
-        Authorization: getState().token,
-        "Content-Type": "application/json"
-
+export const addWishlist = createAsyncThunk<any, string, { state: RootState }>(
+  "user/addWishList",
+  async (id, { getState }) => {
+    const res = await fetch(
+      `${baseUrl}/${getState().user.profile.login}/wishList/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: getState().token,
+          "Content-Type": "application/json",
+        },
       },
-    },
-  )
-  if (!res.ok) {
-    throw new Error(`Oops,something went wrong!`)
-  }
-  const data:UserProfile = await res.json()
-  return  data
-})
+    )
+    if (!res.ok) {
+      throw new Error(`Oops,something went wrong!`)
+    }
+    const data: UserProfile = await res.json()
+    return data
+  },
+)
 export const removeWishlist = createAsyncThunk<
   any,
   string,
@@ -206,7 +229,7 @@ export const removeWishlist = createAsyncThunk<
     throw new Error(`Oops,something went wrong!`)
   }
   const data = await res.json()
-  return  data
+  return data
 })
 
 const addWishlist1 = (token: string, login: string, id: string) => {
@@ -229,44 +252,47 @@ const removeWishlist1 = (token: string, login: string, productId: string) => {
     console.error("Failed to delete wishlist", err)
   })
 }
-export const addCartList = createAsyncThunk<
-  any,
-  string,
-  { state: RootState }
->("user/addCartList", async (id, { getState }) => {
-  const res = await fetch(
-    `${baseUrl}/${getState().user.profile.login}/cartList/${id}`,
-    {
-      method: "PUT",
-      headers: {
-        Authorization: getState().token,
-
+export const addCartList = createAsyncThunk<any, CartItem, { state: RootState }>(
+  "user/addCartList",
+  async (cartItem, { getState }) => {
+    const res = await fetch(
+      `${baseUrl}/${getState().user.profile.login}/cartList`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: getState().token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(cartItem),
       },
-    },
-  )
-  if (!res.ok) {
-    throw new Error(`Oops,something went wrong!`)
-  }
-  const data:UserProfile = await res.json()
-  return  data
-})
+    )
+    if (!res.ok) {
+      throw new Error(`Oops,something went wrong!`)
+    }
+    const data: UserProfile = await res.json()
+    return data
+  },
+)
 export const removeCartList = createAsyncThunk<
   any,
-  string,
+  CartItem,
   { state: RootState }
->("user/removeCartList", async (id, { getState }) => {
+>("user/removeCartList", async (cartItem, { getState }) => {
   const res = await fetch(
-    `${baseUrl}/${getState().user.profile.login}/cartList/${id}`,
+    `${baseUrl}/${getState().user.profile.login}/cartList`,
     {
       method: "Delete",
       headers: {
         Authorization: getState().token,
+        'content-type': 'application/json'
       },
+      body: JSON.stringify(cartItem),
+
     },
   )
   if (!res.ok) {
     throw new Error(`Oops,something went wrong!`)
   }
   const data = await res.json()
-  return  data
+  return data
 })

@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
+import { UserProfile } from "../../utils/types"
 import {
   addCartList,
   addWishlist,
@@ -7,8 +8,7 @@ import {
   removeWishlist,
   updateAddress,
   updateUser
-} from "../api/accountActions"
-import { UserProfile } from "../../utils/types"
+} from "../api/accountActions.ts"
 
 const userSlice = createSlice({
   name: "user",
