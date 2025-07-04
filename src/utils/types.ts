@@ -19,20 +19,11 @@ export interface ProductT {
   sell: number
   buy: number
   category: string
+  type: string
+  desc: string
   dateCreated?: Date
 }
 
-export interface ProductRowT {
-  id: string
-  name: string
-  quantity: number
-  buy: number
-  sell: number
-  profit: number
-  amount: number
-  imageFile: File | null
-  imageUrl: string
-}
 
 
 export interface ReceiptT {
@@ -45,6 +36,8 @@ export interface ReceiptT {
   income: number
   seller: string
   category: string
+  type: string
+  desc: string
   dateCreated: Date
 }
 

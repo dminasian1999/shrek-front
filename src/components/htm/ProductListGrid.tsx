@@ -27,8 +27,10 @@ const ProductListGrid = () => {
     }
   }
   useEffect(() => {
+    window.scrollTo(0, 0); // Scroll to top on route change
+
     fetchProducts()
-  }, [id, setProducts])
+  }, [id])
 
   return (
     <div className="grid-products grid--view-items">

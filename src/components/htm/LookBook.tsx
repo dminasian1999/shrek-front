@@ -1,56 +1,25 @@
 import React from "react"
+import { categories } from "../../utils/constants.ts"
+import { Link } from "react-router-dom"
 
 const LookBook = () => {
   return (
-    <div id="page-content">
-      <div className="lookbook-1">
-        <div className="lookbook grid grid-masonary">
-          <div className="grid-sizer"></div>
-          <div className="grid-lookbook grid-item">
-            <img src="src/images/lookbook-2.jpg" alt="" />
-            <div className="caption">
-              <h2>Women's Winter wear</h2>
-              <a className="btn" href="#">Shop The Collectons <i className="fa fa-caret-right" aria-hidden="true"></i>
-              </a>
+    <div className={""}>
+      <div className="row row-cols-1 row-cols-md-2 ">
+        {categories.map(c => (
+          <div className="col m-0 p-0">
+            <div className="card text-bg-dark m-0 p-0 border-0"
+            style={{height: "300px"}}>
+              <img  src={c.imageUrl} className="card-img w-100 h-100 object-fit-cover" alt="..." />
+              <Link to={`/category/${c.route}`} className="card-img-overlay d-flex  justify-content-center align-items-center">
+                <div className="btn fs-1">{c.title}</div>
+              </Link>
             </div>
           </div>
-          <div className="grid-lookbook grid-item">
-            <img src="src/images/lookbook-3.jpg" alt="" />
-            <div className="caption">
-              <h2>Collection 2017 special</h2>
-              <a className="btn" href="#">Shop The Collectons <i className="fa fa-caret-right" aria-hidden="true"></i>
-              </a>
-            </div>
-          </div>
-          <div className="grid-lookbook grid-item">
-            <img src="src/images/lookbook-4.jpg" alt="" />
-            <div className="caption">
-              <h2>Summer Collection</h2>
-              <a className="btn" href="#">Shop The Collectons <i className="fa fa-caret-right" aria-hidden="true"></i>
-              </a>
-            </div>
-          </div>
-          <div className="grid-lookbook grid-item">
-            <img src="src/images/lookbook-5.jpg" alt="" />
-            <div className="caption">
-              <h2>Kids Wear</h2>
-              <a className="btn" href="#">Shop The Collectons <i className="fa fa-caret-right" aria-hidden="true"></i>
-              </a>
-            </div>
-          </div>
-          <div className="grid-lookbook grid-item">
-            <img src="src/images/lookbook-6.jpg" alt="" />
-            <div className="caption">
-              <h2>lingerie collection</h2>
 
-              <a className="btn" href="#">Shop The Collectons <i className="fa fa-caret-right" aria-hidden="true"></i>
-              </a>
-
-            </div>
-            <a className="overlay" href="#"></a></div>
-        </div>
+        ))}
       </div>
-
+      )
     </div>
   )
 }

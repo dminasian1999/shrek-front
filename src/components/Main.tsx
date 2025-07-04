@@ -22,6 +22,8 @@ import Contact from "./htm/Contact.tsx"
 import WishList from "./htm/WishList.tsx"
 import Products from "./htm/Products.tsx"
 import CartPage from "./htm/CartPage.tsx"
+import ModalEditProduct from "./htm/ModalEditProduct.tsx"
+import EditProduct from "./htm/EditProduct.tsx"
 
 const Main = () => {
   const token = useAppSelector(state => state.token)
@@ -32,18 +34,17 @@ const Main = () => {
         {[`/`, `/${navItems[0].route}`].map(path => (
           <Route key={path} path={path} element={<Home />} />
         ))}
-        <Route path="/products" element={<Products />} />
+        {/*<Route path="/products" element={<Products />} />*/}
         <Route path="/cart" element={<CartPage />} />
 
-        <Route path="/shop" element={<Shop />} />
-        <Route path="/shop/:id" element={<Shop />} />
+        {/*<Route path="/category" element={<Shop />} />*/}
+        <Route path="/category/:id" element={<Shop />} />
         <Route path="/product/:id" element={<ProductPage />} />
-        <Route path="/admin" element={<AddProduct />} />
+
+        <Route path="/product/edit/:id" element={<EditProduct />} />
         <Route path="/checkout" element={<CheckOut />} />
         <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
         <Route path="/wishlist" element={<WishList />} />
-        <Route path="/contact" element={<Contact />} />
         <Route path="/account" element={<Account />} />
         <Route
           path={"/login"}

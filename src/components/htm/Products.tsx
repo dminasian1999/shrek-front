@@ -155,7 +155,7 @@ const Products: React.FC = () => {
                     <div className="btn-group">
                       <button
                         className="btn btn-sm btn-outline-primary me-2"
-                        onClick={() => openEditModal(idx)}
+                        onClick={() => navigate(`/product/edit/${prod.id}`)}
                       >
                         <div className={' fa fa-edit'}></div>
                       </button>

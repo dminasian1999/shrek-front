@@ -8,10 +8,10 @@ const ProductListToolbar = () => {
           <div
             className="col-4 col-md-4 col-lg-4 filters-toolbar__item collection-view-as d-flex justify-content-start align-items-center">
             <a href="shop-left-sidebar.html" title="Grid View" className="change-view change-view--active">
-              <img src="src/images/grid.jpg" alt="Grid" />
+              <img src="/src/images/grid.jpg" alt="Grid" />
             </a>
             <a href="shop-listview.html" title="List View" className="change-view">
-              <img src="src/images/list.jpg" alt="List" />
+              <img src="/src/images/list.jpg" alt="List" />
             </a>
           </div>
           <div

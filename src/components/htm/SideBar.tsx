@@ -1,9 +1,8 @@
-import { categories } from "../../utils/constants.ts";
-import { Link, useLocation } from "react-router-dom"
+import { categories } from "../../utils/constants.ts"
+import { Link, useParams } from "react-router-dom"
 
 const SideBar = () => {
-  const location = useLocation();
-
+  const { id } = useParams<{ id: string }>()
   return (
     <div className="col-12 col-md-3 px-3">
       {/* Close Button (Mobile) */}
@@ -37,20 +36,20 @@ const SideBar = () => {
           >
             <div className="accordion-body p-0">
               <ul className="list-group list-group-flush">
-                {categories.map((category,idx) => (
-                  <li className="list-group-item px-3 py-2" key={idx}>
-                    <Link
-                      to={`/shop/`+category.route}
-                      className={`d-block text-decoration-none rounded fw-medium ${
-                       "text-dark"
-                      } hover-transition`}
-                    >
-                      <i className="bi bi-chevron-right me-2 text-muted small"></i>
-                      {category.title}
-                    </Link>
-                  </li>
-
-                ))}
+                {categories
+                  .filter(c => c.route === id)
+                  .flatMap(c => c.types || [])
+                  .map((category, idx) => (
+                    <li className="list-group-item px-3 py-2" key={idx}>
+                      <Link
+                        to={`/shop/${category.route}`}
+                        className="d-block text-decoration-none rounded fw-medium text-dark hover-transition"
+                      >
+                        <i className="bi bi-chevron-right me-2 text-muted small"></i>
+                        {category.title}
+                      </Link>
+                    </li>
+                  ))}
               </ul>
             </div>
           </div>
@@ -76,17 +75,9 @@ const SideBar = () => {
             <span>$1000</span>
           </div>
           <div className="input-group input-group-sm">
-            <input
-              type="number"
-              className="form-control"
-              placeholder="Min"
-            />
+            <input type="number" className="form-control" placeholder="Min" />
             <span className="input-group-text">-</span>
-            <input
-              type="number"
-              className="form-control"
-              placeholder="Max"
-            />
+            <input type="number" className="form-control" placeholder="Max" />
           </div>
           <button className="btn btn-dark btn-sm w-100 mt-3">
             Apply Filter
@@ -104,7 +95,7 @@ const SideBar = () => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SideBar;
+export default SideBar

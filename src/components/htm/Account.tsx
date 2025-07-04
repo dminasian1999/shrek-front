@@ -8,6 +8,7 @@ import {
 import Breadcrumb from "./Breadcrumb.tsx"
 import Address from "./Address.tsx"
 import PaymentInfo from "./PaymentInfo.tsx"
+import AddProduct from "./AddProduct.tsx"
 
 const Account = () => {
   // const handleImageChange = (idx: any)=> {
@@ -225,6 +226,7 @@ const Account = () => {
 
       <Address />
       <PaymentInfo />
+      {profile.roles.includes("ADMINISTRATOR") && <AddProduct/>}
     </div>
   )
 }

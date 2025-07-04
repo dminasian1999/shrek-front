@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import SideBar from "./SideBar.tsx";
-import ProductList from "./ProductList.tsx";
-import { banner3Img } from "../../utils/constants.ts";
+import React, { useState } from "react"
+import SideBar from "./SideBar.tsx"
+import ProductList from "./ProductList.tsx"
+import { banner3Img } from "../../utils/constants.ts"
+import Contact from "./Contact.tsx"
 
 const Shop = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("")
 
   return (
     <div id="page-content">
@@ -33,16 +34,15 @@ const Shop = () => {
                 className="form-control"
                 placeholder="Search products..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
               />
               <button className="btn btn-outline-dark">
                 <i className="fa fa-search" />
               </button>
             </div>
 
-
             <hr />
-            <ProductList  />
+            <ProductList />
 
             <div className="infinitpaginOuter text-center mt-4">
               <button className="btn btn-outline-dark btn-sm">Load More</button>
@@ -50,8 +50,9 @@ const Shop = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
-};
 
-export default Shop;
+    </div>
+  )
+}
+
+export default Shop

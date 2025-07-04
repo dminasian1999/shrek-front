@@ -8,7 +8,6 @@ import banner1 from  '../images/slideshow-banners/banner1.jpg'
 import banner2 from  '../images/slideshow-banners/banner2.jpg'
 import banner3 from  '../images/slideshow-banners/banner3.jpg'
 import banner4 from  '../images/slideshow-banners/banner4.jpg'
-import React from "react"
 
 export const banner1Img = banner1;
 export const banner2Img = banner2;
@@ -17,24 +16,89 @@ export const banner4Img = banner4;
 export const logoImg = logo;
 
 export const navItems: NavItemT[] = [
-    { title: 'Home',            route: 'home' },
-    { title: 'Shop',             route: 'shop' },
+    // { title: 'Home',            route: 'home' },
+    // { title: 'Shop',             route: 'shop' },
     // { title: 'Sells',               route: 'sells' },
-    { title: 'Admin',               route: 'admin' },
-    { title: 'Products',               route: 'products' },
+    // { title: 'Admin',               route: 'admin' },
+    // { title: 'Products',               route: 'products' },
     // { title: 'Cart',               route: 'cart' },
     // { title: 'Checkout',               route: 'checkout' },
     // { title: 'About',               route: 'about' },
-    { title: 'Contact',               route: 'contact' },
+    // { title: 'Contact',               route: 'contact' },
     // { title: 'WishList',               route: 'wishlist' },
     // { title: 'Account',               route: 'account' },
+  { title: 'Stationery',               route: 'stationery' },
+  { title: 'For Children',               route: 'children' },
+  { title: 'Dishes and Kitchen',               route: 'dish-kitchen' },
+  { title: 'Festive accessories',               route: 'festive' },
+
 ];
 
 export const categories = [
-    { title: 'Stationery', imageUrl: stationary, route: 'stationery' },
-    { title: 'Toys & Games', imageUrl: toysGames, route: 'toys-games' },
-    { title: 'Art & Culture', imageUrl: artCraft, route: 'art-culture' },
-    { title: 'Jewelry', imageUrl: jewelry, route: 'jewelry' }
+  {
+    title: 'Stationery',
+    imageUrl: stationary,
+    route: 'stationery',
+    types: [
+      { title: 'School Supplies', route: 'school-supplies' },
+      { title: 'School Stationery', route: 'school-stationery' },
+      { title: 'Bag, Pencil Case, Notebook ', route: 'bags-pencils-notebooks' },
+      { title: 'Stationery ', route: 'general-stationery' },
+      { title: 'Accessories for Drawing ', route: 'drawing-accessories' },
+      { title: 'Desk Accessories ', route: 'desk-accessories' },
+      { title: 'Office Tools ', route: 'office-tools' },
+      { title: 'Paper Supplies ', route: 'paper-supplies' },
+      { title: 'Consumables for Binding and Laminating ', route: 'binding-laminating' },
+    ]
+  },
+  {
+
+    title: 'For Children',
+    imageUrl: toysGames,
+    route: 'children',
+    types: [
+      { title: 'Hygienic Products for Children', route: 'hygienic-products-children' },
+      { title: 'Toys', route: 'toys' },
+      { title: "Children's Creative Supplies", route: 'children-creative-supplies' },
+      { title: 'Accessories for Baby Food', route: 'baby-food-accessories' },
+      { title: "Children's Accessories", route: 'children-accessories' },
+      { title: 'Night Vessels', route: 'night-vessels' },
+      { title: 'Bath Tubs', route: 'bath-tubs' },
+      { title: 'Swimming Accessories', route: 'swimming-accessories' },
+      { title: 'Baby Accessories 0+', route: 'baby-accessories' }
+    ]
+  },
+  {
+    title: 'Dishes and Kitchen',
+    imageUrl: artCraft,
+    route: 'dish-kitchen',
+    types: [
+      { title: 'Dish', route: 'dish' },
+      { title: 'Products from Glass', route: 'glass-products' },
+      { title: 'Coffee, Tea Utensils', route: 'coffee-tea-utensils' },
+      { title: 'Pots, Frying Pans', route: 'pots-frying-pans' },
+      { title: 'Kitchen Accessories', route: 'kitchen-accessories' },
+      { title: 'Kitchen Plastic', route: 'kitchen-plastic' },
+      { title: 'Food Packaging and Storage', route: 'food-packaging-storage' },
+      { title: 'Preparing and Serving Baked Goods', route: 'baking-tools' },
+    ]
+  },
+  {
+    title: ' Festive accessories',
+    imageUrl: jewelry,
+    route: 'festive',
+    types: [
+      { title: 'Postcards', route: 'postcards' },
+      { title: 'Packing Supplies', route: 'packing-supplies' },
+      { title: 'Gift Boxes, Bags', route: 'gift-boxes-bags' },
+      { title: 'Festive Decoration', route: 'festive-decoration' },
+      { title: 'Festive Table Accessories', route: 'festive-table-accessories' },
+      { title: 'Piggy Banks', route: 'piggy-banks' },
+      { title: 'Gifts', route: 'gifts' },
+      { title: 'Jewelry', route: 'jewelry' },
+    ]
+  },
+
 ];
 
 // export const baseUrl = "http://localhost:8080/users";

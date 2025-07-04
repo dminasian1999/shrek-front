@@ -2,6 +2,7 @@ import React from "react"
 import { logoImg, navItems } from "../../utils/constants.ts"
 import { Link, useNavigate } from "react-router-dom"
 import { useAppSelector } from "../../app/hooks.ts"
+import NavCollapse from "./NavCollapse.tsx"
 
 const Header = () => {
     const nav= useNavigate()
@@ -18,6 +19,7 @@ const Header = () => {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
+
         <a className="navbar-brand" href="/">
           <img
             height={70}
@@ -49,9 +51,9 @@ const Header = () => {
             <ul className="navbar-nav justify-content-center flex-grow-1  hidearrow ">
               {navItems.map(item => (
                 <li className="nav-item">
-                  <Link to={`/${item.route}`} className="nav-link">
+                  <Link to={`/category/${item.route}`} className="nav-link">
 
-                    <h4 className={'fw-bolder'}>{item.title}</h4>
+                    <h4 className={'fw-bolder me-5'}>{item.title}</h4>
                   </Link>
                 </li>
               ))}
