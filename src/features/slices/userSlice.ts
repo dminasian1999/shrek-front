@@ -6,7 +6,7 @@ import {
   fetchUser,
   registerUser, removeCartList,
   removeWishlist,
-  updateAddress,
+  updateAddress, updateCartList,
   updateUser
 } from "../api/accountActions.ts"
 
@@ -121,6 +121,18 @@ const userSlice = createSlice({
       .addCase(removeCartList.rejected, (state, action) => {
         state.loading = false
         state.errorMessage = action.error.message || "removeCartlist failed!"
+      })
+      .addCase(updateCartList.pending, state => {
+        state.loading = true
+        state.errorMessage = "" // Clear any previous errors
+      })
+      .addCase(updateCartList.fulfilled, (state, action) => {
+        state.profile  = action.payload
+        state.loading = false
+      })
+      .addCase(updateCartList.rejected, (state, action) => {
+        state.loading = false
+        state.errorMessage = action.error.message || "updateCartList failed!"
       })
   },
 })

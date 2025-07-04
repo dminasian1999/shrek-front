@@ -1,5 +1,5 @@
 import { categories } from "../../utils/constants.ts";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom"
 
 const SideBar = () => {
   const location = useLocation();
@@ -37,25 +37,20 @@ const SideBar = () => {
           >
             <div className="accordion-body p-0">
               <ul className="list-group list-group-flush">
-                {categories.map((category, idx) => {
-                  const isActive = location.pathname.includes(
-                    encodeURIComponent(category.title)
-                  );
+                {categories.map((category,idx) => (
+                  <li className="list-group-item px-3 py-2" key={idx}>
+                    <Link
+                      to={`/shop/`+category.route}
+                      className={`d-block text-decoration-none rounded fw-medium ${
+                       "text-dark"
+                      } hover-transition`}
+                    >
+                      <i className="bi bi-chevron-right me-2 text-muted small"></i>
+                      {category.title}
+                    </Link>
+                  </li>
 
-                  return (
-                    <li className="list-group-item px-3 py-2" key={idx}>
-                      <a
-                        href={`/shop/${encodeURIComponent(category.title)}`}
-                        className={`d-block text-decoration-none rounded fw-medium ${
-                          isActive ? "text-primary bg-light" : "text-dark"
-                        } hover-transition`}
-                      >
-                        <i className="bi bi-chevron-right me-2 text-muted small"></i>
-                        {category.title}
-                      </a>
-                    </li>
-                  );
-                })}
+                ))}
               </ul>
             </div>
           </div>

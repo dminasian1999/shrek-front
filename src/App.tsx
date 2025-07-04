@@ -2,7 +2,7 @@ import { useAppSelector } from "./app/hooks.ts"
 import "./App.css"
 // import '../src/src/assets/scss/astro-ecommerce.scss'
 import TopHeader from "./components/htm/TopHeader.tsx"
-import Header3 from "./components/htm/Header3.tsx"
+import Header from "./components/htm/Header.tsx"
 import Main from "./components/Main.tsx"
 import { baseUrlBlog, categories } from "./utils/constants.ts"
 import { ProductT, ReceiptT } from "./utils/types.ts"
@@ -70,7 +70,8 @@ const App = () => {
         <div className="pageWrapper row">
           {/*  <SearchForm/>*/}
           <TopHeader />
-          <Header3 />
+          <Header />
+
           {/*  <MobileMenu />*/}
           <Main />
 

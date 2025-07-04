@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
 import { deleteUser } from "../../features/slices/userSlice.ts"
 import { deleteToken } from "../../features/slices/tokenSlice.ts"
+import { adminInfo } from "../../utils/constants.ts"
 
 const TopHeader = () => {
   const [currency, setCurrency] = useState("USD")
@@ -20,39 +21,25 @@ const TopHeader = () => {
       <div className="container-fluid">
         <div className="row">
           <div className="col-10 col-sm-8 col-md-5 col-lg-4">
-            <div className="currency-picker">
-              <span className="selected-currency">{currency}</span>
-              <ul id="currencies">
-                {["INR", "GBP", "CAD", "USD", "AUD", "EUR", "JPY"].map((cur) => (
-                  <li
-                    key={cur}
-                    data-currency={cur}
-                    className={currency === cur ? "selected" : ""}
-                    onClick={() => setCurrency(cur)}
-                  >
-                    {cur}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="language-dropdown">
-              <span className="language-dd">{language}</span>
-              <ul id="language">
-                {["German", "French"].map((lang) => (
-                  <li key={lang} onClick={() => setLanguage(lang)}>
-                    {lang}
+            <div className="language-dropdown dropdown ">
+              <span data-bs-toggle="dropdown"  className="language-dd">{language}</span>
+              <ul className={'dropdown-menu'} >
+                {["English", "Russian","Armenian"].map((lang) => (
+                  <li className={'dropdown-item'} key={lang} onClick={() => setLanguage(lang)}>
+
+                    <div className="dropdown-item-text">{lang}</div>
                   </li>
                 ))}
               </ul>
             </div>
             <p className="phone-no">
-              <i className="anm anm-phone-s"></i> +440 0(111) 044 833
+              <i className="anm anm-phone-s"></i>{adminInfo.phone}
             </p>
           </div>
 
           <div className="col-sm-4 col-md-4 col-lg-4 d-none d-md-block d-lg-block d-blo d-xl-block">
             <div className="text-center">
-              <p className="top-header_middle-text">Worldwide Express Shipping</p>
+              <p className="top-header_middle-text">Welcome to our store</p>
             </div>
           </div>
 
@@ -67,21 +54,21 @@ const TopHeader = () => {
               <ul className="dropdown-menu">
                 {!token ? (
                   <>
-                    <li>
-                      <Link className="dropdown-item" to="/login">Login</Link>
+                    <li className={'text-dark'}>
+                      <Link className="dropdown-item text-dark" to="/login">Login</Link>
                     </li>
                     <li>
-                      <Link className="dropdown-item" to="/register">Create Account</Link>
+                      <Link className="dropdown-item text-dark" to="/register">Create Account</Link>
                     </li>
                   </>
                 ) : (
                   <>
                     <li>
-                      <Link className="dropdown-item" to="/account">My Account</Link>
+                      <Link className="dropdown-item text-dark" to="/account">My Account</Link>
                     </li>
-                    <li><Link className="dropdown-item" to={'/'} onClick={confirmLogout}>Logout</Link></li>
+                    <li><Link className="dropdown-item text-dark" to={'/'} onClick={confirmLogout}>Logout</Link></li>
 
-                    <li><Link className="dropdown-item" to="/wishlist">Wishlist</Link></li>
+                    <li><Link className="dropdown-item text-dark" to="/wishlist">Wishlist</Link></li>
 
                   </>
                 )}

@@ -1,4 +1,3 @@
-// Note: Responsive AddProduct component with desktop table and mobile cards, always showing "Add New Row" on desktop
 
 import React, { ChangeEvent, useState } from 'react';
 import { useAppSelector } from '../../app/hooks.ts';
@@ -164,15 +163,24 @@ const AddProduct: React.FC = () => {
                                             <input type="file" accept="image/*" onChange={handleImageChange(idx)} className="form-control form-control-sm mt-1" />
                                         </td>
                                         <td><input type="text" className="form-control" value={row.name} onChange={handleChange('name', idx)} /></td>
-                                        <td>
-                                            <select className="form-select" value={row.category} onChange={handleCategoryChange(idx)} disabled={saving}>
-                                                <option value="" disabled>— Select —</option>
-                                                {categories.map(cat => (
-                                                    <option key={cat.title} value={cat.title}>{cat.title}</option>
-                                                ))}
-                                            </select>
-                                        </td>
-                                        <td><input type="number" className="form-control" value={row.quantity} onChange={handleChange('quantity', idx)} /></td>
+                                      <td>
+                                        <select
+                                          className="form-select"
+                                          value={row.category}
+                                          onChange={handleCategoryChange(idx)}
+                                          disabled={saving}
+                                        >
+                                          <option value="" disabled>type
+                                          </option>
+                                          {categories.map(cat => (
+                                            <option key={cat.title} value={cat.route}>
+                                              {cat.title}
+                                            </option>
+                                          ))}
+                                        </select>
+                                      </td>
+
+                                      <td><input type="number" className="form-control" value={row.quantity} onChange={handleChange('quantity', idx)} /></td>
                                         <td><input type="number" className="form-control" value={row.buy} onChange={handleChange('buy', idx)} /></td>
                                         <td><input type="number" className="form-control" value={row.sell} onChange={handleChange('sell', idx)} /></td>
                                         <td><input type="text" className="form-control bg-transparent" value={row.profit.toFixed(2)} readOnly /></td>
@@ -242,7 +250,7 @@ const AddProduct: React.FC = () => {
                                             <select className="form-select" value={row.category} onChange={handleCategoryChange(idx)} disabled={saving}>
                                                 <option value="" disabled>— Select —</option>
                                                 {categories.map(cat => (
-                                                    <option key={cat.title} value={cat.title}>{cat.title}</option>
+                                                    <option key={cat.title} value={cat.route}>{cat.title}</option>
                                                 ))}
                                             </select>
                                         </div>

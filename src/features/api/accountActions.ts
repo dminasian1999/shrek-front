@@ -232,26 +232,6 @@ export const removeWishlist = createAsyncThunk<
   return data
 })
 
-const addWishlist1 = (token: string, login: string, id: string) => {
-  fetch(`${baseUrl}/${login}/wishList/${id}`, {
-    method: "PUT",
-    headers: {
-      Authorization: token,
-    },
-  }).catch(err => {
-    console.error("Failed to add wishlist", err)
-  })
-}
-const removeWishlist1 = (token: string, login: string, productId: string) => {
-  fetch(`${baseUrl}/${login}/wishList/${productId}`, {
-    method: "Delete",
-    headers: {
-      Authorization: token,
-    },
-  }).catch(err => {
-    console.error("Failed to delete wishlist", err)
-  })
-}
 export const addCartList = createAsyncThunk<any, CartItem, { state: RootState }>(
   "user/addCartList",
   async (cartItem, { getState }) => {
@@ -287,6 +267,29 @@ export const removeCartList = createAsyncThunk<
         'content-type': 'application/json'
       },
       body: JSON.stringify(cartItem),
+
+    },
+  )
+  if (!res.ok) {
+    throw new Error(`Oops,something went wrong!`)
+  }
+  const data = await res.json()
+  return data
+})
+
+
+export const updateCartList = createAsyncThunk<
+  any,
+  { productId:string, isAdd:boolean },
+  { state: RootState }
+>("user/updateCartList", async ({ productId, isAdd }, { getState }) => {
+  const res = await fetch(
+    `${baseUrl}/${getState().user.profile.login}/cartList/${productId}/update/${isAdd}`,
+    {
+      method: "Put",
+      headers: {
+        Authorization: getState().token,
+      },
 
     },
   )

@@ -1,7 +1,11 @@
 import React from "react"
 import { logoImg, navItems } from "../../utils/constants.ts"
+import { Link, useNavigate } from "react-router-dom"
+import { useAppSelector } from "../../app/hooks.ts"
 
-const Header3 = () => {
+const Header = () => {
+    const nav= useNavigate()
+  const  cart = useAppSelector(state => state.user.profile.cart)
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container ">
@@ -41,13 +45,14 @@ const Header3 = () => {
             ></button>
           </div>
 
-          <div className="offcanvas-body  ">
-            <ul className="navbar-nav justify-content-center flex-grow-1 pe-3 hidearrow ">
+          <div className="offcanvas-body ">
+            <ul className="navbar-nav justify-content-center flex-grow-1  hidearrow ">
               {navItems.map(item => (
-                <li className="nav-item p-0 m-0">
-                  <a href={`/${item.route}`} className="nav-link">
-                    {item.title}
-                  </a>
+                <li className="nav-item">
+                  <Link to={`/${item.route}`} className="nav-link">
+
+                    <h4 className={'fw-bolder'}>{item.title}</h4>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -55,17 +60,18 @@ const Header3 = () => {
         </div>
         <div className="right-block mt-3">
           <div className="site-cart">
-            <a href="#" className="site-header__cart" title="Cart">
-              <i className="icon anm anm-bag-l"></i>
-              <span
-                id="CartCount"
-                className="site-header__cart-count"
-                data-cart-render="item_count"
-              >
-                2
-              </span>
-            </a>
-
+            {cart &&
+              <Link to="/cart" className="site-header__cart" title="Cart">
+                <i className="icon anm anm-bag-l"></i>
+                <span
+                  id="CartCount"
+                  className="site-header__cart-count"
+                  data-cart-render="item_count"
+                >
+                  {cart.items.length}
+                </span>
+              </Link>
+            }
             <div id="header-cart" className="block block-cart">
               <ul className="mini-products-list">
                 {[
@@ -124,30 +130,11 @@ const Header3 = () => {
                 ))}
               </ul>
 
-              <div className="total">
-                <div className="total-in">
-                  <span className="label">Cart Subtotal:</span>
-                  <span className="product-price">
-                    <span className="money">$748.00</span>
-                  </span>
-                </div>
-                <div className="buttonSet text-center">
-                  <a href="cart.html" className="btn btn-secondary btn--small">
-                    View Cart
-                  </a>
-                  <a
-                    href="checkout.html"
-                    className="btn btn-secondary btn--small"
-                  >
-                    Checkout
-                  </a>
-                </div>
-              </div>
             </div>
           </div>
 
           <div className="site-header__search">
-            <button type="button" className="search-trigger">
+            <button onClick={()=>nav('/shop')} type="button" className="search-trigger">
               <i className="icon anm anm-search-l"></i>
             </button>
           </div>
@@ -157,4 +144,4 @@ const Header3 = () => {
   )
 }
 
-export default Header3
+export default Header

@@ -1,9 +1,8 @@
-import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
-import { removeCartList } from "../../features/api/accountActions.ts"
+import { useAppSelector } from "../../app/hooks.ts"
+import CartPageRow from "./CartPageRow.tsx"
 
 const CartPage = () => {
   const cart = useAppSelector(state => state.user.profile.cart)
-  const dispatch = useAppDispatch()
 
   return (
     <div>
@@ -37,79 +36,7 @@ const CartPage = () => {
                 </thead>
                 <tbody>
                   {cart.items.map(cardItem => (
-                    <tr className="cart__row border-bottom line1 cart-flex border-top">
-                      <td className="cart__image-wrapper cart-flex-item">
-                        <a href="#">
-                          <img
-                            className="cart__image"
-                            src={cardItem.product.imageUrl}
-                            alt="Elastic Waist Dress - Navy / Small"
-                          />
-                        </a>
-                      </td>
-                      <td className="cart__meta small--text-left cart-flex-item">
-                        <div className="list-view-item__title">
-                          <a href="#">{cardItem.product.name}</a>
-                        </div>
-
-                        <div className="cart__meta-text">
-                          {` ${cardItem.product.category}`}
-                        </div>
-                      </td>
-                      <td className="cart__price-wrapper cart-flex-item">
-                        <span className="money">${cardItem.product.sell}</span>
-                      </td>
-                      <td className="cart__update-wrapper cart-flex-item text-right">
-                        <div className="cart__qty text-center">
-                          <div className="qtyField">
-                            <a
-                              className="qtyBtn minus"
-                              href="javascript:void(0);"
-                            >
-                              <i className="icon icon-minus"></i>
-                            </a>
-                            <input
-                              className="cart__qty-input qty"
-                              type="text"
-                              name="updates[]"
-                              id="qty"
-                              value="1"
-                              pattern="[0-9]*"
-                            />
-                            <a
-                              className="qtyBtn plus"
-                              href="javascript:void(0);"
-                            >
-                              <i className="icon icon-plus"></i>
-                            </a>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="text-right small--hide cart-price">
-                        <div>
-                          <span className="money">
-                            ${cardItem.product.sell * cardItem.quantity}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="text-center small--hide">
-                        <div
-                          onClick={e => {
-                            e.preventDefault()
-                            dispatch(
-                              removeCartList({
-                                product: cardItem.product,
-                                quantity: 1,
-                              }),
-                            )
-                          }}
-                          className="btn btn--secondary cart__remove"
-                          title="Remove tem"
-                        >
-                          <i className="icon icon anm anm-times-l"></i>
-                        </div>
-                      </td>
-                    </tr>
+                    <CartPageRow cardItem={cardItem} />
                   ))}
                 </tbody>
                 <tfoot>
@@ -147,27 +74,7 @@ const CartPage = () => {
       </div>
       <div className="container mt-4">
         <div className="row">
-          <div className="col-12 col-sm-12 col-md-4 col-lg-4 mb-4">
-            <h5>Discount Codes</h5>
-            <form action="#" method="post">
-              <div className="form-group">
-                <label htmlFor="address_zip">
-                  Enter your coupon code if you have one.
-                </label>
-                <input type="text" name="coupon" />
-              </div>
-              <div className="actionRow">
-                <div>
-                  <input
-                    type="button"
-                    className="btn btn-secondary btn--small"
-                    value="Apply Coupon"
-                  />
-                </div>
-              </div>
-            </form>
-          </div>
-          <div className="col-12 col-sm-12 col-md-4 col-lg-4 mb-4">
+          <div className="col-12 col-sm-12 col-md-6 col-lg-6 mb-4">
             <h5>Estimate Shipping and Tax</h5>
             <form action="#" method="post">
               <div className="form-group">
@@ -776,21 +683,15 @@ const CartPage = () => {
             </form>
           </div>
 
-          <div className="col-12 col-sm-12 col-md-4 col-lg-4 cart__footer">
+          <div className="col-12 col-sm-12 col-md-6 col-lg-6 cart__footer">
             <div className="solid-border">
               <div className="row border-bottom pb-2">
                 <span className="col-12 col-sm-6 cart__subtotal-title">
                   Subtotal
                 </span>
                 <span className="col-12 col-sm-6 text-right">
-                  <span className="money">$735.00</span>
+                  <span className="money">${cart.totalPrice}</span>
                 </span>
-              </div>
-              <div className="row border-bottom pb-2 pt-2">
-                <span className="col-12 col-sm-6 cart__subtotal-title">
-                  Tax
-                </span>
-                <span className="col-12 col-sm-6 text-right">$10.00</span>
               </div>
               <div className="row border-bottom pb-2 pt-2">
                 <span className="col-12 col-sm-6 cart__subtotal-title">

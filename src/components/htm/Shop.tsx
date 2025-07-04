@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import SideBar from "./SideBar.tsx";
-import ProductList from "./ProductList.tsx"; // Check spelling: ProductList?
-import { useParams } from "react-router-dom";
-import { banner3Img } from "../../utils/constants.ts"
+import ProductList from "./ProductList.tsx";
+import { banner3Img } from "../../utils/constants.ts";
 
 const Shop = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+
   return (
     <div id="page-content">
       {/* Hero Section */}
@@ -14,10 +15,9 @@ const Shop = () => {
             className="img-fluid w-100"
             src={banner3Img}
             alt="Shop banner"
-            style={{ objectFit: "cover", maxHeight: "300px" }}
+            style={{ objectFit: "cover", maxHeight: "200px" }}
           />
-          <div className="position-absolute top-50 start-50 translate-middle text-white text-center">
-          </div>
+          <div className="position-absolute top-50 start-50 translate-middle text-white text-center" />
         </div>
       </div>
 
@@ -26,23 +26,26 @@ const Shop = () => {
         <div className="row">
           <SideBar />
           <div className="col-sm-12 col-md-9 col-lg-9 main-col">
-            <div className="category-description mb-4">
-              <h3>Category Description</h3>
-              <p>
-                Discover a wide variety of categories with handpicked items that
-                meet your taste and needs. Whether you're into fashion, art, or
-                essentials — we have something for you.
-              </p>
+            {/* Search Bar */}
+            <div className="mb-3 input-group">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Search products..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <button className="btn btn-outline-dark">
+                <i className="fa fa-search" />
+              </button>
             </div>
 
-            <hr />
-            <ProductList />
 
-            {/* Load More */}
+            <hr />
+            <ProductList  />
+
             <div className="infinitpaginOuter text-center mt-4">
-              <button className="btn btn-outline-dark btn-sm">
-                Load More
-              </button>
+              <button className="btn btn-outline-dark btn-sm">Load More</button>
             </div>
           </div>
         </div>

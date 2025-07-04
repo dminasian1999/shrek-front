@@ -1,131 +1,146 @@
 import React from "react"
+import MapLocation from "./MapLocation.tsx"
+import { adminInfo } from "../../utils/constants.ts"
 
 const Contact = () => {
   return (
-    <div id="page-content">
-      <div className="page section-header text-center">
-        <div className="page-title">
-          <div className="wrapper"><h1 className="page-width">Contact Us</h1></div>
-        </div>
-      </div>
-      <div className="map-section map">
-        <iframe src="https://www.google.com/maps/embed?pb=" height="350" allowFullScreen></iframe>
-        <div className="container">
-          <div className="row">
-            <div className="map-section__overlay-wrapper">
-              <div className="map-section__overlay">
-                <h3 className="h4">Our store</h3>
-                <div className="rte-setting">
-                  <p>123 Fake St.<br />Toronto, Canada</p>
-                  <p>Mon - Fri, 10am - 9pm<br />Saturday, 11am - 9pm<br />Sunday, 11am - 5pm</p>
-                </div>
-                <p><a href="https://maps.google.com/?daddr=80%20Spadina%20Ave,%20Toronto"
-                      className="btn btn--secondary btn--small" target="_blank">Get directions</a></p>
+    <div className={"container"}>
+      <div className="row">
+        {/* Map Component */}
+        <MapLocation />
+
+        {/* Contact Form */}
+        <div className=" col-md-8 mb-4">
+          <h2>Contact Us</h2>
+          <p className="mb-3 text-muted">
+            We'd love to hear from you. Please fill out the form below and we'll
+            get back to you as soon as possible.
+          </p>
+
+          <form
+            action="http://annimexweb.com/items/belle/assets/php/mail.php"
+            method="post"
+            id="contact_form"
+            className="contact-form d-flex flex-column gap-3"
+          >
+            <div className="row">
+              <div className="col-md-6">
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Name"
+                  className="form-control"
+                  required
+                />
+              </div>
+              <div className="col-md-6">
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  className="form-control"
+                  required
+                />
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <div className="bredcrumbWrap">
-        <div className="container breadcrumbs">
-          <a href="index.html" title="Back to the home page">Home</a><span
-          aria-hidden="true">›</span><span>Contact Us</span>
-        </div>
-      </div>
 
-      <div className="container">
-        <div className="row">
-          <div className="col-12 col-sm-12 col-md-8 col-lg-8 mb-4">
-            <h2>Drop Us A Line</h2>
-            <p>Lorem Ipsum é um texto modelo da indústria tipográfica e de impressão. O Lorem Ipsum tem vindo a ser o
-              texto padrão usado por estas indústrias desde o ano de 1500 </p>
-            <div className="formFeilds contact-form form-vertical">
-              <form action="http://annimexweb.com/items/belle/assets/php/mail.php" method="post" id="contact_form"
-                    className="contact-form">
-                <div className="row">
-                  <div className="col-12 col-sm-12 col-md-6 col-lg-6">
-                    <div className="form-group">
-                      <input type="text" id="ContactFormName" name="name" placeholder="Name" value="" required />
-                    </div>
-                  </div>
-                  <div className="col-12 col-sm-12 col-md-6 col-lg-6">
-                    <div className="form-group">
-                      <input type="email" id="ContactFormEmail" name="email" placeholder="Email" value="" required />
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-12 col-sm-12 col-md-6 col-lg-6">
-                    <div className="form-group">
-                      <input required type="tel" id="ContactFormPhone" name="phone" pattern="[0-9\-]*"
-                             placeholder="Phone Number" value="" />
-                    </div>
-                  </div>
-                  <div className="col-12 col-sm-12 col-md-6 col-lg-6">
-                    <div className="form-group">
-                      <input required type="text" id="ContactSubject" name="subject" placeholder="Subject"
-                             value="" />
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-12 col-sm-12 col-md-12 col-lg-12">
-                    <div className="form-group">
-                      <textarea required rows={10} id="ContactFormMessage" name="message"
-                                placeholder="Your Message"></textarea>
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-12 col-sm-12 col-md-12 col-lg-12">
-                    <input type="submit" className="btn" value="Send Message" />
-                  </div>
-                </div>
-              </form>
+            <div className="row">
+              <div className="col-md-6">
+                <input
+                  type="tel"
+                  name="phone"
+                  pattern="[0-9\-]*"
+                  placeholder="Phone Number"
+                  className="form-control"
+                  required
+                />
+              </div>
+              <div className="col-md-6">
+                <input
+                  type="text"
+                  name="subject"
+                  placeholder="Subject"
+                  className="form-control"
+                  required
+                />
+              </div>
             </div>
-          </div>
-          <div className="col-12 col-sm-12 col-md-4 col-lg-4">
-            <div className="open-hours">
-              <strong>Opening Hours</strong><br />
-              Mon - Sat : 9am - 11pm<br />
-              Sunday: 11am - 5pm
+
+            <div className="row">
+              <div className="col-12">
+                <textarea
+                  name="message"
+                  rows={6}
+                  placeholder="Your Message"
+                  className="form-control"
+                  required
+                ></textarea>
+              </div>
             </div>
-            <hr />
-            <ul className="addressFooter">
-              <li><i className="icon anm anm-map-marker-al"></i><p>55 Gallaxy Enque, 2568 steet, 23568 NY</p></li>
-              <li className="phone"><i className="icon anm anm-phone-s"></i><p>(440) 000 000 0000</p></li>
-              <li className="email"><i className="icon anm anm-envelope-l"></i><p>sales@yousite.com</p></li>
-            </ul>
-            <hr />
-            <ul className="list--inline site-footer__social-icons social-icons">
-              <li><a className="social-icons__link" href="#" target="_blank"
-                     title="Belle Multipurpose Bootstrap 4 Template on Facebook"><i className="icon icon-facebook"></i></a>
+
+            <div>
+              <button type="submit" className="btn btn-primary">
+                Send Message
+              </button>
+            </div>
+          </form>
+        </div>
+
+        {/* Sidebar Info */}
+        <div className="2 col-md-4">
+          <div className="open-hours p-3 rounded shadow-sm bg-light mb-4">
+            <h5 className="mb-3">🕒 Opening Hours</h5>
+            <ul className="list-unstyled mb-0">
+              <li>
+                <strong>Mon – Sat:</strong> 9:00 AM – 11:00 PM
               </li>
-              <li><a className="social-icons__link" href="#" target="_blank"
-                     title="Belle Multipurpose Bootstrap 4 Template on Twitter"><i className="icon icon-twitter"></i>
-                <span className="icon__fallback-text">Twitter</span></a></li>
-              <li><a className="social-icons__link" href="#" target="_blank"
-                     title="Belle Multipurpose Bootstrap 4 Template on Pinterest"><i
-                className="icon icon-pinterest"></i> <span className="icon__fallback-text">Pinterest</span></a></li>
-              <li><a className="social-icons__link" href="#" target="_blank"
-                     title="Belle Multipurpose Bootstrap 4 Template on Instagram"><i
-                className="icon icon-instagram"></i> <span className="icon__fallback-text">Instagram</span></a></li>
-              <li><a className="social-icons__link" href="#" target="_blank"
-                     title="Belle Multipurpose Bootstrap 4 Template on Tumblr"><i className="icon icon-tumblr-alt"></i>
-                <span className="icon__fallback-text">Tumblr</span></a></li>
-              <li><a className="social-icons__link" href="#" target="_blank"
-                     title="Belle Multipurpose Bootstrap 4 Template on YouTube"><i className="icon icon-youtube"></i>
-                <span className="icon__fallback-text">YouTube</span></a></li>
-              <li><a className="social-icons__link" href="#" target="_blank"
-                     title="Belle Multipurpose Bootstrap 4 Template on Vimeo"><i className="icon icon-vimeo-alt"></i>
-                <span className="icon__fallback-text">Vimeo</span></a></li>
+              <li>
+                <strong>Sunday:</strong> 11:00 AM – 5:00 PM
+              </li>
             </ul>
           </div>
+
+          <ul className="list-unstyled fs-6 d-flex flex-column gap-3 mb-4">
+            <li>
+              <i className="icon anm anm-map-marker-al me-2"></i>
+              {adminInfo.address}
+            </li>
+            <li>
+              <i className="icon anm anm-phone-s me-2"></i>
+              {adminInfo.phone}
+            </li>
+            <li>
+              <i className="icon anm anm-envelope-l me-2"></i>
+              {adminInfo.email}
+            </li>
+          </ul>
+
+          <ul className="list--inline site-footer__social-icons social-icons d-flex flex-wrap gap-3">
+            {[
+              ["facebook", "Facebook"],
+              ["twitter", "Twitter"],
+              ["pinterest", "Pinterest"],
+              ["instagram", "Instagram"],
+              ["tumblr-alt", "Tumblr"],
+              ["youtube", "YouTube"],
+              ["vimeo-alt", "Vimeo"],
+            ].map(([icon, name]) => (
+              <li key={name}>
+                <a
+                  href="#"
+                  target="_blank"
+                  className="social-icons__link"
+                  title={name}
+                >
+                  <i className={`icon icon-${icon}`}></i>
+                  <span className="visually-hidden">{name}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
-
     </div>
-
   )
 }
 

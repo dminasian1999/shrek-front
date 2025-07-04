@@ -34,12 +34,6 @@ export interface ProductRowT {
   imageUrl: string
 }
 
-export interface CommentT {
-  postId: string
-  author: string
-  message: number
-  dateCreated: string
-}
 
 export interface ReceiptT {
   id: string
@@ -147,6 +141,7 @@ export interface Cart {
 }
 
 export interface CartItem {
+  cartItemId: string;
    product: ProductT;
   quantity : number;
 }

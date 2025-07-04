@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
 import { ProductT } from "../../utils/types.ts"
 import { getPostByIds } from "../../features/api/postActions.tsx"
-import { removeWishlist } from "../../features/api/accountActions.ts"
+import { addCartList, removeWishlist } from "../../features/api/accountActions.ts"
 
 const WishList = () => {
   const user = useAppSelector(state => state.user.profile)
@@ -84,7 +84,17 @@ const WishList = () => {
                           <h4>{p.category}</h4>
                         </td>
                         <td className="product-subtotal text-center">
-                          <button type="button" className="btn btn-small">
+                          <button
+                            onClick={() =>
+                              dispatch(
+                                addCartList({
+                                  cartItemId: p.id!,
+                                  product: p,
+                                  quantity: 1,
+                                }),
+                              )
+                            }
+                            type="button" className="btn btn-small">
                             Add To Cart
                           </button>
                         </td>

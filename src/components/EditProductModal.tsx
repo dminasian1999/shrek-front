@@ -116,7 +116,7 @@ const EditProductModal: React.FC<Props> = ({
                                     >
                                         <option value="">Select category</option>
                                         {categories.map((cat) => (
-                                            <option key={cat.title} value={cat.title}>
+                                            <option key={cat.title} value={cat.route}>
                                                 {cat.title}
                                             </option>
                                         ))}
