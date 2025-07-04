@@ -1,7 +1,7 @@
-import React from "react"
+import React, { useContext } from "react"
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
-import { categories } from "../../utils/constants.ts"
+import { ProductsContext } from "../../utils/context.ts"
 
 const responsive = {
   desktop: {
@@ -11,17 +11,19 @@ const responsive = {
   },
   tablet: {
     breakpoint: { max: 1024, min: 464 },
-    items: 2,
-    slidesToSlide: 2,
+    items: 3,
+    slidesToSlide: 1,
   },
   mobile: {
     breakpoint: { max: 464, min: 0 },
-    items: 1,
+    items: 2,
     slidesToSlide: 1,
   },
 }
 
 const MultiCarouselPlugin = () => {
+  const { products } = useContext(ProductsContext)
+
   return (
     <div className="col-12 col-sm-12 col-md-12 col-lg-12 productSlider grid-products">
       <Carousel
@@ -37,22 +39,36 @@ const MultiCarouselPlugin = () => {
         dotListClass="custom-dot-list-style"
         itemClass="carousel-item-padding-40-px"
       >
-        {categories.map(item => (
-          <div key={item.title} className="text-center item p-2">
+        {products.slice(0, 5).map(item => (
+          <div key={item.name} className="text-center item p-2">
             <div className="product-image link-image">
-              <a href={'/shop/'+item.title.toLowerCase().trim()}
-                className={"grid-view-item__link "}>
+              <a href={`/product/${item.id}`} className={"grid-view-item__link "}>
                 <img
                   src={item.imageUrl}
-                  alt={item.title}
+                  alt={item.name}
                   className="img-fluid rounded h-100 w-100 object-fit-cover btn  border-0 p-0"
                 />
               </a>
-              <h3 className="mt-2">{item.title}</h3>
-
+              <h3 className="mt-2">{item.name}</h3>
             </div>
           </div>
         ))}
+        {/*{categories.map(item => (*/}
+        {/*  <div key={item.title} className="text-center item p-2">*/}
+        {/*    <div className="product-image link-image">*/}
+        {/*      <a href={'/shop/'+item.title.toLowerCase().trim()}*/}
+        {/*        className={"grid-view-item__link "}>*/}
+        {/*        <img*/}
+        {/*          src={item.imageUrl}*/}
+        {/*          alt={item.title}*/}
+        {/*          className="img-fluid rounded h-100 w-100 object-fit-cover btn  border-0 p-0"*/}
+        {/*        />*/}
+        {/*      </a>*/}
+        {/*      <h3 className="mt-2">{item.title}</h3>*/}
+
+        {/*    </div>*/}
+        {/*  </div>*/}
+        {/*))}*/}
       </Carousel>
     </div>
   )

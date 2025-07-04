@@ -56,7 +56,7 @@ const ProductItem = ({ p }: { p: ProductT }) => {
                   <img
                     src={editProduct.imageUrl}
                     alt={editProduct.name}
-                    className="rounded mb-2"
+                    className="rounded mb-2 "
                     style={{ width: 80, height: 80, objectFit: "cover" }}
                   />
                 )}
@@ -168,17 +168,21 @@ const ProductItem = ({ p }: { p: ProductT }) => {
           </div>
         </div>
       </div>
-      <div className="product-image">
-        <a href={`/product/${p.id}`}>
+      <div className="product-image ">
+        <a className="product-image-wrapper "
+          style={{height:"250px"}}
+          href={`/product/${p.id}`}
+          >
           <img
-            className="primary blur-up lazyload h-100 w-100 object-fit-cover"
+
+            className="primary   h-100 w-100 object-fit-fill"
             data-src={p.imageUrl}
             src={p.imageUrl}
             alt={p.name}
             title={p.name}
           />
           <img
-            className="hover blur-up lazyload h-100 w-100 object-fit-cover"
+            className="hover   h-100 w-100 object-fit-cover"
             data-src={p.imageUrl}
             src={p.imageUrl}
             alt={p.name}
