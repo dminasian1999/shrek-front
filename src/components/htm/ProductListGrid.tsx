@@ -1,41 +1,26 @@
-import React, { useContext, useEffect, useState } from "react"
-import { ProductsContext } from "../../utils/context.ts"
+import React, { useEffect, useState } from "react"
 import ProductItem from "./ProductItem.tsx"
-import { useParams } from "react-router-dom"
+import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
 import { ProductT } from "../../utils/types.ts"
-import { baseUrlBlog } from "../../utils/constants.ts"
+import { useParams } from "react-router-dom"
+import { searchPosts } from "../../features/api/postActions.ts"
 
 const ProductListGrid = () => {
-  const { id } = useParams<{ id: string }>()
+  const { id } = useParams()
+  const dispatch = useAppDispatch()
+  // const [products,setProducts]= useState([] as ProductT[])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState( null)
-  const { products, setProducts } = useContext(ProductsContext)
-
-  const fetchProducts = async () => {
-    try {
-      const res = await fetch(
-        id ? `${baseUrlBlog}/posts/category/${id}` : `${baseUrlBlog}/posts`,
-      )
-      if (!res.ok) throw new Error(`Fetch error: ${res.status}`)
-      const data: ProductT[] = await res.json()
-      setProducts(data)
-    } catch (e: any) {
-      console.error(e)
-      setError(e.message)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const [error, setError] = useState(null)
+  const  products  = useAppSelector(state => state.posts.products)
   useEffect(() => {
-    window.scrollTo(0, 0); // Scroll to top on route change
-
-    fetchProducts()
+    dispatch(searchPosts({category:id}))
   }, [id])
+
 
   return (
     <div className="grid-products grid--view-items">
       <div className="row">
-        {products.map(p => (
+        {products.map((p: ProductT) => (
           <ProductItem p={p} />
         ))}
       </div>

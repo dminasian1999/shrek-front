@@ -3,6 +3,7 @@ import { periodMinute } from "../utils/constants"
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit"
 import token from "../features/slices/tokenSlice.ts"
 import user from "../features/slices/userSlice"
+import posts from "../features/slices/postsSlice"
 
 let preloadedState = JSON.parse(localStorage.getItem("state") || "{}")
 const time = JSON.parse(localStorage.getItem("time") || "0")
@@ -15,7 +16,7 @@ export const store = configureStore({
   reducer: {
     token,
     user,
-    // posts,
+    posts,
   },
   preloadedState,
 })

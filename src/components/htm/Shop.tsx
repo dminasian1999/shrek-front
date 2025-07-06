@@ -2,10 +2,12 @@ import React, { useState } from "react"
 import SideBar from "./SideBar.tsx"
 import ProductList from "./ProductList.tsx"
 import { banner3Img } from "../../utils/constants.ts"
-import Contact from "./Contact.tsx"
+import { searchPosts } from "../../features/api/postActions.ts"
+import { useAppDispatch } from "../../app/hooks.ts"
 
 const Shop = () => {
   const [searchTerm, setSearchTerm] = useState("")
+  const dispatch = useAppDispatch()
 
   return (
     <div id="page-content">
@@ -34,9 +36,13 @@ const Shop = () => {
                 className="form-control"
                 placeholder="Search products..."
                 value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)
+                }
               />
-              <button className="btn btn-outline-dark">
+              <button className="btn btn-outline-dark"
+                      type={"submit"}
+                      onClick={()=>dispatch(searchPosts({query:searchTerm}))}
+              >
                 <i className="fa fa-search" />
               </button>
             </div>

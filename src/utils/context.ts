@@ -1,13 +1,13 @@
 import {createContext} from "react";
-import {ProductT, ReceiptT} from "./types.ts";
+import { ProductT, QueryT, ReceiptT } from "./types.ts"
 
 
 export const ProductsContext = createContext({
     selectedId :'',
     setSelectedId: (_id:string) => {},
-    products:[] as ProductT[],
-    setProducts: ([]: ProductT[]) => {},
     receipts:[] as ReceiptT[],
-    setReceipts: ([] : ReceiptT[]) => {}
+    setReceipts: ([] : ReceiptT[]) => {},
+    // query:{} as QueryT,
+    // setQuery:(_q:QueryT)=>{}
 
 })

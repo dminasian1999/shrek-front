@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
+import {
+  addCartList,
+  removeWishlist,
+} from "../../features/api/accountActions.ts"
 import { ProductT } from "../../utils/types.ts"
-import { getPostByIds } from "../../features/api/postActions.tsx"
-import { addCartList, removeWishlist } from "../../features/api/accountActions.ts"
 
 const WishList = () => {
   const user = useAppSelector(state => state.user.profile)
   const token = useAppSelector(state => state.token)
   const [products, setProducts] = useState([] as ProductT[])
   const dispatch = useAppDispatch()
+  const prods = useAppSelector(state => state.posts.products.filter(p => user.wishList!.includes(p.id!)))
+
   useEffect(() => {
-    getPostByIds(user.wishList!, token).then(setProducts)
-  }, [setProducts, token, user.wishList])
+    setProducts(prods)
+    // dispatch(getPostByIds(user.wishList!))
+    // getPostByIds(user.wishList!, token).then(setProducts)
+  }, [setProducts])
 
   return (
     <div id="page-content">
@@ -94,7 +100,9 @@ const WishList = () => {
                                 }),
                               )
                             }
-                            type="button" className="btn btn-small">
+                            type="button"
+                            className="btn btn-small"
+                          >
                             Add To Cart
                           </button>
                         </td>

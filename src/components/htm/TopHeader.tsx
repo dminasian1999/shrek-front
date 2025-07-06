@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
 import { deleteUser } from "../../features/slices/userSlice.ts"
 import { deleteToken } from "../../features/slices/tokenSlice.ts"
 import { adminInfo } from "../../utils/constants.ts"
+import { deletePosts } from "../../features/slices/postsSlice.ts"
 
 const TopHeader = () => {
   const [currency, setCurrency] = useState("USD")
@@ -13,6 +14,7 @@ const TopHeader = () => {
   const confirmLogout = () => {
     dispatch(deleteUser())
     dispatch(deleteToken())
+    dispatch(deletePosts())
   }
   const token = useAppSelector((state) => state.token)
 

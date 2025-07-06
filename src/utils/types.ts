@@ -140,10 +140,24 @@ export interface CartItem {
 }
 
 export interface ShipmentTracking {
-  id: string // UUID
-  orderId: string // UUID
-  courier: string // String
-  trackingNumber: string // String
-  status: "processing" | "shipped" | "in_transit" | "delivered"
-  estimatedDelivery: Date // Date
+  id: string; // UUID
+  orderId: string; // UUID
+  courier: string; // String
+  trackingNumber: string; // String
+  status: "processing" | "shipped" | "in_transit" | "delivered";
+  estimatedDelivery: Date; // Date
+}
+export interface QueryT {
+  query?: string;
+  asc?: boolean;
+  id?: string;
+  name?: string;
+  category?: string;
+  type?: string;
+  desc?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  dateCreated?: Date;
+  dateFrom?: Date;
+  dateTo?: Date;
 }

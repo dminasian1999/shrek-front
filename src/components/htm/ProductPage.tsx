@@ -1,22 +1,24 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import { ProductsContext } from "../../utils/context.ts"
 import { ProductT } from "../../utils/types.ts"
-import { getPostById } from "../../features/api/postActions.tsx"
 import ProductPageSideBar from "./ProductPageSideBar.tsx"
 import ProductPageFetures from "./ProductPageFetures.tsx"
+import { useAppSelector } from "../../app/hooks.ts"
 
 const ProductPage = () => {
   const { id = "" } = useParams()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
-  const { products, setProducts } = useContext(ProductsContext)
+  const pro = useAppSelector(state =>
+    state.posts.products.find(p => p.id === id),
+  )
   const [product, setProduct] = useState({} as ProductT)
   // const product = (products.find(p => p.id === id))
 
   useEffect(() => {
-    getPostById(id).then(setProduct)
+    setProduct(pro!)
   }, [id])
+
   return (
     <div id="MainContent" className="main-content" role="main">
       <div className="bredcrumbWrap">
@@ -87,16 +89,16 @@ const ProductPage = () => {
                     <div className="product-sku">
                       SKU: <span className="variant-sku">{product.id}</span>
                     </div>
-                    <div className="product-review">
-                    </div>
+                    <div className="product-review"></div>
                   </div>
                   <p className="product-single__price product-single__price-product-template">
                     <span className="visually-hidden">Regular price</span>
                     <s id="ComparePrice-product-template">
-                      <span className="money">${(product.sell + product.sell / 3).toFixed(2)}</span>
+                      <span className="money">
+                        ${(product.sell + product.sell / 3).toFixed(2)}
+                      </span>
                     </s>
-                    <span
-                      className="product-price__price product-price__price-product-template product-price__sale product-price__sale--single">
+                    <span className="product-price__price product-price__price-product-template product-price__sale product-price__sale--single">
                       <span id="ProductPrice-product-template">
                         <span className="money">${product.sell}</span>
                       </span>
@@ -248,19 +250,14 @@ const ProductPage = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="product-info">
-                  </div>
+                  <div className="product-info"></div>
                 </div>
               </div>
             </div>
-            <ProductPageFetures/>
-
+            <ProductPageFetures />
           </div>
-
-
         </div>
         <ProductPageSideBar />
-
       </div>
     </div>
   )

@@ -18,11 +18,8 @@ import Shop from "./htm/Shop.tsx"
 import ProductPage from "./htm/ProductPage.tsx"
 import CheckOut from "./htm/CheckOut.tsx"
 import About from "./htm/About.tsx"
-import Contact from "./htm/Contact.tsx"
 import WishList from "./htm/WishList.tsx"
-import Products from "./htm/Products.tsx"
 import CartPage from "./htm/CartPage.tsx"
-import ModalEditProduct from "./htm/ModalEditProduct.tsx"
 import EditProduct from "./htm/EditProduct.tsx"
 
 const Main = () => {

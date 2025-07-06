@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom"
-import { getPostById, uploadImage } from "../../features/api/postActions.tsx";
+import { getPostById, uploadImage } from "../../features/api/postActions.ts";
 import { baseUrlBlog, categories } from "../../utils/constants.ts";
 import { ProductT } from "../../utils/types.ts";
-import { useAppSelector } from "../../app/hooks.ts";
+import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
 
 const EditProduct = () => {
   const { id = "" } = useParams()
   const [product, setProduct] = useState({} as ProductT);
   const [loading, setLoading] = useState(true);
   const token = useAppSelector((state) => state.token);
+  const pro = useAppSelector((state) => state.posts.products.find((p) => p.id === id));
   const navigate = useNavigate();
-
+  const dis = useAppDispatch()
   const handleChange = (field: string, value: any) => {
     setProduct((prev) => ({ ...prev, [field]: value }));
   };
@@ -29,7 +30,8 @@ const EditProduct = () => {
   };
 
   useEffect(() => {
-    getPostById(id).then(setProduct)
+    setProduct(pro!)
+    // dis(getPostById(id))
   }, [id])
 
 
