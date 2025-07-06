@@ -1,7 +1,7 @@
-import React from "react"
+import React, { useContext } from "react"
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
-import { useAppSelector } from "../../app/hooks.ts"
+import { ProductsContext } from "../../utils/context.ts"
 
 const responsive = {
   desktop: {
@@ -22,7 +22,7 @@ const responsive = {
 }
 
 const MultiCarouselPlugin = () => {
-  const products = useAppSelector(state => state.posts.products)
+  const { products } = useContext(ProductsContext)
 
   return (
     <div className="col-12 col-sm-12 col-md-12 col-lg-12 productSlider grid-products">
@@ -42,10 +42,7 @@ const MultiCarouselPlugin = () => {
         {products.slice(0, 5).map(item => (
           <div key={item.name} className="text-center item p-2">
             <div className="product-image link-image">
-              <a
-                href={`/product/${item.id}`}
-                className={"grid-view-item__link "}
-              >
+              <a href={`/product/${item.id}`} className={"grid-view-item__link "}>
                 <img
                   src={item.imageUrl}
                   alt={item.name}

@@ -1,31 +1,34 @@
-import React, { useEffect, useState } from "react"
-import ProductItem from "./ProductItem.tsx"
-import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
-import { ProductT } from "../../utils/types.ts"
-import { useParams } from "react-router-dom"
-import { searchPosts } from "../../features/api/postActions.ts"
+import React, { useContext, useEffect, useState } from "react";
+import { ProductsContext } from "../../utils/context.ts";
+import ProductItem from "./ProductItem.tsx";
+import { useParams } from "react-router-dom";
+import { ProductT } from "../../utils/types.ts";
 
 const ProductListGrid = () => {
-  const { id } = useParams()
-  const dispatch = useAppDispatch()
-  // const [products,setProducts]= useState([] as ProductT[])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const  products  = useAppSelector(state => state.posts.products)
-  useEffect(() => {
-    dispatch(searchPosts({category:id}))
-  }, [id])
+  const { products } = useContext(ProductsContext);
+  const { id } = useParams();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
+  // Scroll to top on category change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
+
+  if (loading) return <p>Loading products...</p>;
+  if (error) return <p>Error loading products: {error}</p>;
+  if (!products || products.length === 0)
+    return <p>No products found in this category.</p>;
 
   return (
     <div className="grid-products grid--view-items">
       <div className="row">
         {products.map((p: ProductT) => (
-          <ProductItem p={p} />
+          <ProductItem key={p.id} p={p} />
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProductListGrid
+export default ProductListGrid;

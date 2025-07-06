@@ -1,8 +1,9 @@
+import  { useContext } from "react"
 import ProductItem from "./ProductItem.tsx"
-import { useAppSelector } from "../../app/hooks.ts"
+import { ProductsContext } from "../../utils/context.ts"
 
 const NewArrivals = () => {
-  const products = useAppSelector(state => state.posts.products)
+  const { products } = useContext(ProductsContext)
 
   return (
     <div className="product-rows section py-8">
