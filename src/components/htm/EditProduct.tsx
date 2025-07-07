@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom";
 import { getPostById, uploadImage } from "../../features/api/postActions.tsx";
 import { baseUrlBlog, categories } from "../../utils/constants.ts";
 import { ProductT } from "../../utils/types.ts";
 import { useAppSelector } from "../../app/hooks.ts";
 
 const EditProduct = () => {
-  const { id = "" } = useParams()
+  const { id = "" } = useParams();
   const [product, setProduct] = useState({} as ProductT);
-  const [loading, setLoading] = useState(true);
   const token = useAppSelector((state) => state.token);
   const navigate = useNavigate();
 
@@ -17,23 +16,22 @@ const EditProduct = () => {
   };
 
   const handleSave = async () => {
-     await fetch(`${baseUrlBlog}/post/${id}`, {
+    await fetch(`${baseUrlBlog}/post/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: token,
       },
       body: JSON.stringify(product),
-    }).then(() => {navigate(-1)});
-
+    }).then(() => {
+      navigate(-1);
+    });
   };
 
   useEffect(() => {
-    getPostById(id).then(setProduct)
-  }, [id])
-
-
-  // if (loading) return <div className="container mt-4">Loading...</div>;
+    window.scrollTo(0, 0);
+    getPostById(id).then(setProduct);
+  }, [id]);
 
   return (
     <div className="container mt-5">
@@ -88,6 +86,21 @@ const EditProduct = () => {
               ))}
             </select>
           </div>
+          <div className="mb-3">
+            <label className="form-label">Type</label>
+            <select
+              className="form-select"
+              value={product.type}
+              onChange={(e) => handleChange("type", e.target.value)}
+            >
+              <option value="">Select type</option>
+              {categories.map((cat) => (
+                <option key={cat.title} value={cat.route}>
+                  {cat.title}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <div className="mb-3">
             <label className="form-label">Quantity</label>
@@ -118,6 +131,16 @@ const EditProduct = () => {
               className="form-control"
               value={product.sell}
               onChange={(e) => handleChange("sell", Number(e.target.value))}
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Description</label>
+            <textarea
+              className="form-control"
+              rows={3}
+              value={product.desc || ""}
+              onChange={(e) => handleChange("desc", e.target.value)}
             />
           </div>
 

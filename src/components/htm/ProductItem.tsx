@@ -10,7 +10,8 @@ const ProductItem = ({ p }: { p: ProductT }) => {
   const dispatch = useAppDispatch()
 
   return (
-    <div className="col-6 col-sm-6 col-md-4 col-lg-3 item">
+    // <div className="col-6 col-sm-6 col-md-4 col-lg-3 item">
+    <div className="">
       <div className="product-image" style={{height: "250px", }}>
         <a href={`/product/${p.id}`} >
           <img
