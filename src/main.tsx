@@ -1,8 +1,9 @@
 import {createRoot} from "react-dom/client"
 import {Provider} from "react-redux"
 import {store} from "./app/store"
-// import '@fortawesome/fontawesome-free/css/all.css'
-//
+import '@fortawesome/fontawesome-free/css/all.css'
+import "./css/all-fontawesome.min.css"
+import "react-multi-carousel/lib/styles.css"
 import "./css/plugins.css"
 
 import 'bootstrap/dist/css/bootstrap.min.css'

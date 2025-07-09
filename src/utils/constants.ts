@@ -1,127 +1,117 @@
-import {NavItemT} from "./types.ts";
-import stationary from '../images/categories/stationary.jpg';
-import toysGames  from '../images/categories/toys&Games.jpg';
-import artCraft  from '../images/categories/art&Craft.jpg';
-import jewelry  from '../images/categories/jewelry.jpg';
-import logo from  '../images/logo/logo.jpg'
-import banner1 from  '../images/slideshow-banners/banner1.jpg'
-import banner2 from  '../images/slideshow-banners/banner2.jpg'
-import banner3 from  '../images/slideshow-banners/banner3.jpg'
-import banner4 from  '../images/slideshow-banners/banner4.jpg'
+import { NavItemT } from "./types.ts"
+import stationary from "../images/categories/stationary.jpg"
+import stationaryIcon from "../images/categories/stationery.png"
+import toysGames from "../images/categories/toys&Games.jpg"
+import toysGamesIcon from "../images/categories/toys&Games.png"
+import artCraft from "../images/categories/art&Craft.jpg"
+import artCraftIcon from "../images/categories/art&Craft.png"
 
-export const banner1Img = banner1;
-export const banner2Img = banner2;
-export const banner3Img = banner3;
-export const banner4Img = banner4;
-export const logoImg = logo;
+import jewelry from "../images/categories/jewelry.jpg"
+import jewelryIcon from "../images/categories/jewelry.png"
+
+import logo from "../images/logo/logo.jpg"
+import banner1 from "../images/slideshow-banners/banner1.jpg"
+import banner2 from "../images/slideshow-banners/banner2.jpg"
+import banner3 from "../images/slideshow-banners/banner3.jpg"
+import banner4 from "../images/slideshow-banners/banner4.jpg"
+
+export const banner1Img = banner1
+export const banner2Img = banner2
+export const banner3Img = banner3
+export const banner4Img = banner4
+export const logoImg = logo
 
 export const navItems: NavItemT[] = [
-    // { title: 'Home',            route: 'home' },
-    // { title: 'Shop',             route: 'shop' },
-    // { title: 'Sells',               route: 'sells' },
-    // { title: 'Admin',               route: 'admin' },
-    // { title: 'Products',               route: 'products' },
-    // { title: 'Cart',               route: 'cart' },
-    // { title: 'Checkout',               route: 'checkout' },
-    // { title: 'About',               route: 'about' },
-    // { title: 'Contact',               route: 'contact' },
-    // { title: 'WishList',               route: 'wishlist' },
-    // { title: 'Account',               route: 'account' },
-  { title: 'Stationery',               route: 'stationery' },
-  { title: 'For Children',               route: 'children' },
-  { title: 'Dishes and Kitchen',               route: 'dish-kitchen' },
-  { title: 'Festive accessories',               route: 'festive' },
-
-];
+  // { title: 'Home',            route: 'home' },
+  // { title: 'Shop',             route: 'shop' },
+  // { title: 'Sells',               route: 'sells' },
+  // { title: 'Admin',               route: 'admin' },
+  // { title: 'Products',               route: 'products' },
+  // { title: 'Cart',               route: 'cart' },
+  // { title: 'Checkout',               route: 'checkout' },
+  // { title: 'About',               route: 'about' },
+  // { title: 'Contact',               route: 'contact' },
+  // { title: 'WishList',               route: 'wishlist' },
+  // { title: 'Account',               route: 'account' },
+  { title: "Stationery", route: "stationery" },
+  { title: "For Children", route: "children" },
+  { title: "Dishes and Kitchen", route: "dish-kitchen" },
+  { title: "Festive accessories", route: "festive" },
+]
 
 export const categories = [
   {
-    title: 'Stationery',
+    title: "Stationery",
     imageUrl: stationary,
-    route: 'stationery',
+    icon: stationaryIcon,
+    route: "stationery",
     types: [
-      { title: 'School Supplies', route: 'school-supplies' },
-      { title: 'School Stationery', route: 'school-stationery' },
-      { title: 'Bag, Pencil Case, Notebook ', route: 'bags-pencils-notebooks' },
-      { title: 'Stationery ', route: 'general-stationery' },
-      { title: 'Accessories for Drawing ', route: 'drawing-accessories' },
-      { title: 'Desk Accessories ', route: 'desk-accessories' },
-      { title: 'Office Tools ', route: 'office-tools' },
-      { title: 'Paper Supplies ', route: 'paper-supplies' },
-      { title: 'Consumables for Binding and Laminating ', route: 'binding-laminating' },
+      { title: "School Supplies", route: "school-supplies", icon: "fa fa-school" },
+      { title: "Writing & Drawing Tools", route: "writing-drawing-tools", icon: "fa fa-pen" },
+      { title: "Notebooks & Paper", route: "notebooks-paper", icon: "fa fa-book" },
+      { title: "Bags & Pencil Cases", route: "bags-pencil-cases", icon: "fa fa-briefcase" },
+      { title: "Office Essentials", route: "office-essentials", icon: "fa fa-archive" },
+      { title: "Binding & Laminating", route: "binding-laminating", icon: "fa fa-paperclip" },
+      { title: "Art & Craft Supplies", route: "art-craft-supplies", icon: "fa fa-paintbrush" }
     ]
   },
   {
-
-    title: 'For Children',
+    title: "For Children",
     imageUrl: toysGames,
-    route: 'children',
+    icon: toysGamesIcon,
+    route: "children",
     types: [
-      { title: 'Hygienic Products for Children', route: 'hygienic-products-children' },
-      { title: 'Toys', route: 'toys' },
-      { title: "Children's Creative Supplies", route: 'children-creative-supplies' },
-      { title: 'Accessories for Baby Food', route: 'baby-food-accessories' },
-      { title: "Children's Accessories", route: 'children-accessories' },
-      { title: 'Night Vessels', route: 'night-vessels' },
-      { title: 'Bath Tubs', route: 'bath-tubs' },
-      { title: 'Swimming Accessories', route: 'swimming-accessories' },
-      { title: 'Baby Accessories 0+', route: 'baby-accessories' }
+      { title: "Toys & Games", route: "toys-games", icon: "fa fa-gamepad" },
+      { title: "Creative & Educational Supplies", route: "creative-educational-supplies", icon: "fa fa-puzzle-piece" },
+      { title: "Feeding & Food Accessories", route: "feeding-accessories", icon: "fa fa-bottle-water" },
+      { title: "Swimming & Outdoor Accessories", route: "swimming-outdoor-accessories", icon: "fa fa-life-ring" },
+      { title: "General Children’s Accessories", route: "children-accessories", icon: "fa fa-smile" }
     ]
   },
   {
-    title: 'Dishes and Kitchen',
+    title: "Dishes and Kitchen",
     imageUrl: artCraft,
-    route: 'dish-kitchen',
+    icon: artCraftIcon,
+    route: "dish-kitchen",
     types: [
-      { title: 'Dish', route: 'dish' },
-      { title: 'Products from Glass', route: 'glass-products' },
-      { title: 'Coffee, Tea Utensils', route: 'coffee-tea-utensils' },
-      { title: 'Pots, Frying Pans', route: 'pots-frying-pans' },
-      { title: 'Kitchen Accessories', route: 'kitchen-accessories' },
-      { title: 'Kitchen Plastic', route: 'kitchen-plastic' },
-      { title: 'Food Packaging and Storage', route: 'food-packaging-storage' },
-      { title: 'Preparing and Serving Baked Goods', route: 'baking-tools' },
+      { title: "Products from Glass", route: "glass-products", icon: "fa fa-wine-glass" },
+      { title: "Coffee, Tea Utensils", route: "coffee-tea-utensils", icon: "fa fa-mug-hot" },
     ]
   },
   {
-    title: ' Festive accessories',
+    title: "Festive Accessories",
     imageUrl: jewelry,
-    route: 'festive',
+    icon: jewelryIcon,
+    route: "festive",
     types: [
-      { title: 'Postcards', route: 'postcards' },
-      { title: 'Packing Supplies', route: 'packing-supplies' },
-      { title: 'Gift Boxes, Bags', route: 'gift-boxes-bags' },
-      { title: 'Festive Decoration', route: 'festive-decoration' },
-      { title: 'Festive Table Accessories', route: 'festive-table-accessories' },
-      { title: 'Piggy Banks', route: 'piggy-banks' },
-      { title: 'Gifts', route: 'gifts' },
-      { title: 'Jewelry', route: 'jewelry' },
+      { title: "Greeting & Postcards", route: "greeting-postcards", icon: "fa fa-envelope" },
+      { title: "Gift Packaging", route: "gift-packaging", icon: "fa fa-box" },
+      { title: "Gifts & Souvenirs", route: "gifts-souvenirs", icon: "fa fa-gift" },
+      { title: "Jewelry", route: "festive-jewelry", icon: "fa fa-gem" }
     ]
-  },
+  }
+]
 
-];
-
-// export const baseUrl = "http://localhost:8080/users";
-// export const baseUrlBlog = "http://localhost:8080";
+// export const baseUrl = "http://localhost:8080/users"
+// export const baseUrlBlog = "http://localhost:8080"
 export const baseUrl = "https://ecom-back-bafx.onrender.com/users";
 export const baseUrlBlog = "https://ecom-back-bafx.onrender.com";
-export const createToken = (login: string, password: string) => `Basic ${window.btoa(login + ':' + password)}`
+export const createToken = (login: string, password: string) =>
+  `Basic ${window.btoa(login + ":" + password)}`
 
-export const defaultPic =''
+export const defaultPic = ""
 
+export const periodMinute = 10000 * 60 * 10
 
-export const periodMinute = 10000 * 60*10;
-
-export const adminInfo ={
-    username: 'admin',
-    firstName: 'Admin',
-    lastName: 'Admin',
-    phone: ' +37494923322',
-    address: ' Avshar 0605, Armenia',
-    city: 'Admin',
-    email: ' tamar@gmail.com',
+export const adminInfo = {
+  username: "admin",
+  firstName: "Admin",
+  lastName: "Admin",
+  phone: " +37494923322",
+  address: " Avshar 0605, Armenia",
+  city: "Admin",
+  email: " tamar@gmail.com",
 }
-
 
 // export const demoProducts =()
 // =>{

@@ -1,4 +1,5 @@
 import React from "react";
+import { adminInfo, categories } from "../../utils/constants.ts"
 
 const Footer = () => {
   return (
@@ -133,21 +134,11 @@ const Footer = () => {
               <div className="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
                 <h4 className="h4">Quick Shop</h4>
                 <ul>
-                  <li>
-                    <a href="#">Women</a>
-                  </li>
-                  <li>
-                    <a href="#">Men</a>
-                  </li>
-                  <li>
-                    <a href="#">Kids</a>
-                  </li>
-                  <li>
-                    <a href="#">Sportswear</a>
-                  </li>
-                  <li>
-                    <a href="#">Sale</a>
-                  </li>
+                  {categories.map(c=>(
+                    <li>
+                      <a href={`/category/${c.route}`}>{c.title}</a>
+                    </li>
+                  ))}
                 </ul>
               </div>
               <div className="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
@@ -157,25 +148,19 @@ const Footer = () => {
                     <a href="#">About us</a>
                   </li>
                   <li>
-                    <a href="#">Careers</a>
-                  </li>
-                  <li>
                     <a href="#">Privacy policy</a>
                   </li>
                   <li>
                     <a href="#">Terms &amp; condition</a>
                   </li>
                   <li>
-                    <a href="#">My Account</a>
+                    <a href="/account">My Account</a>
                   </li>
                 </ul>
               </div>
               <div className="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
                 <h4 className="h4">Customer Services</h4>
                 <ul>
-                  <li>
-                    <a href="#">Request Personal Data</a>
-                  </li>
                   <li>
                     <a href="#">FAQ's</a>
                   </li>
@@ -196,18 +181,16 @@ const Footer = () => {
                   <li>
                     <i className="icon anm anm-map-marker-al"></i>
                     <p>
-                      55 Gallaxy Enque,
-                      <br />
-                      2568 steet, 23568 NY
+                      {adminInfo.address}
                     </p>
                   </li>
                   <li className="phone">
                     <i className="icon anm anm-phone-s"></i>
-                    <p>(440) 000 000 0000</p>
+                    <p> {adminInfo.phone}</p>
                   </li>
                   <li className="email">
                     <i className="icon anm anm-envelope-l"></i>
-                    <p>sales@yousite.com</p>
+                    <p> {adminInfo.email}</p>
                   </li>
                 </ul>
               </div>
@@ -216,11 +199,8 @@ const Footer = () => {
           <hr />
           <div className="footer-bottom">
             <div className="row">
-              <div className="col-12 col-sm-12 col-md-6 col-lg-6 order-1 order-md-0 order-lg-0 order-sm-1 copyright text-sm-center text-md-left text-lg-left">
-                <span></span> <a href="templateshub.net">Templates Hub</a>
-              </div>
               <div className="col-12 col-sm-12 col-md-6 col-lg-6 order-0 order-md-1 order-lg-1 order-sm-0 payment-icons text-right text-md-center">
-                <ul className="payment-icons list--inline">
+                <ul className="payment-icons list--inline d-flex gap-2">
                   <li>
                     <i className="icon fa fa-cc-visa" aria-hidden="true"></i>
                   </li>
@@ -231,16 +211,7 @@ const Footer = () => {
                     ></i>
                   </li>
                   <li>
-                    <i
-                      className="icon fa fa-cc-discover"
-                      aria-hidden="true"
-                    ></i>
-                  </li>
-                  <li>
                     <i className="icon fa fa-cc-paypal" aria-hidden="true"></i>
-                  </li>
-                  <li>
-                    <i className="icon fa fa-cc-amex" aria-hidden="true"></i>
                   </li>
                   <li>
                     <i

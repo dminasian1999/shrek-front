@@ -1,12 +1,12 @@
-import React, { useContext } from "react"
+import React from "react"
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
-import { ProductsContext } from "../../utils/context.ts"
+import { categories } from "../../utils/constants.ts"
 
 const responsive = {
   desktop: {
     breakpoint: { max: 3000, min: 1024 },
-    items: 3,
+    items: 4,
     slidesToSlide: 1,
   },
   tablet: {
@@ -22,10 +22,9 @@ const responsive = {
 }
 
 const MultiCarouselPlugin = () => {
-  const { products } = useContext(ProductsContext)
 
   return (
-    <div className="col-12 col-sm-12 col-md-12 col-lg-12 productSlider grid-products">
+    <div className="col-12 productSlider grid-products">
       <Carousel
         swipeable
         draggable
@@ -39,36 +38,22 @@ const MultiCarouselPlugin = () => {
         dotListClass="custom-dot-list-style"
         itemClass="carousel-item-padding-40-px"
       >
-        {products.slice(0, 5).map(item => (
-          <div key={item.name} className="text-center item p-2">
+        {categories
+          .flatMap(category => (category.types))
+          .map((item, index) => (
+          <div key={index} className="text-center item p-2">
             <div className="product-image link-image">
-              <a href={`/product/${item.id}`} className={"grid-view-item__link "}>
-                <img
-                  src={item.imageUrl}
-                  alt={item.name}
-                  className="img-fluid rounded h-100 w-100 object-fit-cover btn  border-0 p-0"
-                />
+              <a
+                href={`/category/${categories.find(category => category.types.includes(item))!.route}/${item.route}`}
+                className="grid-view-item__link d-flex flex-column align-items-center">
+                <div className="icon-placeholder fs-1">
+                  <i className={item.icon}></i>
+                </div>
+                <h3 className="mt-2 fs-6">{item.title}</h3>
               </a>
-              <h3 className="mt-2">{item.name}</h3>
             </div>
           </div>
         ))}
-        {/*{categories.map(item => (*/}
-        {/*  <div key={item.title} className="text-center item p-2">*/}
-        {/*    <div className="product-image link-image">*/}
-        {/*      <a href={'/shop/'+item.title.toLowerCase().trim()}*/}
-        {/*        className={"grid-view-item__link "}>*/}
-        {/*        <img*/}
-        {/*          src={item.imageUrl}*/}
-        {/*          alt={item.title}*/}
-        {/*          className="img-fluid rounded h-100 w-100 object-fit-cover btn  border-0 p-0"*/}
-        {/*        />*/}
-        {/*      </a>*/}
-        {/*      <h3 className="mt-2">{item.title}</h3>*/}
-
-        {/*    </div>*/}
-        {/*  </div>*/}
-        {/*))}*/}
       </Carousel>
     </div>
   )

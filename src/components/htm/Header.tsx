@@ -2,7 +2,6 @@ import React from "react"
 import { logoImg, navItems } from "../../utils/constants.ts"
 import { Link, useNavigate } from "react-router-dom"
 import { useAppSelector } from "../../app/hooks.ts"
-import NavCollapse from "./NavCollapse.tsx"
 
 const Header = () => {
     const nav= useNavigate()
@@ -51,10 +50,10 @@ const Header = () => {
             <ul className="navbar-nav justify-content-center flex-grow-1  hidearrow ">
               {navItems.map(item => (
                 <li className="nav-item">
-                  <Link to={`/category/${item.route}`} className="nav-link">
+                  <a href={`/category/${item.route}`} className="nav-link">
 
                     <h4 className={'fw-bolder me-5'}>{item.title}</h4>
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -134,12 +133,13 @@ const Header = () => {
 
             </div>
           </div>
-
-          <div className="site-header__search">
-            <button onClick={()=>nav('/shop')} type="button" className="search-trigger">
-              <i className="icon anm anm-search-l"></i>
-            </button>
-          </div>
+          {cart &&
+            <div className="site-header__search">
+              <button onClick={()=>nav('/wishList')} type="button" className="search-trigger">
+                <i className="icon anm anm-heart-r"></i>
+              </button>
+            </div>
+          }
         </div>
       </div>
     </nav>

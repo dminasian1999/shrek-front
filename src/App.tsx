@@ -10,6 +10,7 @@ import { useEffect, useState } from "react"
 import { ProductsContext } from "./utils/context.ts"
 import Footer from "./components/htm/Footer.tsx"
 import QuickViewPopup from "./components/htm/QuickViewPopup.tsx"
+import Breadcrumb from "./components/htm/Breadcrumb.tsx"
 
 const App = () => {
   const [selectedId, setSelectedId] = useState<string>(
@@ -71,7 +72,6 @@ const App = () => {
           {/*  <SearchForm/>*/}
           <TopHeader />
           <Header />
-
           {/*  <MobileMenu />*/}
           <Main />
 

@@ -15,15 +15,19 @@ const Shop = () => {
   const { type } = useParams()
   const category = type ? type : id
   const [sort, setSort] = useState("dateCreated")
-  const [asc, setAsc] = useState(false) // Default: date descending
+  const [asc, setAsc] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
+  const [currentPage, setCurrentPage] = useState(1)
+  const productsPerPage = 12
+
   const categoryTypes = categories.find(c => c.route === id)?.types || []
   const user = useAppSelector(state => state.user.profile)
   const token = useAppSelector(state => state.token)
   const dispatch = useAppDispatch()
-const  nav = useNavigate()
+  const nav = useNavigate()
+
   const handleSortChange = (value: string) => {
     const [field, direction] = value.split("-")
     setSort(field)
@@ -40,6 +44,7 @@ const  nav = useNavigate()
       if (!response.ok) throw new Error("Failed to fetch products")
       const data: ProductT[] = await response.json()
       setProducts(data)
+      setCurrentPage(1)
     } catch (err: any) {
       setError(err.message || "Unknown error")
     } finally {
@@ -50,6 +55,18 @@ const  nav = useNavigate()
   useEffect(() => {
     searchPosts(category!, sort, asc)
   }, [category, sort, asc, type])
+  useEffect(() => {
+    window.scroll(0, 0)
+  }, [setCurrentPage,currentPage])
+
+  const filteredProducts = products.filter(p =>
+    p.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  )
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage)
+  const paginatedProducts = filteredProducts.slice(
+    (currentPage - 1) * productsPerPage,
+    currentPage * productsPerPage,
+  )
 
   return (
     <motion.div
@@ -58,7 +75,6 @@ const  nav = useNavigate()
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
-      {/* Hero Banner */}
       <div className="collection-header mb-4">
         <div className="collection-hero position-relative">
           <img
@@ -67,12 +83,13 @@ const  nav = useNavigate()
             alt="Shop banner"
             style={{ objectFit: "cover", maxHeight: "200px" }}
           />
-          <div className="position-absolute top-50 start-50 translate-middle text-white text-center" />
+          <h1 className="position-absolute top-50 start-50 translate-middle text-white text-center text-uppercase">
+            {category}
+          </h1>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="container">
+      <div className="container p-1">
         <div className="row">
           <motion.div
             className="col-12 col-md-3 px-3"
@@ -80,14 +97,6 @@ const  nav = useNavigate()
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4 }}
           >
-            {/* Close Button (Mobile) */}
-            <div className="d-block d-md-none mb-3 text-end">
-              <button type="button" className="btn btn-outline-dark btn-sm">
-                &times;
-              </button>
-            </div>
-
-            {/* Categories Accordion */}
             <div
               className="accordion mb-4 shadow-sm rounded"
               id="categoryAccordion"
@@ -108,7 +117,7 @@ const  nav = useNavigate()
                 </h2>
                 <div
                   id="collapseCategories"
-                  className="accordion-collapse collapse show"
+                  className="accordion-collapse collapse "
                   aria-labelledby="headingCategories"
                   data-bs-parent="#categoryAccordion"
                 >
@@ -137,69 +146,78 @@ const  nav = useNavigate()
               </div>
             </div>
 
-            {/* Price Filter */}
-            <motion.div
-              className="mb-4 p-3 border rounded shadow-sm bg-light"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
+            <div
+              className="accordion mb-4 shadow-sm rounded"
+              id="priceAccordion"
             >
-              <h6 className="fw-semibold mb-3">
-                <i className="bi bi-cash-coin me-2"></i>
-                Filter by Price
-              </h6>
-              <form>
-                <input
-                  type="range"
-                  className="form-range"
-                  id="priceRange"
-                  min="0"
-                  max="1000"
-                />
-                <div className="d-flex justify-content-between mb-3 text-muted small">
-                  <span>$0</span>
-                  <span>$1000</span>
+              <div className="accordion-item border-0">
+                <h2 className="accordion-header" id="headingPrice">
+                  <button
+                    className="accordion-button fw-bold bg-light"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapsePrice"
+                    aria-expanded="true"
+                    aria-controls="collapsePrice"
+                  >
+                    <i className="bi bi-tags me-2"></i>
+                    Filter by Price
+                  </button>
+                </h2>
+                <div
+                  id="collapsePrice"
+                  className="accordion-collapse collapse "
+                  aria-labelledby="headingPrice"
+                  data-bs-parent="#categoryAccordion"
+                >
+                  <div className="accordion-body p-0">
+                    <motion.div
+                      className="mb-4 p-3 border rounded shadow-sm bg-light"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                    >
+                      <h6 className="fw-semibold mb-3">
+                        <i className="bi bi-cash-coin me-2"></i>
+                        Filter by Price
+                      </h6>
+                      <form>
+                        <input
+                          type="range"
+                          className="form-range"
+                          id="priceRange"
+                          min="0"
+                          max="1000"
+                        />
+                        <div className="d-flex justify-content-between mb-3 text-muted small">
+                          <span>$0</span>
+                          <span>$1000</span>
+                        </div>
+                        <div className="input-group input-group-sm">
+                          <input
+                            type="number"
+                            className="form-control"
+                            placeholder="Min"
+                          />
+                          <span className="input-group-text">-</span>
+                          <input
+                            type="number"
+                            className="form-control"
+                            placeholder="Max"
+                          />
+                        </div>
+                        <button className="btn btn-dark btn-sm w-100 mt-3">
+                          Apply Filter
+                        </button>
+                      </form>
+                    </motion.div>
+                  </div>
                 </div>
-                <div className="input-group input-group-sm">
-                  <input
-                    type="number"
-                    className="form-control"
-                    placeholder="Min"
-                  />
-                  <span className="input-group-text">-</span>
-                  <input
-                    type="number"
-                    className="form-control"
-                    placeholder="Max"
-                  />
-                </div>
-                <button className="btn btn-dark btn-sm w-100 mt-3">
-                  Apply Filter
-                </button>
-              </form>
-            </motion.div>
-
-            {/* Static Banner */}
-            <motion.div
-              className="mb-4"
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3 }}
-            >
-              <img
-                src="src/images/side-banner-2.jpg"
-                alt="Promo banner"
-                className="img-fluid rounded shadow-sm"
-                style={{
-                  objectFit: "cover",
-                  maxHeight: "220px",
-                  width: "100%",
-                }}
-              />
-            </motion.div>
+              </div>
+            </div>
           </motion.div>
+
           <div className="col-sm-12 col-md-9 col-lg-9 main-col">
-            {/* Search Bar */}
             <motion.div
               className="mb-3 input-group"
               initial={{ opacity: 0, y: -10 }}
@@ -220,16 +238,7 @@ const  nav = useNavigate()
 
             <hr />
 
-            {/* Toolbar + Product Grid */}
             <div className="productList product-load-more">
-              <button
-                type="button"
-                className="btn btn-filter d-block d-md-none d-lg-none"
-              >
-                Product Filters
-              </button>
-
-              {/* Sort Dropdown */}
               <div className="toolbar">
                 <select
                   onChange={e => handleSortChange(e.target.value)}
@@ -245,7 +254,6 @@ const  nav = useNavigate()
                 </select>
               </div>
 
-              {/* Loading / Error / Grid */}
               {loading ? (
                 <div className="text-center my-5">
                   <div className="spinner-border text-dark" role="status">
@@ -269,87 +277,99 @@ const  nav = useNavigate()
                   }}
                 >
                   <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
-                    {products
-                      .filter(p =>
-                        p.name.toLowerCase().includes(searchTerm.toLowerCase()),
-                      )
-                      .map(p => (
-                        <motion.div
-                          key={p.id}
-                          className="col "
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.4 }}
+                    {paginatedProducts.map(p => (
+                      <motion.div
+                        key={p.id}
+                        className="col"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4 }}
+                      >
+                        <a
+                          className="card rounded border shadow  h-100"
+                          href={`/product/${p.id}`}
                         >
-                          <div className="card rounded border shadow  h-100"
-                          onClick={()=>nav(`/product/${p.id}`)}
-                          >
-                            <img
-                              src={p.imageUrl}
-                              className="card-img-top h-100 w-100 object-fit-cove"
-                              alt={p.name}
-                            />
-                            <div className="card-img-overlay p-0 btn-group d-flex flex-column align-items-end ">
-                              <div className="">
+                          <img
+                            src={p.imageUrl}
+                            className="card-img-top h-100 w-100 object-fit-cove"
+                            alt={p.name}
+                          />
+                          <div className="card-img-overlay p-0 btn-group d-flex flex-column align-items-end ">
+                            <div className="">
+                              <a
+                                onClick={() => dispatch(addWishlist(p.id!))}
+                                className="wishlist add-to-wishlist"
+                                href="#"
+                                title="Add to Wishlist"
+                              >
+                                <i className="icon anm anm-heart-l"></i>
+                              </a>
 
-                                <a
-                                  onClick={() => dispatch(addWishlist(p.id!))}
-
-                                  className="wishlist add-to-wishlist"
-                                  href="#"
-                                  title="Add to Wishlist"
-                                >
-                                  <i className="icon anm anm-heart-l"></i>
-                                </a>
-
-                                {token &&
-                                  user.roles.includes("ADMINISTRATOR") && (
-                                    <div className="edit-btn">
-                                      <Link
-                                        className="edit add-to-compare"
-                                        to={`/product/edit/${p.id}`}
-                                        title="Add to Compare"
-                                      >
-                                        <i className="icon anm anm-edit-l"></i>
-                                      </Link>
-                                    </div>
-                                  )}
-                              </div>
-
-                            </div>
-
-                            <div className="card-body">
-                              <h5 className="card-title">{p.name}</h5>
-                              <p className="card-text ">
-                                <p className={"text-truncate"}>{p.desc}</p>
-
-                                <s className="old-price ">
-                                  ${(p.sell + p.sell / 3).toFixed(2)}
-                                </s>
-
-                                <span className="price text-danger"> ${p.sell}</span>
-                              </p>
-                            </div>
-                            <div className="card-footer fw-light small" >
-                              {moment(p.dateCreated).format("MMMM DD, YYYY")}
+                              {token &&
+                                user.roles.includes("ADMINISTRATOR") && (
+                                  <div className="edit-btn">
+                                    <Link
+                                      className="edit add-to-compare"
+                                      to={`/product/edit/${p.id}`}
+                                      title="Add to Compare"
+                                    >
+                                      <i className="icon anm anm-edit-l"></i>
+                                    </Link>
+                                  </div>
+                                )}
                             </div>
                           </div>
-                        </motion.div>
-                      ))}
+
+                          <div className="card-body">
+                            <h5 className="card-title">{p.name}</h5>
+                            <p className="card-text ">
+                              <p className={"text-truncate"}>{p.desc}</p>
+
+                              <s className="old-price ">
+                                ${(p.sell + p.sell / 3).toFixed(2)}
+                              </s>
+
+                              <span className="price text-danger">
+                                {" "}
+                                ${p.sell}
+                              </span>
+                            </p>
+                          </div>
+                          <div className="card-footer fw-light small">
+                            {moment(p.dateCreated).format("MMMM DD, YYYY")}
+                          </div>
+                        </a>
+                      </motion.div>
+                    ))}
                   </div>
                 </motion.div>
               )}
             </div>
 
-            {/* Load More Button */}
-            <div className="infinitpaginOuter text-center mt-4">
-              <motion.button
-                className="btn btn-outline-dark btn-sm"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+            {/* Pagination */}
+            <div className="text-center mt-4">
+              <button
+                className="btn btn-outline-secondary btn-sm me-2"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(p => p - 1)}
               >
-                Load More
-              </motion.button>
+                Previous
+              </button>
+              <span className="mx-2">
+                {currentPage} / {totalPages}
+              </span>
+              <button
+                className="btn btn-outline-secondary btn-sm ms-2"
+                disabled={currentPage === totalPages}
+                onClick={() => {
+
+                  window.scrollTo(0,0)
+                  setCurrentPage(p => p + 1)
+
+                }}
+              >
+                Next
+              </button>
             </div>
           </div>
         </div>
