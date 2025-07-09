@@ -1,13 +1,9 @@
 import { NavItemT } from "./types.ts"
 import stationary from "../images/categories/stationary.jpg"
-import stationaryIcon from "../images/categories/stationery.png"
 import toysGames from "../images/categories/toys&Games.jpg"
-import toysGamesIcon from "../images/categories/toys&Games.png"
 import artCraft from "../images/categories/art&Craft.jpg"
-import artCraftIcon from "../images/categories/art&Craft.png"
 
 import jewelry from "../images/categories/jewelry.jpg"
-import jewelryIcon from "../images/categories/jewelry.png"
 
 import logo from "../images/logo/logo.jpg"
 import banner1 from "../images/slideshow-banners/banner1.jpg"
@@ -43,7 +39,6 @@ export const categories = [
   {
     title: "Stationery",
     imageUrl: stationary,
-    icon: stationaryIcon,
     route: "stationery",
     types: [
       { title: "School Supplies", route: "school-supplies", icon: "fa fa-school" },
@@ -58,7 +53,6 @@ export const categories = [
   {
     title: "For Children",
     imageUrl: toysGames,
-    icon: toysGamesIcon,
     route: "children",
     types: [
       { title: "Toys & Games", route: "toys-games", icon: "fa fa-gamepad" },
@@ -71,7 +65,6 @@ export const categories = [
   {
     title: "Dishes and Kitchen",
     imageUrl: artCraft,
-    icon: artCraftIcon,
     route: "dish-kitchen",
     types: [
       { title: "Products from Glass", route: "glass-products", icon: "fa fa-wine-glass" },
@@ -81,7 +74,6 @@ export const categories = [
   {
     title: "Festive Accessories",
     imageUrl: jewelry,
-    icon: jewelryIcon,
     route: "festive",
     types: [
       { title: "Greeting & Postcards", route: "greeting-postcards", icon: "fa fa-envelope" },
