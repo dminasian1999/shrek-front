@@ -962,9 +962,7 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
     font-size: 10px;
 }
 
-.mini-products-list li .priceRow .product-price {
-    display: inline-block;
-}
+
 
 .mini-products-list li .qtyField {
     display: inline-block;
@@ -996,10 +994,6 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
     width: 100%;
 }
 
-#header-cart .total .product-price {
-    float: right;
-    font-size: 16px;
-}
 
 #header-cart .total label {
     float: left;
@@ -2131,31 +2125,9 @@ a.quick-view {
     opacity: 0.8;
 }
 
-.grid-products .item .product-price {
-    margin: 5px 0;
-    color: #000000;
-    font-weight: 600;
-}
 
-.product-price .old-price {
-    color: #555;
-    font-size: 12px;
-    opacity: 0.8;
-    text-decoration: line-through;
-}
 
-.product-price .old-price + .price {
-    padding-left: 5px;
-    color: #e95144 !important;
-}
 
-.product-price .price {
-    color: #000000;
-}
-
-.product-price__sale, .product__price--sale {
-    color: #e95144 !important;
-}
 
 .product-review .fa {
     font-size: 13px;
@@ -2277,11 +2249,7 @@ a.quick-view {
     margin: 5px 0;
 }
 
-.product-price__price {
-    color: #000000;
-    font-weight: 600;
-    display: inline-block;
-}
+
 
 .grid-products-hover-btn a.quick-view, .grid-products-hover-btn a.wishlist, .grid-products-hover-btn .variants.add button,
 .grid-products-hover-btn .cartIcon, .grid-products-hover-btn .edit {
@@ -3227,9 +3195,6 @@ a.quick-view {
     text-align: left;
 }
 
-.list-view-items .product-price__sale {
-    padding-left: 5px;
-}
 
 .list-view-items .variants {
     margin-top: 10px;
@@ -3291,7 +3256,6 @@ a.quick-view {
 .product-details-img .product-zoom-right {
     display: inline-block;
     position: relative;
-    width: 87%;
     float: left;
 }
 
@@ -3466,10 +3430,6 @@ h1.product-single__title, .product-single__title.h1 {
     text-decoration: none;
 }
 
-.product-single__price .product-price__price {
-    font-size: 1.46154em;
-    padding-left: 3px;
-}
 
 .discount-badge {
     display: inline-block;
@@ -4903,10 +4863,6 @@ table {
     margin-bottom: 10px;
 }
 
-.compare-page .table .product-price.product_price {
-    margin-bottom: 10px;
-    display: block;
-}
 
 .compare-page .table .available-stock p {
     color: #090;
@@ -7161,11 +7117,6 @@ body5-funiture-template {
 /*---------------------------------------
   End Footer ----------------------------
   ---------------------------------------*/
-
-.blur-up.lazyloaded {
-    -webkit-filter: blur(0);
-    filter: blur(0);
-}
 
 /*.blur-up {*/
 /*    -webkit-filter: blur(5px);*/

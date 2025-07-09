@@ -94,11 +94,14 @@ const EditProduct = () => {
               onChange={(e) => handleChange("type", e.target.value)}
             >
               <option value="">Select type</option>
-              {categories.map((cat) => (
-                <option key={cat.title} value={cat.route}>
-                  {cat.title}
-                </option>
-              ))}
+              {categories
+                .filter(cat => cat.route === product.category)
+                .flatMap(cat=>cat.types)
+                .map(cat => (
+                  <option key={cat.title} value={cat.route}>
+                    {cat.title}
+                  </option>
+                ))}
             </select>
           </div>
 

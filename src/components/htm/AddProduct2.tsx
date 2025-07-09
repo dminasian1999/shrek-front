@@ -30,7 +30,7 @@ const emptyRow = (): ProductRow => ({
   desc: "",
 })
 
-const AddProduct: React.FC = () => {
+const AddProduct2: React.FC = () => {
   const [rows, setRows] = useState<ProductRow[]>([])
   const [saving, setSaving] = useState(false)
 
@@ -69,7 +69,7 @@ const AddProduct: React.FC = () => {
 
   const handleChange =
     (field: keyof Omit<ProductRow, "imageFile" | "imageUrl">, idx: number) =>
-    (e: any) => {
+    (e: ChangeEvent<HTMLInputElement>) => {
       const value =
         e.target.type === "number"
           ? Number(e.target.value || "null")
@@ -458,11 +458,12 @@ const AddProduct: React.FC = () => {
                         </div>
 
                         <div className="mb-2">
-                          <label className="form-label">Desc</label>
-                          <textarea
-                            className="form-control "
-                            value={row.desc}
-                            onChange={handleChange("desc", idx)}
+                          <label className="form-label">Name</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            value={row.name}
+                            onChange={handleChange("name", idx)}
                           />
                         </div>
 
@@ -588,4 +589,4 @@ const AddProduct: React.FC = () => {
   )
 }
 
-export default AddProduct
+export default AddProduct2

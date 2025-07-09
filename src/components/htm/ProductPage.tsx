@@ -54,22 +54,13 @@ const ProductPage = () => {
 
   return (
     <div id="MainContent" className="main-content" role="main">
-      <div className="bredcrumbWrap">
-        <div className="container breadcrumbs">
-          <a href="/" title="Back to the home page">
-            Home
-          </a>
-          <span aria-hidden="true">›</span>
-          <span>{product.name}</span>
-        </div>
-      </div>
 
-      <div className="product-template__container prstyle1 container">
-        <div className="product-single row">
+      <div className="product-template__container  ">
+        <div className="product-single row ">
           {/* Left Image Column */}
           <div className="col-lg-6 col-md-6 col-sm-12 col-12">
             <div className="product-details-img">
-              <div className="zoompro-wrap product-zoom-right pl-20">
+              <div className="zoompro-wrap product-zoom-right ">
                 <div className="zoompro-span">
                   <img
                     className="blur-up lazyload zoompro"
@@ -87,7 +78,7 @@ const ProductPage = () => {
           </div>
 
           {/* Right Details Column */}
-          <div className="col-lg-6 col-md-6 col-sm-12 col-12">
+          <div className="col-lg-6 col-md-6 col-sm-12 col-12 p-5">
             <div className="product-single__meta">
               <h1 className="product-single__title">{product.name}</h1>
               <div className="prInfoRow">

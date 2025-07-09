@@ -11,9 +11,9 @@ const LookBook = () => {
             <div className="card text-bg-dark m-0 p-0 border-0"
             style={{height: "300px"}}>
               <img  src={c.imageUrl} className="card-img w-100 h-100 object-fit-cover" alt="..." />
-              <Link to={`/category/${c.route}`} className="card-img-overlay d-flex  justify-content-center align-items-center">
+              <a href={`/category/${c.route}`} className="card-img-overlay d-flex  justify-content-center align-items-center">
                 <div className="btn fs-1">{c.title}</div>
-              </Link>
+              </a>
             </div>
           </div>
 

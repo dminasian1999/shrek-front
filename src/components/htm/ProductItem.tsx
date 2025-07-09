@@ -1,8 +1,7 @@
 import React from "react"
 import type { ProductT } from "../../utils/types.ts"
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
-import { addCartList, addWishlist } from "../../features/api/accountActions.ts"
-import { Link } from "react-router-dom"
+import moment from "moment"
 
 const ProductItem = ({ p }: { p: ProductT }) => {
   const user = useAppSelector(state => state.user.profile)
@@ -10,122 +9,99 @@ const ProductItem = ({ p }: { p: ProductT }) => {
   const dispatch = useAppDispatch()
 
   return (
-    // <div className="col-6 col-sm-6 col-md-4 col-lg-3 item">
-    <div className="">
-      <div className="product-image" style={{height: "250px", }}>
-        <a href={`/product/${p.id}`} >
-          <img
-            className="primary blur-up lazyload h-100 w-100 object-fit-fill"
-            data-src={p.imageUrl}
-            src={p.imageUrl}
-            alt={p.name}
-            title={p.name}
-          />
-          <img
-            className="hover blur-up lazyload h-100 w-100 object-fit-cover"
-            data-src={p.imageUrl}
-            src={p.imageUrl}
-            alt={p.name}
-            title={p.name}
-          />
-          <div className="product-labels rectangular">
-            <span className="lbl on-sale">-16%</span>
-            <span className="lbl pr-label1">new</span>
+      <div className="card mb-3" style={{ maxWidth: "540px" }}>
+        <div className="row g-0">
+          <div className="col-md-4">
+            <img
+              src={p.imageUrl}
+              className="img-fluid rounded-start"
+              alt="..."
+            />
           </div>
-        </a>
+          <div className="col-md-8">
+            <div className="card-body">
+              <h5 className="card-title">{p.name}</h5>
+              <p className="card-text product-price">
+                <p>{p.desc}</p>
 
-        <div className="saleTime desktop" data-countdown="2025/12/31"></div>
+                <span className="old-price">
+                  ${(p.sell + p.sell / 3).toFixed(2)}
+                </span>
 
-        <form className="variants add" action="#" method="post">
-          <button
-            onClick={() =>
-              dispatch(
-                addCartList({
-                  cartItemId:p.id!,
-                  product: p,
-                  quantity: 1,
-                }),
-              )
-            }
-            className="btn btn-addto-cart"
-            type="button"
-          >
-            Add To Cart
-          </button>
-        </form>
-
-        <div className="button-set">
-          <a
-            // href="#"
-            title="Quick View"
-            className="quick-view-popup quick-view"
-            data-toggle="modal"
-            data-target="#content_quickview"
-            onClick={e => e.preventDefault()}
-          >
-            <i className="icon anm anm-search-plus-r"></i>
-          </a>
-
-          <div
-            // onClick={()=>(addWishlist(token,user.login,p.id!))}
-            onClick={() => dispatch(addWishlist(p.id!))}
-            className="wishlist-btn"
-          >
-            <a
-              className="wishlist add-to-wishlist"
-              href="#"
-              title="Add to Wishlist"
-
-            >
-              <i className="icon anm anm-heart-l"></i>
-            </a>
+                {/*<span className="old-price">$500.00</span>*/}
+                <span className="price">${p.sell}</span>
+              </p>
+              <p className="card-text">
+                <small className="text-body-secondary">
+                  {moment(p.dateCreated).format("MMMM DD, YYYY")}{" "}
+                </small>
+              </p>
+            </div>
           </div>
-
-          {token && user.roles.includes("ADMINISTRATOR") &&   <div className="edit-btn">
-            <Link
-              className="edit add-to-compare"
-              to={`/product/edit/${p.id}`}
-              title="Add to Compare"
-            >
-              <i className="icon anm anm-edit-l"></i>
-            </Link>
-          </div>}
         </div>
-      </div>
+      {/*</div>*/}
+      {/*<div className="card mb-3">*/}
+      {/*  <img src={p.imageUrl} className="card-img-top" alt="..." />*/}
+      {/*  <div className="card-body">*/}
+      {/*    <h5 className="card-title">{p.name}</h5>*/}
+      {/*    <p className="card-text product-price">*/}
+      {/*      <span className="old-price">*/}
+      {/*        ${(p.sell + p.sell / 3).toFixed(2)}*/}
+      {/*      </span>*/}
 
-      <div className="product-details text-center">
-        <div className="product-name">
-          <a href="#">{p.name}</a>
-        </div>
-        <div className="product-price">
-          <span className="old-price">${(p.sell + p.sell / 3).toFixed(2)}</span>
+      {/*      /!*<span className="old-price">$500.00</span>*!/*/}
+      {/*      <span className="price">${p.sell}</span>*/}
+      {/*    </p>*/}
+      {/*    <p className="card-text">*/}
+      {/*      <small className="text-body-secondary">*/}
+      {/*        {moment(p.dateCreated).format("MMMM DD, YYYY")}{" "}*/}
+      {/*      </small>*/}
+      {/*    </p>*/}
+      {/*  </div>*/}
+      {/*</div>*/}
+      {/*<div*/}
+      {/*  className="card  text-center"*/}
+      {/*  // style={{ width: "18rem" }}*/}
+      {/*>*/}
+      {/*  <div className="card-header">*/}
+      {/*    <img src={p.imageUrl} className="card-img-top" alt="..." />*/}
+      {/*    Featured*/}
+      {/*  </div>*/}
+      {/*  <div className="card-body">*/}
+      {/*    <h5 className="card-title">{p.name}</h5>*/}
+      {/*    <p className="card-text product-price">*/}
+      {/*      <span className="old-price">*/}
+      {/*        ${(p.sell + p.sell / 3).toFixed(2)}*/}
+      {/*      </span>*/}
 
-          {/*<span className="old-price">$500.00</span>*/}
-          <span className="price">${p.sell}</span>
-        </div>
-        {/*<div className="product-review">*/}
-        {/*  <i className="font-13 fa fa-star"></i>*/}
-        {/*  <i className="font-13 fa fa-star"></i>*/}
-        {/*  <i className="font-13 fa fa-star"></i>*/}
-        {/*  <i className="font-13 fa fa-star-o"></i>*/}
-        {/*  <i className="font-13 fa fa-star-o"></i>*/}
-        {/*</div>*/}
-        {/*<ul className="swatches">*/}
-        {/*  {[1, 2, 3, 4, 5, 6].map((n) => (*/}
-        {/*    <li className="swatch medium rounded" key={n}>*/}
-        {/*      <img*/}
-        {/*        src={`src/images/product-images/variant${n}.jpg`}*/}
-        {/*        alt={`variant ${n}`}*/}
-        {/*      />*/}
-        {/*    </li>*/}
-        {/*  ))}*/}
-        {/*</ul>*/}
-      </div>
-
-      <div className="timermobile">
-        <div className="saleTime mobile" data-countdown="2025/12/31"></div>
-      </div>
+      {/*      /!*<span className="old-price">$500.00</span>*!/*/}
+      {/*      <span className="price">${p.sell}</span>*/}
+      {/*    </p>*/}
+      {/*    <a href="#" className="btn btn-primary">*/}
+      {/*      Go somewhere*/}
+      {/*    </a>*/}
+      {/*  </div>*/}
+      {/*  <div className="card-footer text-body-secondary">*/}
+      {/*    {moment(p.dateCreated).fromNow()}*/}
+      {/*  </div>*/}
+      {/*  <div className="card-footer text-body-secondary">*/}
+      {/*    {moment(p.dateCreated).format("MMMM DD, YYYY")}*/}
+      {/*  </div>*/}
+      {/*</div>*/}
     </div>
+    // <div className="card" style={{ width: "18rem" }}>
+    //   <img src={p.imageUrl} className="card-img-top" alt="..."/>
+    //     <div className="card-body">
+    //       <h5 className="card-title">{p.name}</h5>
+    //       <p className="card-text product-price">
+    //         <span className="old-price">${(p.sell + p.sell / 3).toFixed(2)}</span>
+    //
+    //         {/*<span className="old-price">$500.00</span>*/}
+    //         <span className="price">${p.sell}</span>
+    //      </p>
+    //       <a href="#" className="btn btn-primary">Go somewhere</a>
+    //     </div>
+    // </div>
   )
 }
 

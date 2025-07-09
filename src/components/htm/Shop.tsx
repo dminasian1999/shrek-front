@@ -1,10 +1,13 @@
 import React, { useContext, useEffect, useState } from "react"
 import { banner3Img, baseUrlBlog, categories } from "../../utils/constants.ts"
 import { ProductsContext } from "../../utils/context.ts"
-import { Link, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import { ProductT } from "../../utils/types.ts"
 import ProductItem from "./ProductItem.tsx"
 import { motion } from "framer-motion"
+import moment from "moment"
+import { addWishlist } from "../../features/api/accountActions.ts"
+import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
 
 const Shop = () => {
   const { products, setProducts } = useContext(ProductsContext)
@@ -17,7 +20,10 @@ const Shop = () => {
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
   const categoryTypes = categories.find(c => c.route === id)?.types || []
-
+  const user = useAppSelector(state => state.user.profile)
+  const token = useAppSelector(state => state.token)
+  const dispatch = useAppDispatch()
+const  nav = useNavigate()
   const handleSortChange = (value: string) => {
     const [field, direction] = value.split("-")
     setSort(field)
@@ -42,7 +48,6 @@ const Shop = () => {
   }
 
   useEffect(() => {
-    window.scrollTo(0, 0)
     searchPosts(category!, sort, asc)
   }, [category, sort, asc, type])
 
@@ -263,7 +268,7 @@ const Shop = () => {
                     },
                   }}
                 >
-                  <div className="row">
+                  <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
                     {products
                       .filter(p =>
                         p.name.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -271,13 +276,64 @@ const Shop = () => {
                       .map(p => (
                         <motion.div
                           key={p.id}
-                          className="col-6 col-sm-6 col-md-4 col-lg-3 item"
+                          className="col "
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.4 }}
                         >
-                          <ProductItem p={p} />
-                          //{" "}
+                          <div className="card rounded border shadow  h-100"
+                          onClick={()=>nav(`/product/${p.id}`)}
+                          >
+                            <img
+                              src={p.imageUrl}
+                              className="card-img-top h-100 w-100 object-fit-cove"
+                              alt={p.name}
+                            />
+                            <div className="card-img-overlay p-0 btn-group d-flex flex-column align-items-end ">
+                              <div className="">
+
+                                <a
+                                  onClick={() => dispatch(addWishlist(p.id!))}
+
+                                  className="wishlist add-to-wishlist"
+                                  href="#"
+                                  title="Add to Wishlist"
+                                >
+                                  <i className="icon anm anm-heart-l"></i>
+                                </a>
+
+                                {token &&
+                                  user.roles.includes("ADMINISTRATOR") && (
+                                    <div className="edit-btn">
+                                      <Link
+                                        className="edit add-to-compare"
+                                        to={`/product/edit/${p.id}`}
+                                        title="Add to Compare"
+                                      >
+                                        <i className="icon anm anm-edit-l"></i>
+                                      </Link>
+                                    </div>
+                                  )}
+                              </div>
+
+                            </div>
+
+                            <div className="card-body">
+                              <h5 className="card-title">{p.name}</h5>
+                              <p className="card-text ">
+                                <p className={"text-truncate"}>{p.desc}</p>
+
+                                <s className="old-price ">
+                                  ${(p.sell + p.sell / 3).toFixed(2)}
+                                </s>
+
+                                <span className="price text-danger"> ${p.sell}</span>
+                              </p>
+                            </div>
+                            <div className="card-footer fw-light small" >
+                              {moment(p.dateCreated).format("MMMM DD, YYYY")}
+                            </div>
+                          </div>
                         </motion.div>
                       ))}
                   </div>
