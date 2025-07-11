@@ -1,6 +1,6 @@
 import Carousel from "react-multi-carousel"
 
-import { categories } from "../../utils/constants.ts"
+import { categories, shopCategories } from "../../utils/constants.ts"
 import React, { useContext } from "react"
 import { ProductsContext } from "../../utils/context.ts"
 
@@ -51,15 +51,14 @@ const WeeklyBestseller = () => {
             dotListClass="custom-dot-list-style"
             itemClass="carousel-item-padding-40-px"
           >
-            {cat
-              .flatMap(category => (category.types))
+            {shopCategories(language)
               .map((item, index) => (
                 <div key={index} className="text-center item p-2">
                   <div className="product-image link-image">
                     <a
-                      href={`/category/${cat.find(category => category.types.includes(item))!.route}/${item.route}`}
+                      href={`/category/${item.route}`}
                       className="grid-view-item__link d-flex flex-column align-items-center">
-                      <div className="icon-placeholder fs-1 text-success">
+                      <div className="icon-placeholder fs-1 text-primary">
                         <i className={item.icon}></i>
                       </div>
                       <h3 className="mt-2 fs-6">{item.title}</h3>

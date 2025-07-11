@@ -41,10 +41,10 @@ const TopHeader = () => {
           <div className="col-sm-4 col-md-4 col-lg-4 d-none d-md-block d-lg-block d-blo d-xl-block">
             <div className="text-center">
               <p className="top-header_middle-text">{language === "Armenian"
-                ? "Բարի գալուստ TAMY TOYS"
+                ? "Բարի գալուստ Sevan souvenirs"
                 : language === "Russian"
-                  ? "Добро пожаловать в TAMY TOYS"
-                  : "Welcome to TAMY TOYS"}</p>
+                  ? ""
+                  : "Welcome to Sevan souvenirs"}</p>
             </div>
           </div>
 

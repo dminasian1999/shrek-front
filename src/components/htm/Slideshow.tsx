@@ -7,40 +7,55 @@ const Slideshow = () => {
       <div className="carousel-inner">
 
         <div className="carousel-item active">
-          <div className="carousel-img-wrapper">
+
+          <div className="carousel-img-wrapper position-relative ">
             <img
-              src={banner1Img}
-              className="d-block w-100 carousel-img"
+              src="https://static.vecteezy.com/system/resources/previews/026/350/225/large_2x/ornate-earthenware-pottery-adorns-rustic-kitchen-table-generated-by-ai-free-photo.jpg"
+
+              className="d-block w-100 carousel-img "
               alt="Slide 1"
             />
-          </div>
+            <div className="carousel-caption top-50 start-50 translate-middle text-center">
+              <h1>Welcome to the Sevan Armenian Ceramics Center – Jerusalem’s Online Shop for Authentic Souvenirs</h1>
+            </div>
+
+        </div>
         </div>
         <div className="carousel-item">
           <div className="carousel-img-wrapper">
             <img
-              src={banner2Img}
+              src="https://static.vecteezy.com/system/resources/previews/025/185/814/large_2x/antique-teapot-ornate-decoration-chinese-culture-elegance-generated-by-ai-free-photo.jpg"
+
               className="d-block w-100 carousel-img"
               alt="Slide 2"
             />
+            <div className="carousel-caption top-50 start-50 translate-middle text-center">
+              <h1>Welcome to the Sevan Armenian Ceramics Center – Jerusalem’s Online Shop for Authentic Souvenirs</h1>
+            </div>
           </div>
         </div>
 
         <div className="carousel-item">
           <div className="carousel-img-wrapper">
             <img
-              src={banner3Img}
+              src="https://static.vecteezy.com/system/resources/previews/055/978/362/non_2x/crafting-pottery-with-fern-patterns-in-a-creative-workspace-during-daylight-free-photo.jpeg"
               className="d-block w-100 carousel-img"
               alt="Slide 3"
             />
+            <div className="carousel-caption top-50 start-50 translate-middle text-center">
+              <h1>Welcome to the Sevan Armenian Ceramics Center – Jerusalem’s Online Shop for Authentic Souvenirs</h1>
+            </div>
           </div>
         </div>
         <div className="carousel-item">
           <div className="carousel-img-wrapper">
             <img
-              src={banner4Img}
-              className="d-block w-100 carousel-img"
-              alt="Slide 3"
+              src="https://static.vecteezy.com/system/resources/previews/024/714/974/non_2x/earthenware-pottery-collection-ornate-patterns-rustic-decoration-generated-by-ai-free-photo.jpg"              className="d-block w-100 carousel-img"
+              alt="Slide 4"
             />
+            <div className="carousel-caption top-50 start-50 translate-middle text-center">
+              <h1>Welcome to the Sevan Armenian Ceramics Center – Jerusalem’s Online Shop for Authentic Souvenirs</h1>
+            </div>
           </div>
         </div>
 

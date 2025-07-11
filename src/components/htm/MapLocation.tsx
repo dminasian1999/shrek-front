@@ -11,10 +11,12 @@ const MapLocation = () => {
         loading="lazy"
         allowFullScreen
         referrerPolicy="no-referrer-when-downgrade"
-        src="https://www.google.com/maps?q=39.854327,44.680681&z=15&output=embed"
+        src="https://www.google.com/maps?q=31.773904,35.231228&z=15&output=embed"
       />
     </div>
   )
+
+
 }
 
 export default MapLocation

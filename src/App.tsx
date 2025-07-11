@@ -19,7 +19,7 @@ const App = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [showModal, setShowModal] = useState(false)
-  const [language, setLanguage] = useState("Armenian")
+  const [language, setLanguage] = useState("English")
   const token = useAppSelector(state => state.token)
   // const fetchProducts = async () => {
   //   try {
@@ -80,7 +80,6 @@ const App = () => {
             }}
           >
             <h3 style={{ textAlign: "center", marginBottom: "1rem" }}>Оплатить PayPal</h3>
-            {/*<PayPalCheckout />*/}
           </section>
           <Footer />
           <span

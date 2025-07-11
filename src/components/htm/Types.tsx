@@ -12,10 +12,10 @@ const cat =categories(language)
         .flatMap(category => (category.types))
         .map((item) => (
               <a
-                href={`/category/${cat.find(category => category.types.includes(item))!.route}/${item.route}`}
+                href={`/category/${cat.find(category => category.types!.includes(item!))!.route}/${item!.route}`}
                 className="grid-view-item__link d-flex flex-column align-items-center">
-                <div className={`fs-1  text-success ${item.icon}`}/>
-                <h3 className="mt-2 fs-6">{item.title}</h3>
+                <div className={`fs-1  text-success ${item!.icon}`}/>
+                <h3 className="mt-2 fs-6">{item!.title}</h3>
               </a>
         ))}
     </div>

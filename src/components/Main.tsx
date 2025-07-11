@@ -10,7 +10,7 @@ import FAQ from "./FAQ.tsx"
 import Signup from "./Signup.tsx"
 import Reports from "./Reports.tsx"
 import Sells from "./Sells.tsx"
-import { categories } from "../utils/constants.ts"
+import { categories, navItems } from "../utils/constants.ts"
 import Home from "./pages/Home.tsx"
 import Login from "./htm/Login.tsx"
 import Shop from "./htm/Shop.tsx"
@@ -32,13 +32,14 @@ const Main = () => {
   return (
     <main>
       <Routes>
-        {[`/`, `/${categories(language)[0].route}`].map(path => (
+        {[`/`, `/${navItems[0].route}`].map(path => (
           <Route key={path} path={path} element={<Home />} />
         ))}
         {/*<Route path="/products" element={<Products />} />*/}
         <Route path="/cart" element={<CartPage />} />
 
         {/*<Route path="/category" element={<Shop />} />*/}
+        <Route path="/collections" element={<Shop />} />
         <Route path="/category/:id" element={<Shop />} />
         <Route path="/category/:id/:type" element={<Shop />} />
         <Route path="/product/:id" element={<ProductPage />} />

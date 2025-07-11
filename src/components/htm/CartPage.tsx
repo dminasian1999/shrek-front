@@ -2,6 +2,7 @@ import { useAppSelector } from "../../app/hooks.ts"
 import CartPageRow from "./CartPageRow.tsx"
 import { useContext } from "react"
 import { ProductsContext } from "../../utils/context.ts"
+import PayPalCheckout from "../../paymant/PayPalCheckout.tsx"
 
 const CartPage = () => {
   const cart = useAppSelector(state => state.user.profile.cart)
@@ -760,6 +761,7 @@ const CartPage = () => {
                   />
                   I agree with the terms and conditions
                 </label>
+                <PayPalCheckout/>
               </p>
               <input
                 type="submit"

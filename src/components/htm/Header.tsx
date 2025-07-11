@@ -1,5 +1,5 @@
 import React, { useContext } from "react"
-import { categories, logoImg } from "../../utils/constants.ts"
+import { categories, logoImg, navItems } from "../../utils/constants.ts"
 import { Link, useNavigate } from "react-router-dom"
 import { useAppSelector } from "../../app/hooks.ts"
 import { ProductsContext } from "../../utils/context.ts"
@@ -24,6 +24,7 @@ const Header = () => {
 
         <a className="navbar-brand" href="/">
           <img
+            className={"rounded-circle"}
             height={70}
             src={logoImg}
             alt="Belle Multipurpose Html Template"
@@ -51,9 +52,9 @@ const Header = () => {
 
           <div className="offcanvas-body ">
             <ul className="navbar-nav justify-content-center flex-grow-1  hidearrow ">
-              {categories(language).map(item => (
+              {navItems.map(item => (
                 <li className="nav-item">
-                  <a href={`/category/${item.route}`} className="nav-link">
+                  <a href={`/${item.route}`} className="nav-link">
 
                     <h4 className={'fw-bolder me-5'}>{item.title}</h4>
                   </a>
