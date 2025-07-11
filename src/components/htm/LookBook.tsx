@@ -1,12 +1,15 @@
-import React from "react"
+import React, { useContext } from "react"
 import { categories } from "../../utils/constants.ts"
 import { Link } from "react-router-dom"
+import { ProductsContext } from "../../utils/context.ts"
 
 const LookBook = () => {
+  const {language} = useContext(ProductsContext)
+
   return (
     <div className={""}>
       <div className="row row-cols-1 row-cols-md-2 ">
-        {categories.map(c => (
+        {categories(language).map(c => (
           <div className="col m-0 p-0">
             <div className="card text-bg-dark m-0 p-0 border-0"
             style={{height: "300px"}}>

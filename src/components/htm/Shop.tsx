@@ -10,7 +10,8 @@ import { addWishlist } from "../../features/api/accountActions.ts"
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
 
 const Shop = () => {
-  const { products, setProducts } = useContext(ProductsContext)
+  const { products, setProducts ,language} = useContext(ProductsContext)
+
   const { id } = useParams()
   const { type } = useParams()
   const category = type ? type : id
@@ -22,7 +23,7 @@ const Shop = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const productsPerPage = 12
 
-  const categoryTypes = categories.find(c => c.route === id)?.types || []
+  const categoryTypes = categories(language).find(c => c.route === id)?.types || []
   const user = useAppSelector(state => state.user.profile)
   const token = useAppSelector(state => state.token)
   const dispatch = useAppDispatch()
@@ -112,12 +113,16 @@ const Shop = () => {
                     aria-controls="collapseCategories"
                   >
                     <i className="bi bi-tags me-2"></i>
-                    Categories
+                    {language === "Armenian"
+                      ? "Կատեգորիաներ"
+                      : language === "Russian"
+                        ? "Категории"
+                        : "Categories"}
                   </button>
                 </h2>
                 <div
                   id="collapseCategories"
-                  className="accordion-collapse collapse "
+                  className="accordion-collapse collapse"
                   aria-labelledby="headingCategories"
                   data-bs-parent="#categoryAccordion"
                 >
@@ -161,12 +166,16 @@ const Shop = () => {
                     aria-controls="collapsePrice"
                   >
                     <i className="bi bi-tags me-2"></i>
-                    Filter by Price
+                    {language === "Armenian"
+                      ? "Գնային ֆիլտր"
+                      : language === "Russian"
+                        ? "Фильтр по цене"
+                        : "Filter by Price"}
                   </button>
                 </h2>
                 <div
                   id="collapsePrice"
-                  className="accordion-collapse collapse "
+                  className="accordion-collapse collapse"
                   aria-labelledby="headingPrice"
                   data-bs-parent="#categoryAccordion"
                 >
@@ -179,7 +188,11 @@ const Shop = () => {
                     >
                       <h6 className="fw-semibold mb-3">
                         <i className="bi bi-cash-coin me-2"></i>
-                        Filter by Price
+                        {language === "Armenian"
+                          ? "Գնային ֆիլտր"
+                          : language === "Russian"
+                            ? "Фильтр по цене"
+                            : "Filter by Price"}
                       </h6>
                       <form>
                         <input
@@ -197,17 +210,33 @@ const Shop = () => {
                           <input
                             type="number"
                             className="form-control"
-                            placeholder="Min"
+                            placeholder={
+                              language === "Armenian"
+                                ? "Նվազագույն"
+                                : language === "Russian"
+                                  ? "Минимум"
+                                  : "Min"
+                            }
                           />
                           <span className="input-group-text">-</span>
                           <input
                             type="number"
                             className="form-control"
-                            placeholder="Max"
+                            placeholder={
+                              language === "Armenian"
+                                ? "Առավելագույն"
+                                : language === "Russian"
+                                  ? "Максимум"
+                                  : "Max"
+                            }
                           />
                         </div>
-                        <button className="btn btn-dark btn-sm w-100 mt-3">
-                          Apply Filter
+                        <button className="btn btn-dark btn-sm w-100 mt-3" type="submit">
+                          {language === "Armenian"
+                            ? "Կիրառել ֆիլտրը"
+                            : language === "Russian"
+                              ? "Применить фильтр"
+                              : "Apply Filter"}
                         </button>
                       </form>
                     </motion.div>
@@ -227,10 +256,17 @@ const Shop = () => {
               <input
                 type="text"
                 className="form-control"
-                placeholder="Search products..."
+                placeholder={
+                  language === "Armenian"
+                    ? "Փնտրել ապրանքներ..."
+                    : language === "Russian"
+                      ? "Поиск товаров..."
+                      : "Search products..."
+                }
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
               />
+
               <button className="btn btn-outline-dark">
                 <i className="fa fa-search" />
               </button>
@@ -243,14 +279,50 @@ const Shop = () => {
                 <select
                   onChange={e => handleSortChange(e.target.value)}
                   className="filters-toolbar__input filters-toolbar__input--sort"
-                  defaultValue="date-desc"
+                  defaultValue="dateCreated-desc"
                 >
-                  <option value="name-asc">Alphabetically, A–Z</option>
-                  <option value="name-desc">Alphabetically, Z–A</option>
-                  <option value="sell-asc">Price, low to high</option>
-                  <option value="sell-desc">Price, high to low</option>
-                  <option value="dateCreated-desc">Date, new to old</option>
-                  <option value="dateCreated-asc">Date, old to new</option>
+                  <option value="name-asc">
+                    {language === "Armenian"
+                      ? "Ալֆավիտային, Ա–Զ"
+                      : language === "Russian"
+                        ? "По алфавиту, А–Я"
+                        : "Alphabetically, A–Z"}
+                  </option>
+                  <option value="name-desc">
+                    {language === "Armenian"
+                      ? "Ալֆավիտային, Զ–Ա"
+                      : language === "Russian"
+                        ? "По алфавиту, Я–А"
+                        : "Alphabetically, Z–A"}
+                  </option>
+                  <option value="sell-asc">
+                    {language === "Armenian"
+                      ? "Գին, ցածրից բարձր"
+                      : language === "Russian"
+                        ? "Цена, по возрастанию"
+                        : "Price, low to high"}
+                  </option>
+                  <option value="sell-desc">
+                    {language === "Armenian"
+                      ? "Գին, բարձրից ցածր"
+                      : language === "Russian"
+                        ? "Цена, по убыванию"
+                        : "Price, high to low"}
+                  </option>
+                  <option value="dateCreated-desc">
+                    {language === "Armenian"
+                      ? "Ամսաթիվ, նորից հին"
+                      : language === "Russian"
+                        ? "Дата, новые сначала"
+                        : "Date, new to old"}
+                  </option>
+                  <option value="dateCreated-asc">
+                    {language === "Armenian"
+                      ? "Ամսաթիվ, հինից նոր"
+                      : language === "Russian"
+                        ? "Дата, старые сначала"
+                        : "Date, old to new"}
+                  </option>
                 </select>
               </div>
 
@@ -353,22 +425,28 @@ const Shop = () => {
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage(p => p - 1)}
               >
-                Previous
+                {language === "Armenian"
+                  ? "Նախորդ"
+                  : language === "Russian"
+                    ? "Предыдущая"
+                    : "Previous"}
               </button>
               <span className="mx-2">
-                {currentPage} / {totalPages}
-              </span>
+    {currentPage} / {totalPages}
+  </span>
               <button
                 className="btn btn-outline-secondary btn-sm ms-2"
                 disabled={currentPage === totalPages}
                 onClick={() => {
-
-                  window.scrollTo(0,0)
+                  window.scrollTo(0, 0)
                   setCurrentPage(p => p + 1)
-
                 }}
               >
-                Next
+                {language === "Armenian"
+                  ? "Հաջորդ"
+                  : language === "Russian"
+                    ? "Следующая"
+                    : "Next"}
               </button>
             </div>
           </div>

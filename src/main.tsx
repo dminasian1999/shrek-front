@@ -20,30 +20,35 @@ import "./css/style.css"
 import "./index.css"
 import App from "./App.tsx"
 
-import {BrowserRouter} from "react-router-dom";
+import { BrowserRouter } from "react-router-dom"
+import { IntlProvider } from "react-intl"
 
 const container = document.getElementById("root")
 
+
+
 if (container) {
-    const root = createRoot(container)
+  const root = createRoot(container)
 
-    root.render(
-        // <StrictMode>
-            <BrowserRouter>
-                <Provider store={store}>
-                  {/*<body className="template-index home2-default">*/}
-                  {/*<div id="pre-loader">*/}
-                  {/*  <img src="assets/images/loader.gif" alt="Loading..." />*/}
-                  {/*</div>*/}
-                  <App />
-                  {/*</body>*/}
+  root.render(
+    // <StrictMode>
 
-                </Provider>
-            </BrowserRouter>
-        // </StrictMode>
-    )
+      <BrowserRouter>
+        <Provider store={store}>
+          {/*<body className="template-index home2-default">*/}
+          {/*<div id="pre-loader">*/}
+          {/*  <img src="assets/images/loader.gif" alt="Loading..." />*/}
+          {/*</div>*/}
+          <App />
+          {/*</body>*/}
+
+        </Provider>
+      </BrowserRouter>
+
+    // </StrictMode>
+  )
 } else {
-    throw new Error(
-        "Root element with ID 'root' was not found in the document. Ensure there is a corresponding HTML element with the ID 'root' in your HTML file.",
-    )
+  throw new Error(
+    "Root element with ID 'root' was not found in the document. Ensure there is a corresponding HTML element with the ID 'root' in your HTML file.",
+  )
 }

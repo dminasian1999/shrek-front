@@ -2088,7 +2088,7 @@ a.quick-view {
 
 .button-style2 .cartIcon, .button-style2 .quick-view-popup, .button-style2 .wishlist, .button-style2 .edit {
     color: #fff;
-    background-color: #000;
+    background-color: red;
     border-right: 1px solid #fff;
 }
 

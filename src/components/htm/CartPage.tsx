@@ -1,8 +1,11 @@
 import { useAppSelector } from "../../app/hooks.ts"
 import CartPageRow from "./CartPageRow.tsx"
+import { useContext } from "react"
+import { ProductsContext } from "../../utils/context.ts"
 
 const CartPage = () => {
   const cart = useAppSelector(state => state.user.profile.cart)
+  const { language } = useContext(ProductsContext)
 
   return (
     <div>
@@ -24,48 +27,82 @@ const CartPage = () => {
             <form action="#" method="post" className="cart style2">
               <table>
                 <thead className="cart__row cart__header">
-                  <tr>
-                    <th colSpan={2} className="text-center">
-                      Product
-                    </th>
-                    <th className="text-center">Price</th>
-                    <th className="text-center">Quantity</th>
-                    <th className="text-right">Total</th>
-                    <th className="action">&nbsp;</th>
-                  </tr>
+                <tr>
+                  <th colSpan={2} className="text-center">
+                    {language === "Armenian"
+                      ? "Ապրանք"
+                      : language === "Russian"
+                        ? "Товар"
+                        : "Product"}
+                  </th>
+                  <th className="text-center">
+                    {language === "Armenian"
+                      ? "Գին"
+                      : language === "Russian"
+                        ? "Цена"
+                        : "Price"}
+                  </th>
+                  <th className="text-center">
+                    {language === "Armenian"
+                      ? "Քանակ"
+                      : language === "Russian"
+                        ? "Количество"
+                        : "Quantity"}
+                  </th>
+                  <th className="text-right">
+                    {language === "Armenian"
+                      ? "Ընդամենը"
+                      : language === "Russian"
+                        ? "Итого"
+                        : "Total"}
+                  </th>
+                  <th className="action">&nbsp;</th>
+                </tr>
                 </thead>
                 <tbody>
-                  {cart.items.map(cardItem => (
-                    <CartPageRow cardItem={cardItem} />
-                  ))}
+                {cart.items.map(cardItem => (
+                  <CartPageRow cardItem={cardItem} />
+                ))}
                 </tbody>
                 <tfoot>
-                  <tr>
-                    <td colSpan={3} className="text-left">
-                      <a
-                        href="http://annimexweb.com/"
-                        className="btn btn-secondary btn--small cart-continue"
-                      >
-                        Continue shopping
-                      </a>
-                    </td>
-                    <td colSpan={3} className="text-right">
-                      <button
-                        type="submit"
-                        name="clear"
-                        className="btn btn-secondary btn--small  small--hide"
-                      >
-                        Clear Cart
-                      </button>
-                      <button
-                        type="submit"
-                        name="update"
-                        className="btn btn-secondary btn--small cart-continue ml-2"
-                      >
-                        Update Cart
-                      </button>
-                    </td>
-                  </tr>
+                <tr>
+                  <td colSpan={3} className="text-left">
+                    <a
+                      href="http://annimexweb.com/"
+                      className="btn btn-secondary btn--small cart-continue"
+                    >
+                      {language === "Armenian"
+                        ? "Շարունակել գնումները"
+                        : language === "Russian"
+                          ? "Продолжить покупки"
+                          : "Continue shopping"}
+                    </a>
+                  </td>
+                  <td colSpan={3} className="text-right">
+                    <button
+                      type="submit"
+                      name="clear"
+                      className="btn btn-secondary btn--small  small--hide"
+                    >
+                      {language === "Armenian"
+                        ? "Մաքրել զամբյուղը"
+                        : language === "Russian"
+                          ? "Очистить корзину"
+                          : "Clear Cart"}
+                    </button>
+                    <button
+                      type="submit"
+                      name="update"
+                      className="btn btn-secondary btn--small cart-continue ml-2"
+                    >
+                      {language === "Armenian"
+                        ? "Թարմացնել զամբյուղը"
+                        : language === "Russian"
+                          ? "Обновить корзину"
+                          : "Update Cart"}
+                    </button>
+                  </td>
+                </tr>
                 </tfoot>
               </table>
             </form>

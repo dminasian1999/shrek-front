@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
-import { updateAddress } from "../../features/api/accountActions.ts";
-import { AddressT } from "../../utils/types.ts";
+import React, { useState, useEffect, useContext } from "react"
+import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
+import { updateAddress } from "../../features/api/accountActions.ts"
+import { AddressT } from "../../utils/types.ts"
+import { ProductsContext } from "../../utils/context.ts"
 
 const Address = () => {
-  const address = useAppSelector((state) => state.user.profile.address);
-  const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch()
+  const address = useAppSelector((state) => state.user.profile.address)
+  const { language } = useContext(ProductsContext)
 
   const [formData, setFormData] = useState<AddressT>({
     fullName: "",
@@ -15,47 +17,87 @@ const Address = () => {
     zipCode: "",
     country: "",
     phone: "",
-  });
-
-  const [edit, setEdit] = useState(false);
+  })
+  const [edit, setEdit] = useState(false)
 
   useEffect(() => {
-    setFormData({
-      fullName: address?.fullName || "",
-      street: address?.street || "",
-      city: address?.city || "",
-      state: address?.state || "",
-      zipCode: address?.zipCode || "",
-      country: address?.country || "",
-      phone: address?.phone || "",
-    });
-  }, [address]);
+    if (address) {
+      setFormData({
+        fullName: address.fullName || "",
+        street: address.street || "",
+        city: address.city || "",
+        state: address.state || "",
+        zipCode: address.zipCode || "",
+        country: address.country || "",
+        phone: address.phone || "",
+      })
+    }
+  }, [address])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }));
-  };
+    }))
+  }
 
   const handleCancel = () => {
-    setEdit(false);
-    setFormData({
-      fullName: address?.fullName || "",
-      street: address?.street || "",
-      city: address?.city || "",
-      state: address?.state || "",
-      zipCode: address?.zipCode || "",
-      country: address?.country || "",
-      phone: address?.phone || "",
-    });
-  };
+    if (address) {
+      setFormData({ ...address })
+    }
+    setEdit(false)
+  }
 
   const handleSave = () => {
-    setEdit(false);
-    dispatch(updateAddress(formData));
-  };
+    dispatch(updateAddress(formData))
+    setEdit(false)
+  }
+
+  const labels: Record<keyof AddressT, string> = {
+    fullName:
+      language === "Armenian"
+        ? "Ամբողջական անուն"
+        : language === "Russian"
+          ? "Полное имя"
+          : "Full Name",
+    street:
+      language === "Armenian"
+        ? "Փողոց"
+        : language === "Russian"
+          ? "Улица"
+          : "Street Address",
+    city:
+      language === "Armenian"
+        ? "Քաղաք"
+        : language === "Russian"
+          ? "Город"
+          : "City",
+    state:
+      language === "Armenian"
+        ? "Մարզ / Շրջան"
+        : language === "Russian"
+          ? "Область / Регион"
+          : "State / Region",
+    zipCode:
+      language === "Armenian"
+        ? "Փոստային ինդեքս"
+        : language === "Russian"
+          ? "Почтовый индекс"
+          : "Postal Code",
+    country:
+      language === "Armenian"
+        ? "Երկիր"
+        : language === "Russian"
+          ? "Страна"
+          : "Country",
+    phone:
+      language === "Armenian"
+        ? "Հեռախոսահամար"
+        : language === "Russian"
+          ? "Номер телефона"
+          : "Phone Number",
+  }
 
   return (
     <div className="accordion" id="accordionAddress">
@@ -69,7 +111,11 @@ const Address = () => {
             aria-expanded="false"
             aria-controls="collapseAddress"
           >
-            Billing Address
+            {language === "Armenian"
+              ? "Հասցե"
+              : language === "Russian"
+                ? "Адрес"
+                : "Billing Address"}
           </button>
         </h2>
         <div
@@ -80,18 +126,20 @@ const Address = () => {
           <div className="accordion-body">
             <form>
               <fieldset>
-                <h2 className="login-title mb-3">Billing Details</h2>
+                <h5 className="mb-3">
+                  {language === "Armenian"
+                    ? "Վճարման տվյալներ"
+                    : language === "Russian"
+                      ? "Платежные данные"
+                      : "Billing Details"}
+                </h5>
+
                 <div className="row">
-                  {[
-                    { label: "Full Name", name: "fullName" },
-                    { label: "Street Address", name: "street" },
-                    { label: "City", name: "city" },
-                    { label: "State / Region", name: "state" },
-                    { label: "Postal Code", name: "zipCode" },
-                    { label: "Country", name: "country" },
-                    { label: "Phone Number", name: "phone" },
-                  ].map(({ label, name }) => (
-                    <div key={name} className="form-group col-md-6 mb-3">
+                  {Object.entries(labels).map(([name, label]) => (
+                    <div
+                      key={name}
+                      className="form-group col-sm-6 col-12 mb-3"
+                    >
                       <label htmlFor={`input-${name}`}>{label}</label>
                       {edit ? (
                         <input
@@ -120,14 +168,22 @@ const Address = () => {
                       className="btn btn-outline-secondary"
                       onClick={handleCancel}
                     >
-                      Cancel
+                      {language === "Armenian"
+                        ? "Չեղարկել"
+                        : language === "Russian"
+                          ? "Отмена"
+                          : "Cancel"}
                     </button>
                     <button
                       type="button"
                       className="btn btn-primary"
                       onClick={handleSave}
                     >
-                      Save
+                      {language === "Armenian"
+                        ? "Պահպանել"
+                        : language === "Russian"
+                          ? "Сохранить"
+                          : "Save"}
                     </button>
                   </>
                 ) : (
@@ -136,7 +192,11 @@ const Address = () => {
                     className="btn btn-primary"
                     onClick={() => setEdit(true)}
                   >
-                    Edit
+                    {language === "Armenian"
+                      ? "Խմբագրել"
+                      : language === "Russian"
+                        ? "Редактировать"
+                        : "Edit"}
                   </button>
                 )}
               </div>
@@ -145,7 +205,7 @@ const Address = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Address;
+export default Address

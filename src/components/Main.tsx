@@ -10,9 +10,8 @@ import FAQ from "./FAQ.tsx"
 import Signup from "./Signup.tsx"
 import Reports from "./Reports.tsx"
 import Sells from "./Sells.tsx"
-import { navItems } from "../utils/constants.ts"
+import { categories } from "../utils/constants.ts"
 import Home from "./pages/Home.tsx"
-import Register from "./htm/Register.tsx"
 import Login from "./htm/Login.tsx"
 import Shop from "./htm/Shop.tsx"
 import ProductPage from "./htm/ProductPage.tsx"
@@ -21,14 +20,19 @@ import About from "./htm/About.tsx"
 import WishList from "./htm/WishList.tsx"
 import CartPage from "./htm/CartPage.tsx"
 import EditProduct from "./htm/EditProduct.tsx"
+import { useContext } from "react"
+import { ProductsContext } from "../utils/context.ts"
+import Register from "./htm/Register.tsx"
 
 const Main = () => {
   const token = useAppSelector(state => state.token)
+  const {language} = useContext(ProductsContext)
+
 
   return (
     <main>
       <Routes>
-        {[`/`, `/${navItems[0].route}`].map(path => (
+        {[`/`, `/${categories(language)[0].route}`].map(path => (
           <Route key={path} path={path} element={<Home />} />
         ))}
         {/*<Route path="/products" element={<Products />} />*/}

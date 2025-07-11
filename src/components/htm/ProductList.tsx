@@ -1,11 +1,8 @@
 import React, { useContext, useEffect, useState } from "react"
-import ProductListToolbar from "./ProductListToolbar.tsx"
-import ProductListGrid from "./ProductListGrid.tsx"
 import { ProductsContext } from "../../utils/context.ts"
 import { useParams } from "react-router-dom"
 import { ProductT } from "../../utils/types.ts"
 import ProductItem from "./ProductItem.tsx"
-import { searchPosts } from "../../features/api/postActions.tsx"
 import { baseUrlBlog } from "../../utils/constants.ts"
 
 const ProductList = () => {

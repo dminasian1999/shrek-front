@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useContext } from "react"
 import { adminInfo, categories } from "../../utils/constants.ts"
+import { ProductsContext } from "../../utils/context.ts"
 
 const Footer = () => {
+  const { language } = useContext(ProductsContext)
   return (
     <footer id="footer">
       <div className="newsletter-section">
@@ -12,7 +14,11 @@ const Footer = () => {
                 <div className="display-table-cell footer-newsletter">
                   <div className="section-header text-center">
                     <label className="h2">
-                      <span>sign up for </span>newsletter
+                      {language === "Armenian"
+                        ? "Բաժանորդագրվել "
+                        : language === "Russian"
+                          ? "Подписаться на рассылку"
+                          : "Sign up for newsletter"}
                     </label>
                   </div>
                   <form action="#" method="post">
@@ -132,9 +138,15 @@ const Footer = () => {
           <div className="footer-top">
             <div className="row">
               <div className="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
-                <h4 className="h4">Quick Shop</h4>
+                <h4 className="h4">
+                  {language === "Armenian"
+                    ? "Բաժիններ"
+                    : language === "Russian"
+                      ? "Магазин"
+                      : "Shop"}
+                </h4>
                 <ul>
-                  {categories.map(c=>(
+                  {categories(language).map(c => (
                     <li>
                       <a href={`/category/${c.route}`}>{c.title}</a>
                     </li>
@@ -142,55 +154,119 @@ const Footer = () => {
                 </ul>
               </div>
               <div className="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
-                <h4 className="h4">Informations</h4>
+                <h4 className="h4">
+                  {language === "Armenian"
+                    ? "Տեղեկություններ"
+                    : language === "Russian"
+                      ? "Информация"
+                      : "Informations"}
+                </h4>
                 <ul>
                   <li>
-                    <a href="#">About us</a>
+                    <a href="#">
+                      {language === "Armenian"
+                        ? "Մեր մասին"
+                        : language === "Russian"
+                          ? "О нас"
+                          : "About us"}
+                    </a>
                   </li>
                   <li>
-                    <a href="#">Privacy policy</a>
+                    <a href="#">
+                      {language === "Armenian"
+                        ? "Գաղտնիության քաղաքականություն"
+                        : language === "Russian"
+                          ? "Политика конфиденциальности"
+                          : "Privacy policy"}
+                    </a>
                   </li>
                   <li>
-                    <a href="#">Terms &amp; condition</a>
+                    <a href="#">
+                      {language === "Armenian"
+                        ? "Պայմաններ և պայմանագրեր"
+                        : language === "Russian"
+                          ? "Условия и положения"
+                          : "Terms & condition"}
+                    </a>
                   </li>
                   <li>
-                    <a href="/account">My Account</a>
+                    <a href="/account">
+                      {language === "Armenian"
+                        ? "Իմ հաշիվը"
+                        : language === "Russian"
+                          ? "Мой аккаунт"
+                          : "My Account"}
+                    </a>
                   </li>
                 </ul>
               </div>
+
               <div className="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
-                <h4 className="h4">Customer Services</h4>
+                <h4 className="h4">
+                  {language === "Armenian"
+                    ? "Սպասարկում"
+                    : language === "Russian"
+                      ? "Обслуживание клиентов"
+                      : "Customer Services"}
+                </h4>
                 <ul>
                   <li>
-                    <a href="#">FAQ's</a>
+                    <a href="#">
+                      {language === "Armenian"
+                        ? "Հաճախ տրվող հարցեր"
+                        : language === "Russian"
+                          ? "Часто задаваемые вопросы"
+                          : "FAQ's"}
+                    </a>
                   </li>
                   <li>
-                    <a href="#">Contact Us</a>
+                    <a href="#">
+                      {language === "Armenian"
+                        ? "Հետադարձ Կապ"
+                        : language === "Russian"
+                          ? "Связаться с нами"
+                          : "Contact Us"}
+                    </a>
                   </li>
                   <li>
-                    <a href="#">Orders and Returns</a>
+                    <a href="#">
+                      {language === "Armenian"
+                        ? "Պատվերներ և վերադարձ"
+                        : language === "Russian"
+                          ? "Заказы и возвраты"
+                          : "Orders and Returns"}
+                    </a>
                   </li>
                   <li>
-                    <a href="#">Support Center</a>
+                    <a href="#">
+                      {language === "Armenian"
+                        ? "Օժանդակության կենտրոն"
+                        : language === "Russian"
+                          ? "Центр поддержки"
+                          : "Support Center"}
+                    </a>
                   </li>
                 </ul>
               </div>
               <div className="col-12 col-sm-12 col-md-3 col-lg-3 contact-box">
-                <h4 className="h4">Contact Us</h4>
+                <h4 className="h4">{language === "Armenian"
+                    ? "Հասցե"
+                    : language === "Russian"
+                      ? "Связаться с нами"
+                      : "Contact Us"}
+                </h4>
                 <ul className="addressFooter">
                   <li>
                     <i className="icon anm anm-map-marker-al"></i>
-                    <p>
-                      {adminInfo.address}
-                    </p>
+                    <p>{adminInfo(language).address}</p>
                   </li>
                   <li className="phone">
                     <i className="icon anm anm-phone-s"></i>
-                    <p> {adminInfo.phone}</p>
+                    <p> {adminInfo(language).phone}</p>
                   </li>
                   <li className="email">
                     <i className="icon anm anm-envelope-l"></i>
-                    <p> {adminInfo.email}</p>
+                    <p> {adminInfo(language).email}</p>
                   </li>
                 </ul>
               </div>
@@ -226,8 +302,7 @@ const Footer = () => {
         </div>
       </div>
     </footer>
+  )
+}
 
-  );
-};
-
-export default Footer;
+export default Footer

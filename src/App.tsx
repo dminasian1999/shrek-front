@@ -1,28 +1,25 @@
 import { useAppSelector } from "./app/hooks.ts"
 
 import "./App.css"
-// import '../src/src/assets/scss/astro-ecommerce.scss'
 import TopHeader from "./components/htm/TopHeader.tsx"
 import Header from "./components/htm/Header.tsx"
 import Main from "./components/Main.tsx"
-import { baseUrlBlog, categories } from "./utils/constants.ts"
+import { baseUrlBlog } from "./utils/constants.ts"
 import { ProductT, ReceiptT } from "./utils/types.ts"
 import { useEffect, useState } from "react"
 import { ProductsContext } from "./utils/context.ts"
 import Footer from "./components/htm/Footer.tsx"
-import QuickViewPopup from "./components/htm/QuickViewPopup.tsx"
-import Breadcrumb from "./components/htm/Breadcrumb.tsx"
-import PayPalCheckout from "./paymant/PayPalCheckout.tsx"
 
 const App = () => {
-  const [selectedId, setSelectedId] = useState<string>(
-    categories[0]?.title || "",
-  )
+  // const [selectedId, setSelectedId] = useState<string>(
+  //   categories("Armenian")[0]?.title || "",
+  // )
   const [products, setProducts] = useState([] as ProductT[])
   const [receipts, setReceipts] = useState([] as ReceiptT[])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [showModal, setShowModal] = useState(false)
+  const [language, setLanguage] = useState("Armenian")
   const token = useAppSelector(state => state.token)
   // const fetchProducts = async () => {
   //   try {
@@ -60,12 +57,12 @@ const App = () => {
   return (
     <ProductsContext.Provider
       value={{
-        selectedId,
-        setSelectedId,
         products,
         setProducts,
         receipts,
         setReceipts,
+        language,
+        setLanguage,
       }}
     >
       <div className="emplate-index home2-default  container-fluid  p-0">
@@ -83,7 +80,7 @@ const App = () => {
             }}
           >
             <h3 style={{ textAlign: "center", marginBottom: "1rem" }}>Оплатить PayPal</h3>
-            <PayPalCheckout />
+            {/*<PayPalCheckout />*/}
           </section>
           <Footer />
           <span
@@ -92,7 +89,7 @@ const App = () => {
           >
           <i className="text-xl">↑</i>
         </span>
-          <QuickViewPopup />
+          {/*<QuickViewPopup />*/}
         </div>
       </div>
     </ProductsContext.Provider>

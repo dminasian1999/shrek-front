@@ -1,9 +1,12 @@
 import Carousel from "react-multi-carousel"
 
 import { categories } from "../../utils/constants.ts"
-import React from "react"
+import React, { useContext } from "react"
+import { ProductsContext } from "../../utils/context.ts"
 
 const WeeklyBestseller = () => {
+  const {language} = useContext(ProductsContext)
+  const cat =categories(language)
 
   const responsive = {
     desktop: {
@@ -27,8 +30,11 @@ const WeeklyBestseller = () => {
       <div className="container mx-auto px-4">
        <div className="row">
          <div className="section-header text-center">
-           <h2 className="h2 text-3xl font-bold">Weekly Bestseller</h2>
-           <p>Our most popular products based on sales</p>
+           <h2 className="h2 text-3xl font-bold">{language === "Armenian"
+             ? "Ամենավաճառվող ապրանքներ"
+             : language === "Russian"
+               ? "Популярные товары"
+               : "Bestsellers"}</h2>
          </div>
        </div>
         <div className="col-12 productSlider grid-products">
@@ -45,13 +51,13 @@ const WeeklyBestseller = () => {
             dotListClass="custom-dot-list-style"
             itemClass="carousel-item-padding-40-px"
           >
-            {categories
+            {cat
               .flatMap(category => (category.types))
               .map((item, index) => (
                 <div key={index} className="text-center item p-2">
                   <div className="product-image link-image">
                     <a
-                      href={`/category/${categories.find(category => category.types.includes(item))!.route}/${item.route}`}
+                      href={`/category/${cat.find(category => category.types.includes(item))!.route}/${item.route}`}
                       className="grid-view-item__link d-flex flex-column align-items-center">
                       <div className="icon-placeholder fs-1 text-success">
                         <i className={item.icon}></i>

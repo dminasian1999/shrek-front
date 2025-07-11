@@ -1,13 +1,14 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { Link } from "react-router-dom"
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
 import { deleteUser } from "../../features/slices/userSlice.ts"
 import { deleteToken } from "../../features/slices/tokenSlice.ts"
 import { adminInfo } from "../../utils/constants.ts"
+import { ProductsContext } from "../../utils/context.ts"
 
 const TopHeader = () => {
   const [currency, setCurrency] = useState("USD")
-  const [language, setLanguage] = useState("English")
+  const {language, setLanguage} = useContext(ProductsContext)
   const dispatch = useAppDispatch()
 
   const confirmLogout = () => {
@@ -33,13 +34,17 @@ const TopHeader = () => {
               </ul>
             </div>
             <p className="phone-no">
-              <i className="anm anm-phone-s"></i>{adminInfo.phone}
+              <i className="anm anm-phone-s"></i>{adminInfo(language).phone}
             </p>
           </div>
 
           <div className="col-sm-4 col-md-4 col-lg-4 d-none d-md-block d-lg-block d-blo d-xl-block">
             <div className="text-center">
-              <p className="top-header_middle-text">Welcome to our store</p>
+              <p className="top-header_middle-text">{language === "Armenian"
+                ? "Բարի գալուստ TAMY TOYS"
+                : language === "Russian"
+                  ? "Добро пожаловать в TAMY TOYS"
+                  : "Welcome to TAMY TOYS"}</p>
             </div>
           </div>
 
@@ -55,20 +60,41 @@ const TopHeader = () => {
                 {!token ? (
                   <>
                     <li className={'text-dark'}>
-                      <Link className="dropdown-item text-dark" to="/login">Login</Link>
+                      <Link className="dropdown-item text-dark" to="/login">{language === "Armenian"
+                        ? "Մուտք"
+                        : language === "Russian"
+                          ? "Войти"
+                          : "Login"}</Link>
                     </li>
                     <li>
-                      <Link className="dropdown-item text-dark" to="/register">Create Account</Link>
+
+                      <Link className="dropdown-item text-dark" to="/register">{language === "Armenian"
+                        ? "Գրանցում"
+                        : language === "Russian"
+                          ? "Регистрация"
+                          : "Create Account"}</Link>
                     </li>
                   </>
                 ) : (
                   <>
                     <li>
-                      <Link className="dropdown-item text-dark" to="/account">My Account</Link>
+                      <Link className="dropdown-item text-dark" to="/account">{language === "Armenian"
+                        ? "Հաշիվ"
+                        : language === "Russian"
+                          ? "Аккаунт"
+                          : "Account"}</Link>
                     </li>
-                    <li><Link className="dropdown-item text-dark" to={'/'} onClick={confirmLogout}>Logout</Link></li>
+                    <li><Link className="dropdown-item text-dark" to={'/'} onClick={confirmLogout}>{language === "Armenian"
+                      ? "Ելք"
+                      : language === "Russian"
+                        ? "Выход"
+                        : "Logout"}</Link></li>
 
-                    <li><Link className="dropdown-item text-dark" to="/wishlist">Wishlist</Link></li>
+                    <li><Link className="dropdown-item text-dark" to="/wishlist">{language === "Armenian"
+                      ? "Նախընտրելիներ"
+                      : language === "Russian"
+                        ? "Список желаний"
+                        : "Wishlist"}</Link></li>
 
                   </>
                 )}
@@ -78,14 +104,34 @@ const TopHeader = () => {
             <ul className="customer-links list-inline d-none d-lg-block d-xl-block">
               {!token ? (
                 <>
-                  <li><Link to="/login">Login</Link></li>
-                  <li><Link to="/register">Create Account</Link></li>
+                  <li><Link to="/login">{language === "Armenian"
+                    ? "Մուտք"
+                    : language === "Russian"
+                      ? "Войти"
+                      : "Login"}</Link></li>
+                  <li><Link to="/register">{language === "Armenian"
+                    ? "Գրանցում"
+                    : language === "Russian"
+                      ? "Регистрация"
+                      : "Create Account"}</Link></li>
                 </>
               ) : (
                 <>
-                  <li><Link to="/account">My Account</Link></li>
-                  <li><Link to={'/'} onClick={confirmLogout}>Logout</Link></li>
-                  <li><Link to="/wishlist">Wishlist</Link></li>
+                  <li><Link to="/account">{language === "Armenian"
+                    ? "Հաշիվ"
+                    : language === "Russian"
+                      ? "Аккаунт"
+                      : "Account"}</Link></li>
+                  <li><Link to={'/'} onClick={confirmLogout}>{language === "Armenian"
+                    ? "Ելք"
+                    : language === "Russian"
+                      ? "Выход"
+                      : "Logout"}</Link></li>
+                  <li><Link to="/wishlist">{language === "Armenian"
+                    ? "Նախընտրելիներ"
+                    : language === "Russian"
+                      ? "Список желаний"
+                      : "Wishlist"}</Link></li>
 
                 </>
               )}

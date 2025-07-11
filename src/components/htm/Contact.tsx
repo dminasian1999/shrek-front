@@ -1,8 +1,11 @@
-import React from "react"
+import React, { useContext } from "react"
 import MapLocation from "./MapLocation.tsx"
 import { adminInfo } from "../../utils/constants.ts"
+import { ProductsContext } from "../../utils/context.ts"
 
 const Contact = () => {
+  const {language} = useContext(ProductsContext)
+
   return (
     <div className={"container"}>
       <div className="row">
@@ -11,11 +14,19 @@ const Contact = () => {
 
         {/* Contact Form */}
         <div className=" col-md-8 mb-4">
-          <h2>Contact Us</h2>
+          <h2>{language === "Armenian"
+            ? "Հետադարձ կապ"
+            : language === "Russian"
+              ? "Обратная связь"
+              : "Contact Us"}</h2>
           <p className="mb-3 text-muted">
-            We'd love to hear from you. Please fill out the form below and we'll
-            get back to you as soon as possible.
+            {language === "Armenian"
+              ? "Սիրով կլսենք ձեր կարծիքը։ Խնդրում ենք լրացնել ձևաթուղթը, և մենք հնարավորինս շուտ կապ կհաստատենք ձեզ հետ։"
+              : language === "Russian"
+                ? "Мы будем рады услышать вас. Пожалуйста, заполните форму ниже, и мы свяжемся с вами как можно скорее."
+                : "We'd love to hear from you. Please fill out the form below and we'll get back to you as soon as possible."}
           </p>
+
 
           <form
             action="http://annimexweb.com/items/belle/assets/php/mail.php"
@@ -28,7 +39,13 @@ const Contact = () => {
                 <input
                   type="text"
                   name="name"
-                  placeholder="Name"
+                  placeholder={
+                    language === "Armenian"
+                      ? "Անուն"
+                      : language === "Russian"
+                        ? "Имя"
+                        : "Name"
+                  }
                   className="form-control"
                   required
                 />
@@ -37,7 +54,13 @@ const Contact = () => {
                 <input
                   type="email"
                   name="email"
-                  placeholder="Email"
+                  placeholder={
+                    language === "Armenian"
+                      ? "Էլ. հասցե"
+                      : language === "Russian"
+                        ? "Эл. почта"
+                        : "Email"
+                  }
                   className="form-control"
                   required
                 />
@@ -50,7 +73,13 @@ const Contact = () => {
                   type="tel"
                   name="phone"
                   pattern="[0-9\-]*"
-                  placeholder="Phone Number"
+                  placeholder={
+                    language === "Armenian"
+                      ? "Հեռախոսահամար"
+                      : language === "Russian"
+                        ? "Номер телефона"
+                        : "Phone Number"
+                  }
                   className="form-control"
                   required
                 />
@@ -59,7 +88,13 @@ const Contact = () => {
                 <input
                   type="text"
                   name="subject"
-                  placeholder="Subject"
+                  placeholder={
+                    language === "Armenian"
+                      ? "Թեմա"
+                      : language === "Russian"
+                        ? "Тема"
+                        : "Subject"
+                  }
                   className="form-control"
                   required
                 />
@@ -68,34 +103,57 @@ const Contact = () => {
 
             <div className="row">
               <div className="col-12">
-                <textarea
-                  name="message"
-                  rows={6}
-                  placeholder="Your Message"
-                  className="form-control"
-                  required
-                ></textarea>
+    <textarea
+      name="message"
+      rows={6}
+      placeholder={
+        language === "Armenian"
+          ? "Ձեր հաղորդագրությունը"
+          : language === "Russian"
+            ? "Ваше сообщение"
+            : "Your Message"
+      }
+      className="form-control"
+      required
+    ></textarea>
               </div>
             </div>
 
             <div>
               <button type="submit" className="btn btn-primary">
-                Send Message
+                {language === "Armenian"
+                  ? "Ուղարկել հաղորդագրությունը"
+                  : language === "Russian"
+                    ? "Отправить сообщение"
+                    : "Send Message"}
               </button>
+
             </div>
           </form>
         </div>
 
         {/* Sidebar Info */}
-        <div className="2 col-md-4">
+        <div className="col-md-4">
           <div className="open-hours p-3 rounded shadow-sm bg-light mb-4">
-            <h5 className="mb-3">🕒 Opening Hours</h5>
+            <h5 className="mb-3 fa fa-clock  fs-5">
+              {language === "Armenian"
+                ? " Աշխատանքային ժամեր"
+                : language === "Russian"
+                  ? " Часы работы"
+                  : " Opening Hours"}
+            </h5>
             <ul className="list-unstyled mb-0">
               <li>
-                <strong>Mon – Sat:</strong> 9:00 AM – 11:00 PM
+                <strong>
+                  {language === "Armenian" ? "Երկ.-Շաբ." :
+                    language === "Russian" ? "Пн – Сб:" : "Mon – Sat:"}
+                </strong> 9:00 AM – 11:00 PM
               </li>
               <li>
-                <strong>Sunday:</strong> 11:00 AM – 5:00 PM
+                <strong>
+                  {language === "Armenian" ? "Կիրակի:" :
+                    language === "Russian" ? "Воскресенье:" : "Sunday:"}
+                </strong> 11:00 AM – 5:00 PM
               </li>
             </ul>
           </div>
@@ -103,15 +161,15 @@ const Contact = () => {
           <ul className="list-unstyled fs-6 d-flex flex-column gap-3 mb-4">
             <li>
               <i className="icon anm anm-map-marker-al me-2"></i>
-              {adminInfo.address}
+              {adminInfo(language).address}
             </li>
             <li>
               <i className="icon anm anm-phone-s me-2"></i>
-              {adminInfo.phone}
+              {adminInfo(language).phone}
             </li>
             <li>
               <i className="icon anm anm-envelope-l me-2"></i>
-              {adminInfo.email}
+              {adminInfo(language).email}
             </li>
           </ul>
 
@@ -129,6 +187,7 @@ const Contact = () => {
                 <a
                   href="#"
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="social-icons__link"
                   title={name}
                 >

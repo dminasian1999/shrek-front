@@ -1,20 +1,28 @@
-import React, { useState } from "react"
+import React, { useContext, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
 import { fetchUser } from "../../features/api/accountActions.ts"
 import { createToken } from "../../utils/constants.ts"
-import { useNavigate } from "react-router-dom"
+import { ProductsContext } from "../../utils/context.ts"
+import { Link } from "react-router-dom"
 
 const Login = () => {
   const [login, setLogin] = useState("")
   const [password, setPassword] = useState("")
   const dispatch = useAppDispatch()
   const { loading, errorMessage } = useAppSelector(state => state.user)
+  const { language } = useContext(ProductsContext)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!login || !password) {
-      alert("Please fill in all fields.")
+      alert(
+        language === "Armenian"
+          ? "Խնդրում ենք լրացնել բոլոր դաշտերը։"
+          : language === "Russian"
+            ? "Пожалуйста, заполните все поля."
+            : "Please fill in all fields."
+      )
       return
     }
 
@@ -26,7 +34,13 @@ const Login = () => {
       <div className="page section-header text-center">
         <div className="page-title">
           <div className="wrapper">
-            <h1 className="page-width">Login</h1>
+            <h1 className="page-width">
+              {language === "Armenian"
+                ? "Մուտք"
+                : language === "Russian"
+                  ? "Вход"
+                  : "Login"}
+            </h1>
           </div>
         </div>
       </div>
@@ -39,18 +53,30 @@ const Login = () => {
                 method="post"
                 action="#"
                 id="CustomerLoginForm"
-                accept-charset="UTF-8"
+                acceptCharset="UTF-8"
                 className="contact-form"
               >
                 <div className="row">
                   <div className="col-12 col-sm-12 col-md-12 col-lg-12">
                     <div className="form-group">
-                      <label htmlFor="CustomerEmail">Email</label>
+                      <label htmlFor="CustomerEmail">
+                        {language === "Armenian"
+                          ? "Էլ. հասցե"
+                          : language === "Russian"
+                            ? "Эл. почта"
+                            : "Email"}
+                      </label>
                       <input
                         id="email"
                         type="email"
                         className="form-control"
-                        placeholder="example@email.com"
+                        placeholder={
+                          language === "Armenian"
+                            ? "օրինակ՝ example@email.com"
+                            : language === "Russian"
+                              ? "например example@email.com"
+                              : "example@email.com"
+                        }
                         value={login}
                         onChange={e => setLogin(e.target.value)}
                         disabled={loading}
@@ -61,12 +87,24 @@ const Login = () => {
                   </div>
                   <div className="col-12 col-sm-12 col-md-12 col-lg-12">
                     <div className="form-group">
-                      <label htmlFor="CustomerPassword">Password</label>
+                      <label htmlFor="CustomerPassword">
+                        {language === "Armenian"
+                          ? "Գաղտնաբառ"
+                          : language === "Russian"
+                            ? "Пароль"
+                            : "Password"}
+                      </label>
                       <input
                         id="password"
                         type="password"
                         className="form-control"
-                        placeholder="************"
+                        placeholder={
+                          language === "Armenian"
+                            ? "************"
+                            : language === "Russian"
+                              ? "************"
+                              : "************"
+                        }
                         value={password}
                         onChange={e => setPassword(e.target.value)}
                         disabled={loading}
@@ -85,6 +123,10 @@ const Login = () => {
                     >
                       {loading ? (
                         <div className="spinner-border" />
+                      ) : language === "Armenian" ? (
+                        "Մուտք գործել"
+                      ) : language === "Russian" ? (
+                        "Войти"
                       ) : (
                         "Sign In"
                       )}
@@ -96,12 +138,20 @@ const Login = () => {
                     )}
                     <p className="mb-4">
                       <a href="#" id="RecoverPassword">
-                        Forgot your password?
+                        {language === "Armenian"
+                          ? "Մոռացել եք գաղտնաբառը?"
+                          : language === "Russian"
+                            ? "Забыли пароль?"
+                            : "Forgot your password?"}
                       </a>{" "}
                       &nbsp; | &nbsp;
-                      <a href="register.html" id="customer_register_link">
-                        Create account
-                      </a>
+                      <Link to="/register" id="customer_register_link">
+                        {language === "Armenian"
+                          ? "Ստեղծել հաշիվ"
+                          : language === "Russian"
+                            ? "Создать аккаунт"
+                            : "Create account"}
+                      </Link>
                     </p>
                   </div>
                 </div>
