@@ -650,10 +650,11 @@ export const categories = (language: string) => [
   },
 ]
 
-export const baseUrl = "http://localhost:8080/users"
-export const baseUrlBlog = "http://localhost:8080"
-// export const baseUrl = "https://ecom-back-bafx.onrender.com/users";
-// export const baseUrlBlog = "https://ecom-back-bafx.onrender.com";
+// export const baseUrl = "http://localhost:8080/users"
+// export const baseUrlBlog = "http://localhost:8080"
+export const baseUrl = "https://shrek-back.onrender.com/users";
+//
+export const baseUrlBlog = "https://shrek-back.onrender.com";
 export const createToken = (login: string, password: string) =>
   `Basic ${window.btoa(login + ":" + password)}`
 
