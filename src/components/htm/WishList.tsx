@@ -103,7 +103,7 @@ const WishList = () => {
                       </td>
                       <td className="product-thumbnail text-center">
                         <a href="#">
-                          <img src={p.imageUrl} alt={p.name} title={p.name} />
+                          <img src={p.imageUrls[0]} alt={p.name} title={p.name} />
                         </a>
                       </td>
                       <td className="product-name">
@@ -112,7 +112,7 @@ const WishList = () => {
                         </h4>
                       </td>
                       <td className="product-price text-center">
-                        <h4 className="amount">${p.sell}</h4>
+                        <h4 className="amount">${p.price}</h4>
                       </td>
                       <td className="text-center text-secondary">
                         <h4>{categories(language).find(c => c.route === p.category)?.title}</h4>

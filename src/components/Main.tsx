@@ -23,6 +23,7 @@ import EditProduct from "./htm/EditProduct.tsx"
 import { useContext } from "react"
 import { ProductsContext } from "../utils/context.ts"
 import Register from "./htm/Register.tsx"
+import Collections from "./htm/Collections.tsx"
 
 const Main = () => {
   const token = useAppSelector(state => state.token)
@@ -38,9 +39,9 @@ const Main = () => {
         {/*<Route path="/products" element={<Products />} />*/}
         <Route path="/cart" element={<CartPage />} />
 
-        {/*<Route path="/category" element={<Shop />} />*/}
-        <Route path="/collections" element={<Shop />} />
-        <Route path="/category/:id" element={<Shop />} />
+        <Route path="/shop" element={<Shop />} />
+        <Route path="/collections" element={<Collections />} />
+        <Route path="/shop/:category" element={<Shop />} />
         <Route path="/category/:id/:type" element={<Shop />} />
         <Route path="/product/:id" element={<ProductPage />} />
 

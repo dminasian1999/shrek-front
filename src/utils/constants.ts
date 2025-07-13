@@ -1,9 +1,47 @@
-import logo from "../images/logo/logo.png"
 import banner1 from "../images/slideshow-banners/banner1.jpg"
 import banner2 from "../images/slideshow-banners/banner2.jpg"
 import banner3 from "../images/slideshow-banners/banner3.jpg"
 import banner4 from "../images/slideshow-banners/banner4.jpg"
+
+import logo from "../images/logo/logo.png"
+import pomegranates from "../images/categories/pomegranates.jpg"
+import mugs from "../images/categories/mugs.jpg"
+import hangings from "../images/categories/hangings.jpg"
+import necklaces from "../images/categories/necklaces.jpg"
+import earrings from "../images/categories/earrings.jpg"
+import bracelets from "../images/categories/bracelets.jpg"
+import rings from "../images/categories/rings.jpg"
+import magnets from "../images/categories/magnets.jpg"
+import vases from "../images/categories/vases.jpg"
+import plates from "../images/categories/plates.jpg"
+import tiles from "../images/categories/tiles.jpg"
+import jewelry from "../images/categories/jewelry.jpg"
+import religious from "../images/categories/religious.jpg"
+import keychains from "../images/categories/keychains.jpg"
+import ceramics from "../images/categories/ceramics.jpg"
+import souvenirs from "../images/categories/souvenirs.jpg"
 import { NavItemT } from "./types.ts"
+
+
+
+export const collections = [
+  { title: "Tiles", route: "tiles", image: tiles },
+  { title: "Plates", route: "plates", image: plates },
+  { title: "Vases", route: "vases", image: vases },
+  { title: "Pomegranates", route: "pomegranates", image: pomegranates },
+  { title: "Mugs", route: "mugs", image: mugs },
+  { title: "Hangings", route: "hangings", image: hangings },
+  { title: "Souvenirs", route: "souvenirs", image: souvenirs },
+  { title: "Ceramics", route: "ceramics", image:ceramics },
+  { title: "Jewelry", route: "jewelry", image: jewelry},
+  { title: "Religious", route: "religious", image: religious },
+  { title: "Rings", route: "rings", image: rings },
+  { title: "Necklaces", route: "necklaces", image: necklaces },
+  { title: "Earrings", route: "earrings", image: earrings },
+  { title: "Bracelets", route: "bracelets", image: bracelets },
+  { title: "Keychains", route: "keychains", image: keychains },
+  { title: "Magnets", route: "magnets", image: magnets },
+];
 
 export const banner1Img = banner1
 export const banner2Img = banner2
@@ -646,3 +684,28 @@ export const adminInfo = (language: string) => ({
         : "Israel",
   email: "sevan@gmail.com",
 })
+export const allMaterials = [
+  "Wood",
+  "Metal",
+  "Plastic",
+  "Glass",
+  "Stone",
+  "Ceramic",
+  "Textile",
+  "Leather",
+  "Paper",
+  "Gold",
+  "Silver",
+  "Bronze",
+  "Copper",
+  "Iron",
+  "Steel",
+  "Marble",
+  "Concrete",
+  "Clay",
+  "Wool",
+  "Cotton",
+  "Silk",
+  "Bamboo",
+  "Porcelain",
+];

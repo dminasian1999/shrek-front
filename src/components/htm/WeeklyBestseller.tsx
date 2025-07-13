@@ -1,6 +1,6 @@
 import Carousel from "react-multi-carousel"
 
-import { categories, shopCategories } from "../../utils/constants.ts"
+import { categories, collections, shopCategories } from "../../utils/constants.ts"
 import React, { useContext } from "react"
 import { ProductsContext } from "../../utils/context.ts"
 
@@ -26,9 +26,9 @@ const WeeklyBestseller = () => {
     },
   }
   return (
-    <div className="section py-8">
-      <div className="container mx-auto px-4">
-       <div className="row">
+    <div className="section ">
+      <div className="container mx-auto ">
+       <div className="row ">
          <div className="section-header text-center">
            <h2 className="h2 text-3xl font-bold">{language === "Armenian"
              ? "Ամենավաճառվող ապրանքներ"
@@ -37,8 +37,9 @@ const WeeklyBestseller = () => {
                : "Bestsellers"}</h2>
          </div>
        </div>
-        <div className="col-12 productSlider grid-products">
+        <div className="col-12 productSlider grid-products ">
           <Carousel
+            className={"py-5"}
             swipeable
             draggable
             showDots
@@ -51,20 +52,13 @@ const WeeklyBestseller = () => {
             dotListClass="custom-dot-list-style"
             itemClass="carousel-item-padding-40-px"
           >
-            {shopCategories(language)
-              .map((item, index) => (
-                <div key={index} className="text-center item p-2">
-                  <div className="product-image link-image">
-                    <a
-                      href={`/category/${item.route}`}
-                      className="grid-view-item__link d-flex flex-column align-items-center">
-                      <div className="icon-placeholder fs-1 text-primary">
-                        <i className={item.icon}></i>
-                      </div>
-                      <h3 className="mt-2 fs-6">{item.title}</h3>
+            {collections
+              .map((item) => (
+                    <a href={`/category/${item.route}`}
+                      className="p-2 d-flex flex-column align-items-center h-100">
+                        <img src={item.image} className={'object-fit-cover w-100 h-100'} alt={''}></img>
+                      <h2 className="mt-">{item.title}</h2>
                     </a>
-                  </div>
-                </div>
               ))}
           </Carousel>
         </div>    </div>

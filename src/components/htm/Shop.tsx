@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react"
-import { banner3Img, baseUrlBlog, categories } from "../../utils/constants.ts"
+import { banner3Img, baseUrlBlog, categories, collections } from "../../utils/constants.ts"
 import { ProductsContext } from "../../utils/context.ts"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { ProductT } from "../../utils/types.ts"
@@ -12,9 +12,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
 const Shop = () => {
   const { products, setProducts ,language} = useContext(ProductsContext)
 
-  const { id } = useParams()
-  const { type } = useParams()
-  const category = type ? type : id
+  const { category } = useParams()
   const [sort, setSort] = useState("dateCreated")
   const [asc, setAsc] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -23,7 +21,6 @@ const Shop = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const productsPerPage = 12
 
-  const categoryTypes = categories(language).find(c => c.route === id)?.types || []
   const user = useAppSelector(state => state.user.profile)
   const token = useAppSelector(state => state.token)
   const dispatch = useAppDispatch()
@@ -35,12 +32,25 @@ const Shop = () => {
     setAsc(direction === "asc")
   }
 
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch(`${baseUrlBlog}/posts`)
+      if (!res.ok) throw new Error(`Fetch error: ${res.status}`)
+      const data: ProductT[] = await res.json()
+      setProducts(data)
+    } catch (e: any) {
+      console.error(e)
+      setError(e.message)
+    } finally {
+      setLoading(false)
+    }
+  }
   const searchPosts = async (criteria: string, sort: string, asc: boolean) => {
     setLoading(true)
     setError(null)
     try {
       const response = await fetch(
-        `${baseUrlBlog}/posts/${type ? "type" : "criteria"}/${criteria}/sort/${sort}/asc/${asc}`,
+        `${baseUrlBlog}/posts/criteria/${criteria}/sort/${sort}/asc/${asc}`,
       )
       if (!response.ok) throw new Error("Failed to fetch products")
       const data: ProductT[] = await response.json()
@@ -54,8 +64,13 @@ const Shop = () => {
   }
 
   useEffect(() => {
-    searchPosts(category!, sort, asc)
-  }, [category, sort, asc, type])
+    if (category){
+      searchPosts(category!, sort, asc)
+    }else {
+      fetchProducts()
+    }
+
+  }, [category, sort, asc])
   useEffect(() => {
     window.scroll(0, 0)
   }, [setCurrentPage,currentPage])
@@ -128,7 +143,7 @@ const Shop = () => {
                 >
                   <div className="accordion-body p-0">
                     <ul className="list-group list-group-flush">
-                      {categoryTypes.map((category, idx) => (
+                      {collections.map((category, idx) => (
                         <motion.li
                           key={idx}
                           className="list-group-item px-3 py-2"
@@ -137,7 +152,7 @@ const Shop = () => {
                           transition={{ delay: idx * 0.03 }}
                         >
                           <Link
-                            to={`/category/${id}/${category.route}`}
+                            to={`/shop/${category.route}`}
                             className="d-block text-decoration-none rounded fw-medium text-dark hover-transition"
                           >
                             <i className="bi bi-chevron-right me-2 text-muted small"></i>
@@ -348,7 +363,8 @@ const Shop = () => {
                     },
                   }}
                 >
-                  <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+                  <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4"
+                  >
                     {paginatedProducts.map(p => (
                       <motion.div
                         key={p.id}
@@ -362,7 +378,7 @@ const Shop = () => {
                           href={`/product/${p.id}`}
                         >
                           <img
-                            src={p.imageUrl}
+                            src={p.imageUrls[0]}
                             className="card-img-top h-100 w-100 object-fit-cove"
                             alt={p.name}
                           />
@@ -398,12 +414,12 @@ const Shop = () => {
                               <p className={"text-truncate"}>{p.desc}</p>
 
                               <s className="old-price ">
-                                ${(p.sell + p.sell / 3).toFixed(2)}
+                                ${(p.price + p.price / 3).toFixed(2)}
                               </s>
 
                               <span className="price text-danger">
                                 {" "}
-                                ${p.sell}
+                                ${p.price}
                               </span>
                             </p>
                           </div>

@@ -11,19 +11,29 @@ export interface CollectionT {
   image: string
 }
 
+// export interface ProductT {
+//   id?: string
+//   name: string
+//   imageUrls: string[]
+//   quantity: number
+//   price: number
+//   category: string
+//   desc: string
+//   dateCreated?: Date
+// }
+
 export interface ProductT {
   id?: string
   name: string
-  imageUrl: string
+  imageUrls: string[]
   quantity: number
-  sell: number
-  buy: number
+  price: number
   category: string
-  type: string
+  color: string
+  materials: string[]
   desc: string
   dateCreated?: Date
 }
-
 
 
 export interface ReceiptT {
@@ -70,16 +80,24 @@ quantity: number
 }
 
 export interface UserProfile {
-  login: string
+
   firstName: string
   lastName: string
+  login: string
   roles: string[]
   address?: AddressT
-  cart: Cart
+  cart: Cart,
+  paymentMethod?:PaymentMethodT,
   wishList?: string[]
   orders?: Order[]
 }
 
+export interface PaymentMethodT {
+  type: string
+  provider: string
+  accountNumberMasked: string
+  expiryDate: string
+}
 export interface UserRegister {
   login: string
   firstName: string

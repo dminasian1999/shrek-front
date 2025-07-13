@@ -13,7 +13,7 @@ const ProductItem = ({ p }: { p: ProductT }) => {
         <div className="row g-0">
           <div className="col-md-4">
             <img
-              src={p.imageUrl}
+              src={p.imageUrls[0]}
               className="img-fluid rounded-start"
               alt="..."
             />
@@ -25,11 +25,11 @@ const ProductItem = ({ p }: { p: ProductT }) => {
                 <p>{p.desc}</p>
 
                 <span className="old-price">
-                  ${(p.sell + p.sell / 3).toFixed(2)}
+                  ${(p.price + p.price / 3).toFixed(2)}
                 </span>
 
                 {/*<span className="old-price">$500.00</span>*/}
-                <span className="price">${p.sell}</span>
+                <span className="price">${p.price}</span>
               </p>
               <p className="card-text">
                 <small className="text-body-secondary">

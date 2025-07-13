@@ -46,7 +46,7 @@ const CartPageRow = ({ cardItem }: { cardItem: CartItem }) => {
         <a href="#">
           <img
             className="cart__image"
-            src={cardItem.product.imageUrl}
+            src={cardItem.product.imageUrls[0]}
             alt={cardItem.product.name}
           />
         </a>
@@ -59,7 +59,7 @@ const CartPageRow = ({ cardItem }: { cardItem: CartItem }) => {
         <div className="cart__meta-text">{categories(language).find(c => c.route === cardItem.product.category)?.title}</div>
       </td>
       <td className="cart__price-wrapper cart-flex-item">
-        <span className="money">${cardItem.product.sell}</span>
+        <span className="money">${cardItem.product.price}</span>
       </td>
       <td className="cart__update-wrapper cart-flex-item text-right">
         <div className="cart__qty text-center">
@@ -96,7 +96,7 @@ const CartPageRow = ({ cardItem }: { cardItem: CartItem }) => {
       <td className="text-right small--hide cart-price">
         <div>
           <span className="money">
-            ${(cardItem.product.sell * cardItem.quantity)}
+            ${(cardItem.product.price * cardItem.quantity)}
           </span>
         </div>
       </td>

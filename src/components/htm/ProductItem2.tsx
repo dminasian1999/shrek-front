@@ -21,7 +21,7 @@ const ProductItem = ({ p }: { p: ProductT }) => {
         >
           <img
             className="primary blur-up w-100 h-100"
-            src={p.imageUrl}
+            src={p.imageUrls[0]}
             alt="image"
             title="product"
           />
@@ -42,15 +42,15 @@ const ProductItem = ({ p }: { p: ProductT }) => {
         <a href={`/product/${p.id}`}>
           <img
             className="primary blur-up lazyload h-100 w-100  object-fit-cover"
-            data-src={p.imageUrl}
-            src={p.imageUrl}
+            data-src={p.imageUrls}
+            src={p.imageUrls[0]}
             alt={p.name}
             title={p.name}
           />
           <img
             className="hover blur-up lazyload h-100 w-100 object-fit-cover"
-            data-src={p.imageUrl}
-            src={p.imageUrl}
+            data-src={p.imageUrls}
+            src={p.imageUrls[0]}
             alt={p.name}
             title={p.name}
           />
@@ -124,10 +124,10 @@ const ProductItem = ({ p }: { p: ProductT }) => {
           <a href="#">{p.name}</a>
         </div>
         <div className="product-price">
-          <span className="old-price">${(p.sell + p.sell / 3).toFixed(2)}</span>
+          <span className="old-price">${(p.price + p.price / 3).toFixed(2)}</span>
 
           {/*<span className="old-price">$500.00</span>*/}
-          <span className="price">${p.sell}</span>
+          <span className="price">${p.price}</span>
         </div>
         {/*<div className="product-review">*/}
         {/*  <i className="font-13 fa fa-star"></i>*/}

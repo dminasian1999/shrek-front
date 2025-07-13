@@ -1,298 +1,188 @@
-import React, { useContext, useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
-import { ProductT } from "../../utils/types.ts"
-import { getPostById } from "../../features/api/postActions.tsx"
-import { addCartList, addWishlist } from "../../features/api/accountActions.ts"
-import { useAppDispatch } from "../../app/hooks.ts"
-import { ProductsContext } from "../../utils/context.ts"
-import { categories } from "../../utils/constants.ts"
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { ProductT } from "../../utils/types.ts";
+import { getPostById } from "../../features/api/postActions.tsx";
+import { addCartList, addWishlist } from "../../features/api/accountActions.ts";
+import { useAppDispatch } from "../../app/hooks.ts";
+import { categories } from "../../utils/constants.ts";
 
 const ProductPage = () => {
-  const { products, setProducts ,language} = useContext(ProductsContext)
+  const { id = "" } = useParams();
+  const dispatch = useAppDispatch();
 
-  const { id = "" } = useParams()
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [product, setProduct] = useState({} as ProductT)
-  const dispatch = useAppDispatch()
+  const [product, setProduct] = useState<ProductT | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchProduct = async () => {
+      setLoading(true);
       try {
-        const data = await getPostById(id)
-        setProduct(data)
-      } catch (err) {
-        setErrorMessage(
-          language === "Armenian"
-            ? "Ապրանքի բեռնումը սխալվւմ է։"
-            : language === "Russian"
-              ? "Ошибка загрузки продукта."
-              : "Error loading product."
-        )
+        const data = await getPostById(id);
+        setProduct(data);
+        setSelectedImage(data.imageUrls?.[0] || null);
+        setErrorMessage(null);
+      } catch {
+        setErrorMessage("Error loading product.");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchData()
-  }, [id, language])
-
-  const randomStars = Math.floor(Math.random() * 3) + 3
-  const randomReviews = Math.floor(Math.random() * 30 + 5)
-  const itemsSold = Math.floor(Math.random() * 20 + 5)
-  const hoursAgo = Math.floor(Math.random() * 12 + 12)
-  const viewersNow = Math.floor(Math.random() * 20 + 10)
+    fetchProduct();
+  }, [id]);
 
   if (loading) {
     return (
-      <div className="text-center p-5">
-        <div
-          className="spinner-border text-primary"
-          role="status"
-          style={{ width: "3rem", height: "3rem" }}
-        >
-          <span className="visually-hidden">
-            {language === "Armenian"
-              ? "Բեռնում է..."
-              : language === "Russian"
-                ? "Загрузка..."
-                : "Loading..."}
-          </span>
-        </div>
-        <p className="mt-3">
-          {language === "Armenian"
-            ? "Ապրանքի մանրամասների բեռնումը..."
-            : language === "Russian"
-              ? "Загрузка деталей продукта..."
-              : "Loading product details..."}
-        </p>
-      </div>
-    )
+      <main className="d-flex flex-column align-items-center justify-content-center vh-100 bg-light text-center">
+        <div className="spinner-border text-primary" style={{ width: "4rem", height: "4rem" }} />
+        <p className="mt-3 fs-5 text-muted">Loading...</p>
+      </main>
+    );
   }
 
-  if (errorMessage) {
-    return <div className="text-danger text-center mt-5">{errorMessage}</div>
+  if (!product) {
+    return (
+      <main className="container text-center mt-5 text-danger">
+        <h4>{errorMessage || "Product not found."}</h4>
+      </main>
+    );
   }
+
+  const categoryTitle = categories("English").find(c => c.route === product.category)?.title || product.category || "-";
 
   return (
-    <div id="MainContent" className="main-content" role="main">
-      <div className="product-template__container">
-        <div className="product-single row">
-          {/* Left Image Column */}
-          <div className="col-lg-6 col-md-6 col-sm-12 col-12">
-            <div className="product-details-img">
-              <div className="zoompro-wrap product-zoom-right">
-                <div className="zoompro-span">
-                  <img
-                    className="blur-up lazyload zoompro"
-                    alt={product.name}
-                    src={product.imageUrl}
-                  />
-                </div>
-                <div className="product-labels">
-                  <span className="lbl on-sale">
-                    {language === "Armenian"
-                      ? "Զեղչ"
-                      : language === "Russian"
-                        ? "Распродажа"
-                        : "Sale"}
-                  </span>
-                  {Date.now() - new Date(product.dateCreated!).getTime() <
-                    14 * 864e5 && (
-                      <span className="lbl pr-label1">
-                      {language === "Armenian"
-                        ? "Նոր"
-                        : language === "Russian"
-                          ? "Новинка"
-                          : "New"}
-                    </span>
-                    )}
-                </div>
-              </div>
-            </div>
+    <main className="container-fluid p-0">
+      <div className="row">
+        {/* Image Section */}
+        <div className="col-md-6  ">
+          {/* Main Image */}
+          <div className=" rounded shadow-sm mb-3 overflow-hidden position-relative">
+            <img
+              src={selectedImage || ""}
+              alt="Selected Product"
+              className="img-fluid w-100"
+              style={{
+                objectFit: "cover",
+                height: 400,
+                transition: "transform 0.3s ease-in-out",
+              }}
+              onMouseOver={e => (e.currentTarget.style.transform = "scale(1.03)")}
+              onMouseOut={e => (e.currentTarget.style.transform = "scale(1)")}
+            />
           </div>
 
-          {/* Right Details Column */}
-          <div className="col-lg-6 col-md-6 col-sm-12 col-12 p-5">
-            <div className="product-single__meta">
-              <h1 className="product-single__title">{product.name}</h1>
-              <div className="prInfoRow">
-                <div className="product-stock">
-                  {product.quantity > 0 ? (
-                    <span className="instock">
-                      {language === "Armenian"
-                        ? "Առկա է"
-                        : language === "Russian"
-                          ? "В наличии"
-                          : "In Stock"}
-                    </span>
-                  ) : (
-                    <span className="outstock text-danger">
-                      {language === "Armenian"
-                        ? "Առկա չէ"
-                        : language === "Russian"
-                          ? "Нет в наличии"
-                          : "Out of stock"}
-                    </span>
-                  )}
-                </div>
-                <div className="product-id text-secondary fw-light">
-                  {language === "Armenian"
-                    ? "Համար"
-                    : language === "Russian"
-                      ? "ИД"
-                      : "ID"}: {product.id}
-                </div>
-                <div className="product-review">
-                  <a className="reviewLink" href="#tab2">
-                    {[...Array(5)].map((_, i) => (
-                      <i
-                        key={i}
-                        className={`font-13 fa ${
-                          i < randomStars ? "fa-star" : "fa-star-o"
-                        }`}
-                      />
-                    ))}
-                    <span className="spr-badge-caption">
-                      {randomReviews}{" "}
-                      {language === "Armenian"
-                        ? "կարծիք"
-                        : language === "Russian"
-                          ? "отзывов"
-                          : "reviews"}
-                    </span>
-                  </a>
-                </div>
+          {/* Thumbnails */}
+          <div className="d-flex gap-2 overflow-auto pb-2">
+            {product.imageUrls?.map((url, idx) => (
+              <button
+                key={idx}
+                className={`border p-1 rounded-2 bg-white shadow-sm ${
+                  selectedImage === url ? "border-primary border-3" : "border-light"
+                }`}
+                style={{
+                  width: 80,
+                  height: 80,
+                  flex: "0 0 auto",
+                  backgroundImage: `url(${url})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease-in-out",
+                }}
+                onClick={() => setSelectedImage(url)}
+                aria-label={`Select image ${idx + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Info Section */}
+        <div className="col-md-6 card shadow-sm border-0 ">
+            <div className="card-body">
+              <h2 className="card-title fw-bold mb-3">{product.name}</h2>
+
+              <div className="mb-3">
+                <span className="text-muted me-2 text-decoration-line-through">
+                  ${(product.price * 1.3).toFixed(2)}
+                </span>
+                <span className="text-success fs-4 fw-semibold">${product.price.toFixed(2)}</span>
               </div>
 
-              <p className="product-single__price">
-                <s>
-                  <span className="money">
-                    ${(product.sell + product.sell / 3).toFixed(2)}
-                  </span>
-                </s>{" "}
-                <span className="money text-success">${product.sell}</span>
-              </p>
-
-
-                <div className={'text-secondary mt-2 link-underline'}>{categories(language).find(c => c.route === product.category)?.title}</div>
-              <div className="orderMsg mt-2">
-                <img src="/src/images/order-icon.jpg" alt="" />{" "}
-                <strong className="items">{itemsSold}</strong>{" "}
-                {language === "Armenian"
-                  ? "վաճառվել է վերջին"
-                  : language === "Russian"
-                    ? "продано за последние"
-                    : "sold in last"}{" "}
-                <strong className="time">{hoursAgo}</strong>{" "}
-                {language === "Armenian"
-                  ? "ժամանակ"
-                  : language === "Russian"
-                    ? "часов"
-                    : "hours"}
+              <div className="mb-3">
+                <span className="badge bg-light text-dark me-2">ID: {product.id}</span>
+                <span className="badge bg-info text-white">{categoryTitle}</span>
               </div>
 
-              <div
-                className="product-single__description rte mt-3 text-break"
-                style={{ whiteSpace: "pre-wrap" }}
-              >
-                {product.desc ||
-                  (language === "Armenian"
-                    ? "Արտադրված է բարձրորակ նյութերից՝ երկար սպասարկման համար։"
-                    : language === "Russian"
-                      ? "Изготовлено из высококачественных материалов для длительного использования."
-                      : "Crafted from premium materials for long-lasting durability.")}
+              <div className="mb-3">
+                <strong>Status:</strong>{" "}
+                {product.quantity > 0 ? (
+                  <span className="badge bg-success">In Stock</span>
+                ) : (
+                  <span className="badge bg-danger">Out of Stock</span>
+                )}
               </div>
 
-              {product.quantity > 0 && (
-                <div className="quantity_message mt-2">
-                  {language === "Armenian"
-                    ? "Շտապեք! Մնացել է"
-                    : language === "Russian"
-                      ? "Поторопитесь! Осталось всего"
-                      : "Hurry! Only"}{" "}
-                  <span className="items">{product.quantity}</span>{" "}
+              {product.color && (
+                <div className="mb-3 d-flex align-items-center gap-2">
+                  <strong>Color:</strong>
+                  <span
+                    title={product.color}
+                    style={{
+                      width: 20,
+                      height: 20,
+                      backgroundColor: product.color,
+                      borderRadius: "50%",
+                      border: "1px solid #ccc",
+                    }}
+                  />
+                  <span className="text-capitalize">{product.color}</span>
                 </div>
               )}
 
-              <form>
-                <div className="product-action d-flex gap-2">
-                  <div
-                    className="btn product-form__item--submit w-100 d-flex align-items-center justify-content-center"
-                    onClick={() =>
-                      dispatch(
-                        addCartList({
-                          cartItemId: product.id!,
-                          product,
-                          quantity: 1,
-                        }),
-                      )
-                    }
-                  >
-                    {language === "Armenian"
-                      ? "Ավելացնել Զամբյուղ"
-                      : language === "Russian"
-                        ? "Добавить в корзину"
-                        : "Add to cart"}
-                  </div>
-                  <div className="shopify-payment-button w-100">
-                    <button
-                      type="button"
-                      className="shopify-payment-button__button shopify-payment-button__button--unbranded w-100"
-                    >
-                      {language === "Armenian"
-                        ? "Գնել հիմա"
-                        : language === "Russian"
-                          ? "Купить сейчас"
-                          : "Buy it now"}
-                    </button>
+              {product.materials?.length > 0 && (
+                <div className="mb-3">
+                  <strong>Materials:</strong>
+                  <div className="d-flex flex-wrap gap-2 mt-1">
+                    {product.materials.map((m, i) => (
+                      <span key={i} className="badge bg-secondary">{m}</span>
+                    ))}
                   </div>
                 </div>
-              </form>
+              )}
 
-              <div className="display-table shareRow mt-3">
-                <div
-                  className="wishlist-btn"
+              <div className="mb-3">
+                <strong>Description:</strong>
+                <p className="mt-1 text-break" style={{ whiteSpace: "pre-wrap" }}>
+                  {product.desc || "-"}
+                </p>
+              </div>
+
+              <div className="mb-4">
+                <strong>Created:</strong>{" "}
+                {product.dateCreated ? new Date(product.dateCreated).toLocaleDateString() : "-"}
+              </div>
+
+              <div className="d-flex flex-wrap gap-3">
+                <button
+                  className="btn btn-lg btn-primary px-4"
+                  onClick={() => dispatch(addCartList({ cartItemId: product.id!, product, quantity: 1 }))}
+                >
+                  <i className="fa fa-shopping-cart me-2" /> Add to Cart
+                </button>
+                <button
+                  className="btn btn-lg btn-outline-dark px-4"
                   onClick={() => dispatch(addWishlist(product.id!))}
                 >
-                  <a
-                    className="wishlist add-to-wishlist"
-                    href="#"
-                    title={
-                      language === "Armenian"
-                        ? "Ավելացնել ցանկում"
-                        : language === "Russian"
-                          ? "Добавить в список желаний"
-                          : "Add to Wishlist"
-                    }
-                  >
-                    <i className="icon anm anm-heart-l" aria-hidden="true"></i>{" "}
-                    <span>
-                      {language === "Armenian"
-                        ? "Ավելացնել ցանկում"
-                        : language === "Russian"
-                          ? "Добавить в список желаний"
-                          : "Add to Wishlist"}
-                    </span>
-                  </a>
-                </div>
-              </div>
-
-              <div className="userViewMsg mt-2">
-                <i className="fa fa-users" aria-hidden="true"></i>{" "}
-                <strong className="uersView">{viewersNow}</strong>{" "}
-                {language === "Armenian"
-                  ? "մարդիկ դիտում են այս ապրանքը"
-                  : language === "Russian"
-                    ? "человек смотрят этот товар"
-                    : "PEOPLE ARE LOOKING FOR THIS PRODUCT"}
+                  <i className="fa fa-heart me-2" /> Add to Wishlist
+                </button>
               </div>
             </div>
-          </div>
         </div>
       </div>
-    </div>
-  )
-}
+    </main>
+  );
+};
 
-export default ProductPage
+export default ProductPage;
