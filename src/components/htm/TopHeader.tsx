@@ -90,11 +90,6 @@ const TopHeader = () => {
                         ? "Выход"
                         : "Logout"}</Link></li>
 
-                    <li><Link className="dropdown-item text-dark" to="/wishlist">{language === "Armenian"
-                      ? "Նախընտրելիներ"
-                      : language === "Russian"
-                        ? "Список желаний"
-                        : "Wishlist"}</Link></li>
 
                   </>
                 )}
@@ -127,11 +122,6 @@ const TopHeader = () => {
                     : language === "Russian"
                       ? "Выход"
                       : "Logout"}</Link></li>
-                  <li><Link to="/wishlist">{language === "Armenian"
-                    ? "Նախընտրելիներ"
-                    : language === "Russian"
-                      ? "Список желаний"
-                      : "Wishlist"}</Link></li>
 
                 </>
               )}

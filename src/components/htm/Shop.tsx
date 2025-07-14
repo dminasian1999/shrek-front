@@ -1,16 +1,15 @@
 import React, { useContext, useEffect, useState } from "react"
-import { banner3Img, baseUrlBlog, categories, collections } from "../../utils/constants.ts"
+import { banner3Img, baseUrlBlog, collections } from "../../utils/constants.ts"
 import { ProductsContext } from "../../utils/context.ts"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { ProductT } from "../../utils/types.ts"
-import ProductItem from "./ProductItem.tsx"
 import { motion } from "framer-motion"
 import moment from "moment"
 import { addWishlist } from "../../features/api/accountActions.ts"
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
 
 const Shop = () => {
-  const { products, setProducts ,language} = useContext(ProductsContext)
+  const { products, setProducts, language } = useContext(ProductsContext)
 
   const { category } = useParams()
   const [sort, setSort] = useState("dateCreated")
@@ -34,6 +33,7 @@ const Shop = () => {
 
   const fetchProducts = async () => {
     try {
+      setLoading(true)
       const res = await fetch(`${baseUrlBlog}/posts`)
       if (!res.ok) throw new Error(`Fetch error: ${res.status}`)
       const data: ProductT[] = await res.json()
@@ -64,16 +64,16 @@ const Shop = () => {
   }
 
   useEffect(() => {
-    if (category){
+    if (category) {
       searchPosts(category!, sort, asc)
-    }else {
+    } else {
       fetchProducts()
     }
-
   }, [category, sort, asc])
+
   useEffect(() => {
     window.scroll(0, 0)
-  }, [setCurrentPage,currentPage])
+  }, [setCurrentPage, currentPage])
 
   const filteredProducts = products.filter(p =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -128,11 +128,7 @@ const Shop = () => {
                     aria-controls="collapseCategories"
                   >
                     <i className="bi bi-tags me-2"></i>
-                    {language === "Armenian"
-                      ? "Կատեգորիաներ"
-                      : language === "Russian"
-                        ? "Категории"
-                        : "Categories"}
+                    Categories
                   </button>
                 </h2>
                 <div
@@ -181,11 +177,7 @@ const Shop = () => {
                     aria-controls="collapsePrice"
                   >
                     <i className="bi bi-tags me-2"></i>
-                    {language === "Armenian"
-                      ? "Գնային ֆիլտր"
-                      : language === "Russian"
-                        ? "Фильтр по цене"
-                        : "Filter by Price"}
+                    Filter by Price
                   </button>
                 </h2>
                 <div
@@ -203,11 +195,7 @@ const Shop = () => {
                     >
                       <h6 className="fw-semibold mb-3">
                         <i className="bi bi-cash-coin me-2"></i>
-                        {language === "Armenian"
-                          ? "Գնային ֆիլտր"
-                          : language === "Russian"
-                            ? "Фильтр по цене"
-                            : "Filter by Price"}
+                        Filter by Price
                       </h6>
                       <form>
                         <input
@@ -225,33 +213,17 @@ const Shop = () => {
                           <input
                             type="number"
                             className="form-control"
-                            placeholder={
-                              language === "Armenian"
-                                ? "Նվազագույն"
-                                : language === "Russian"
-                                  ? "Минимум"
-                                  : "Min"
-                            }
+                            placeholder="Min"
                           />
                           <span className="input-group-text">-</span>
                           <input
                             type="number"
                             className="form-control"
-                            placeholder={
-                              language === "Armenian"
-                                ? "Առավելագույն"
-                                : language === "Russian"
-                                  ? "Максимум"
-                                  : "Max"
-                            }
+                            placeholder="Max"
                           />
                         </div>
                         <button className="btn btn-dark btn-sm w-100 mt-3" type="submit">
-                          {language === "Armenian"
-                            ? "Կիրառել ֆիլտրը"
-                            : language === "Russian"
-                              ? "Применить фильтр"
-                              : "Apply Filter"}
+                          Apply Filter
                         </button>
                       </form>
                     </motion.div>
@@ -262,84 +234,43 @@ const Shop = () => {
           </motion.div>
 
           <div className="col-sm-12 col-md-9 col-lg-9 main-col">
+
             <motion.div
               className="mb-3 input-group"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
             >
+              <button className="btn btn-outline-dark">
+                <i className="fa fa-search" />
+              </button>
               <input
                 type="text"
                 className="form-control"
-                placeholder={
-                  language === "Armenian"
-                    ? "Փնտրել ապրանքներ..."
-                    : language === "Russian"
-                      ? "Поиск товаров..."
-                      : "Search products..."
-                }
+                placeholder="Search products..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
               />
 
-              <button className="btn btn-outline-dark">
-                <i className="fa fa-search" />
-              </button>
+              <div className="toolbar border-1">
+                <select
+                  onChange={(e) => handleSortChange(e.target.value)}
+                  className="form-select w-auto"
+                  defaultValue="dateCreated-desc"
+                >
+                  <option value="name-asc">Name A–Z</option>
+                  <option value="name-desc">Name Z–A</option>
+                  <option value="price-asc">Price low to high</option>
+                  <option value="price-desc">Price high to low</option>
+                  <option value="dateCreated-desc">Newest</option>
+                  <option value="dateCreated-asc">Oldest</option>
+                </select>
+              </div>
             </motion.div>
 
             <hr />
 
             <div className="productList product-load-more">
-              <div className="toolbar">
-                <select
-                  onChange={e => handleSortChange(e.target.value)}
-                  className="filters-toolbar__input filters-toolbar__input--sort"
-                  defaultValue="dateCreated-desc"
-                >
-                  <option value="name-asc">
-                    {language === "Armenian"
-                      ? "Ալֆավիտային, Ա–Զ"
-                      : language === "Russian"
-                        ? "По алфавиту, А–Я"
-                        : "Alphabetically, A–Z"}
-                  </option>
-                  <option value="name-desc">
-                    {language === "Armenian"
-                      ? "Ալֆավիտային, Զ–Ա"
-                      : language === "Russian"
-                        ? "По алфавиту, Я–А"
-                        : "Alphabetically, Z–A"}
-                  </option>
-                  <option value="sell-asc">
-                    {language === "Armenian"
-                      ? "Գին, ցածրից բարձր"
-                      : language === "Russian"
-                        ? "Цена, по возрастанию"
-                        : "Price, low to high"}
-                  </option>
-                  <option value="sell-desc">
-                    {language === "Armenian"
-                      ? "Գին, բարձրից ցածր"
-                      : language === "Russian"
-                        ? "Цена, по убыванию"
-                        : "Price, high to low"}
-                  </option>
-                  <option value="dateCreated-desc">
-                    {language === "Armenian"
-                      ? "Ամսաթիվ, նորից հին"
-                      : language === "Russian"
-                        ? "Дата, новые сначала"
-                        : "Date, new to old"}
-                  </option>
-                  <option value="dateCreated-asc">
-                    {language === "Armenian"
-                      ? "Ամսաթիվ, հինից նոր"
-                      : language === "Russian"
-                        ? "Дата, старые сначала"
-                        : "Date, old to new"}
-                  </option>
-                </select>
-              </div>
 
               {loading ? (
                 <div className="text-center my-5">
@@ -379,7 +310,7 @@ const Shop = () => {
                         >
                           <img
                             src={p.imageUrls[0]}
-                            className="card-img-top h-100 w-100 object-fit-cove"
+                            className="card-img-top h-100 w-100 object-fit-cover"
                             alt={p.name}
                           />
                           <div className="card-img-overlay p-0 btn-group d-flex flex-column align-items-end ">
@@ -441,15 +372,11 @@ const Shop = () => {
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage(p => p - 1)}
               >
-                {language === "Armenian"
-                  ? "Նախորդ"
-                  : language === "Russian"
-                    ? "Предыдущая"
-                    : "Previous"}
+                Previous
               </button>
               <span className="mx-2">
-    {currentPage} / {totalPages}
-  </span>
+                {currentPage} / {totalPages}
+              </span>
               <button
                 className="btn btn-outline-secondary btn-sm ms-2"
                 disabled={currentPage === totalPages}
@@ -458,11 +385,7 @@ const Shop = () => {
                   setCurrentPage(p => p + 1)
                 }}
               >
-                {language === "Armenian"
-                  ? "Հաջորդ"
-                  : language === "Russian"
-                    ? "Следующая"
-                    : "Next"}
+                Next
               </button>
             </div>
           </div>

@@ -31,7 +31,7 @@ const Main = () => {
 
 
   return (
-    <main>
+    <main className="">
       <Routes>
         {[`/`, `/${navItems[0].route}`].map(path => (
           <Route key={path} path={path} element={<Home />} />

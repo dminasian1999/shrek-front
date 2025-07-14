@@ -10,7 +10,7 @@ const Header = () => {
   const {language} = useContext(ProductsContext)
 
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary">
+    <nav className="navbar navbar-expand-lg bg-body-tertiary p-0">
       <div className="container ">
         <button
           className="navbar-toggler btn--link site-header__menu js-mobile-nav-toggle mobile-nav--open"
@@ -22,9 +22,9 @@ const Header = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        <a className="navbar-brand" href="/">
+        <a className="navbar-brand " href="/">
           <img
-            className={"rounded-circle"}
+            className={"rounded-circle  "}
             height={70}
             src={logoImg}
             alt="Belle Multipurpose Html Template"

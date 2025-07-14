@@ -1,13 +1,10 @@
 import Carousel from "react-multi-carousel"
 
-import { categories, collections, shopCategories } from "../../utils/constants.ts"
-import React, { useContext } from "react"
-import { ProductsContext } from "../../utils/context.ts"
+import { collections } from "../../utils/constants.ts"
+import React from "react"
+import { Link } from "react-router-dom"
 
 const WeeklyBestseller = () => {
-  const {language} = useContext(ProductsContext)
-  const cat =categories(language)
-
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
@@ -21,22 +18,18 @@ const WeeklyBestseller = () => {
     },
     mobile: {
       breakpoint: { max: 464, min: 0 },
-      items: 2,
+      items: 3,
       slidesToSlide: 1,
     },
   }
   return (
     <div className="section ">
       <div className="container mx-auto ">
-       <div className="row ">
-         <div className="section-header text-center">
-           <h2 className="h2 text-3xl font-bold">{language === "Armenian"
-             ? "Ամենավաճառվող ապրանքներ"
-             : language === "Russian"
-               ? "Популярные товары"
-               : "Bestsellers"}</h2>
-         </div>
-       </div>
+        <div className="row ">
+          <div className="section-header text-center">
+            <h2 className="h2 text-3xl font-bold">Bestsellers</h2>
+          </div>
+        </div>
         <div className="col-12 productSlider grid-products ">
           <Carousel
             className={"py-5"}
@@ -52,16 +45,22 @@ const WeeklyBestseller = () => {
             dotListClass="custom-dot-list-style"
             itemClass="carousel-item-padding-40-px"
           >
-            {collections
-              .map((item) => (
-                    <a href={`/category/${item.route}`}
-                      className="p-2 d-flex flex-column align-items-center h-100">
-                        <img src={item.image} className={'object-fit-cover w-100 h-100'} alt={''}></img>
-                      <h2 className="mt-">{item.title}</h2>
-                    </a>
-              ))}
+            {collections.map(item => (
+              <Link
+                to={`/shop/${item.route}`}
+                className="p-2 d-flex flex-column align-items-center h-100"
+              >
+                <img
+                  src={item.image}
+                  className={"object-fit-cover w-100 h-100"}
+                  alt={""}
+                ></img>
+                <h5 className="mt-">{item.title}</h5>
+              </Link>
+            ))}
           </Carousel>
-        </div>    </div>
+        </div>{" "}
+      </div>
     </div>
   )
 }

@@ -9,6 +9,7 @@ import { ProductT, ReceiptT } from "./utils/types.ts"
 import { useEffect, useState } from "react"
 import { ProductsContext } from "./utils/context.ts"
 import Footer from "./components/htm/Footer.tsx"
+import { useLocation } from "react-router-dom"
 
 const App = () => {
   // const [selectedId, setSelectedId] = useState<string>(
@@ -21,6 +22,9 @@ const App = () => {
   const [showModal, setShowModal] = useState(false)
   const [language, setLanguage] = useState("English")
   const token = useAppSelector(state => state.token)
+
+  const location = useLocation()
+
   // const fetchProducts = async () => {
   //   try {
   //     const res = await fetch(${baseUrlBlog}/posts)
@@ -50,10 +54,11 @@ const App = () => {
       setLoading(false)
     }
   }
+
+
   useEffect(() => {
-    // fetchProducts()
-    // fetchReceipts()
-  }, [])
+    window.scroll(0, 0)
+  }, [location.pathname])
   return (
     <ProductsContext.Provider
       value={{
@@ -65,8 +70,7 @@ const App = () => {
         setLanguage,
       }}
     >
-      <div className="emplate-index home2-default  container-fluid  p-0">
-        <div className="pageWrapper row">
+      <div className="container-fluid p-0 ">
           <TopHeader />
           <Header />
           <Main />
@@ -90,7 +94,6 @@ const App = () => {
         </span>
           {/*<QuickViewPopup />*/}
         </div>
-      </div>
     </ProductsContext.Provider>
   )
 }

@@ -54,7 +54,7 @@ const Account = () => {
   }
 
   return (
-    <div className="app-body container">
+    <>
       <Breadcrumb />
 
       <div className="accordion" id="accordionUserProfile">
@@ -284,9 +284,8 @@ const Account = () => {
       {/* Additional Sections */}
       <Address />
       <PaymentInfo />
-      {profile.roles.includes("ADMINISTRATOR") && <AddProduct />}
       {profile.roles.includes("ADMINISTRATOR") && <Products />}
-    </div>
+    </>
   )
 }
 
