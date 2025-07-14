@@ -30,7 +30,7 @@ export interface ProductT {
   price: number
   category: string
   color: string
-  materials: string[]
+  material: string
   desc: string
   dateCreated?: Date
 }
@@ -79,6 +79,21 @@ export interface cartItem {
 quantity: number
 }
 
+export interface QueryT {
+  sortField?: string;
+  asc?: boolean;
+  id?: string;
+  name?: string;
+  category?: string;
+  color?: string;
+  material?: string
+  desc?: string,
+  minPrice?: number,
+  maxPrice?: number,
+  dateCreated?: Date,
+  dateFrom?: Date,
+  dateTo?: Date,
+}
 export interface UserProfile {
 
   firstName: string

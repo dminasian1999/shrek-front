@@ -43,7 +43,7 @@ const CartPageRow = ({ cardItem }: { cardItem: CartItem }) => {
       </td>
       <td>${cardItem.product.price.toFixed(2)}</td>
       <td>
-        <div className="input-group input-group-sm justify-content-center">
+        <div className="input-group input-group-sym justify-content-center">
           <button
             className="btn btn-outline-secondary"
             onClick={handleDecrease}

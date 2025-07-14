@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react"
 import { useAppSelector } from "../../app/hooks.ts";
 import CartPageRow from "./CartPageRow.tsx";
 import PayPalCheckout from "../../paymant/PayPalCheckout.tsx";
 
 const CartPage = () => {
   const cart = useAppSelector((state) => state.user.profile.cart);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   return (
     <div className="px-1">
@@ -95,15 +96,26 @@ const CartPage = () => {
             </div>
 
             <div className="form-check my-3">
-              <input type="checkbox" className="form-check-input" id="terms" required />
+              <input
+                type="checkbox"
+                className="me-2"
+                id="terms"
+                required
+                checked={termsAccepted}
+                onChange={(e) => setTermsAccepted(e.target.checked)}
+              />
               <label className="form-check-label" htmlFor="terms">
                 I agree with the terms and conditions
               </label>
             </div>
 
-            <PayPalCheckout />
+            <PayPalCheckout amount={cart.totalPrice.toFixed(2)} />
 
-            <button type="submit" className="btn btn-primary w-100 mt-3" disabled>
+            <button
+              type="submit"
+              className="btn btn-primary w-100 mt-3"
+              disabled={!termsAccepted}
+            >
               Proceed To Checkout
             </button>
 

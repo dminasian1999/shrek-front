@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react"
 import { banner3Img, baseUrlBlog, collections } from "../../utils/constants.ts"
 import { ProductsContext } from "../../utils/context.ts"
 import { Link, useNavigate, useParams } from "react-router-dom"
-import { ProductT } from "../../utils/types.ts"
+import { ProductT, QueryT } from "../../utils/types.ts"
 import { motion } from "framer-motion"
 import moment from "moment"
 import { addWishlist } from "../../features/api/accountActions.ts"
@@ -13,12 +13,21 @@ const Shop = () => {
 
   const { category } = useParams()
   const [sort, setSort] = useState("dateCreated")
-  const [asc, setAsc] = useState(false)
+  const [asc, setAsc] = useState(true)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
+
   const [currentPage, setCurrentPage] = useState(1)
   const productsPerPage = 12
+
+  // New filters
+  const [minPrice, setMinPrice] = useState<number>()
+  const [maxPrice, setMaxPrice] = useState<number>()
+  const [material, setMaterial] = useState<string>("")
+  const [color, setColor] = useState<string>("")
+  const [dateFrom, setDateFrom] = useState<string>("") // yyyy-mm-dd string for input[type=date]
+  const [dateTo, setDateTo] = useState<string>("")
 
   const user = useAppSelector(state => state.user.profile)
   const token = useAppSelector(state => state.token)
@@ -31,27 +40,17 @@ const Shop = () => {
     setAsc(direction === "asc")
   }
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (query: QueryT) => {
     try {
       setLoading(true)
-      const res = await fetch(`${baseUrlBlog}/posts`)
-      if (!res.ok) throw new Error(`Fetch error: ${res.status}`)
-      const data: ProductT[] = await res.json()
-      setProducts(data)
-    } catch (e: any) {
-      console.error(e)
-      setError(e.message)
-    } finally {
-      setLoading(false)
-    }
-  }
-  const searchPosts = async (criteria: string, sort: string, asc: boolean) => {
-    setLoading(true)
-    setError(null)
-    try {
-      const response = await fetch(
-        `${baseUrlBlog}/posts/criteria/${criteria}/sort/${sort}/asc/${asc}`,
-      )
+      const response = await fetch(`${baseUrlBlog}/posts/search`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify(query),
+      })
       if (!response.ok) throw new Error("Failed to fetch products")
       const data: ProductT[] = await response.json()
       setProducts(data)
@@ -63,21 +62,35 @@ const Shop = () => {
     }
   }
 
-  useEffect(() => {
-    if (category) {
-      searchPosts(category!, sort, asc)
-    } else {
-      fetchProducts()
+  const refetchWithQuery = () => {
+    const query: QueryT = {
+      sortField: sort,
+      asc,
+      category: category || undefined,
+      name: searchTerm || undefined,
+      minPrice,
+      maxPrice,
+      material: material || undefined,
+      color: color || undefined,
+      dateFrom: dateFrom ? new Date(dateFrom) : undefined,
+      dateTo: dateTo ? new Date(dateTo) : undefined,
     }
-  }, [category, sort, asc])
+    fetchProducts(query)
+  }
 
   useEffect(() => {
-    window.scroll(0, 0)
-  }, [setCurrentPage, currentPage])
+    refetchWithQuery()
+  }, [category, sort, asc])
+
+  // You may want to refetch when filters change
+  useEffect(() => {
+    refetchWithQuery()
+  }, [minPrice, maxPrice, material, color, dateFrom, dateTo])
 
   const filteredProducts = products.filter(p =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase()),
   )
+
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage)
   const paginatedProducts = filteredProducts.slice(
     (currentPage - 1) * productsPerPage,
@@ -113,10 +126,8 @@ const Shop = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4 }}
           >
-            <div
-              className="accordion mb-4 shadow-sm rounded"
-              id="categoryAccordion"
-            >
+            {/* Categories Accordion */}
+            <div className="accordion mb-4 shadow-sm rounded" id="categoryAccordion">
               <div className="accordion-item border-0">
                 <h2 className="accordion-header" id="headingCategories">
                   <button
@@ -127,19 +138,18 @@ const Shop = () => {
                     aria-expanded="true"
                     aria-controls="collapseCategories"
                   >
-                    <i className="bi bi-tags me-2"></i>
-                    Categories
+                    <i className="bi bi-tags me-2"></i>Categories
                   </button>
                 </h2>
                 <div
                   id="collapseCategories"
-                  className="accordion-collapse collapse"
+                  className="accordion-collapse collapse show"
                   aria-labelledby="headingCategories"
                   data-bs-parent="#categoryAccordion"
                 >
                   <div className="accordion-body p-0">
                     <ul className="list-group list-group-flush">
-                      {collections.map((category, idx) => (
+                      {collections.map((cat, idx) => (
                         <motion.li
                           key={idx}
                           className="list-group-item px-3 py-2"
@@ -148,11 +158,11 @@ const Shop = () => {
                           transition={{ delay: idx * 0.03 }}
                         >
                           <Link
-                            to={`/shop/${category.route}`}
+                            to={`/shop/${cat.route}`}
                             className="d-block text-decoration-none rounded fw-medium text-dark hover-transition"
                           >
                             <i className="bi bi-chevron-right me-2 text-muted small"></i>
-                            {category.title}
+                            {cat.title}
                           </Link>
                         </motion.li>
                       ))}
@@ -162,10 +172,8 @@ const Shop = () => {
               </div>
             </div>
 
-            <div
-              className="accordion mb-4 shadow-sm rounded"
-              id="priceAccordion"
-            >
+            {/* Price Filter Accordion */}
+            <div className="accordion mb-4 shadow-sm rounded" id="priceAccordion">
               <div className="accordion-item border-0">
                 <h2 className="accordion-header" id="headingPrice">
                   <button
@@ -176,13 +184,12 @@ const Shop = () => {
                     aria-expanded="true"
                     aria-controls="collapsePrice"
                   >
-                    <i className="bi bi-tags me-2"></i>
-                    Filter by Price
+                    <i className="bi bi-tags me-2"></i>Filter by Price
                   </button>
                 </h2>
                 <div
                   id="collapsePrice"
-                  className="accordion-collapse collapse"
+                  className="accordion-collapse collapse show"
                   aria-labelledby="headingPrice"
                   data-bs-parent="#categoryAccordion"
                 >
@@ -194,32 +201,214 @@ const Shop = () => {
                       transition={{ delay: 0.2 }}
                     >
                       <h6 className="fw-semibold mb-3">
-                        <i className="bi bi-cash-coin me-2"></i>
-                        Filter by Price
+                        <i className="bi bi-cash-coin me-2"></i>Filter by Price
                       </h6>
-                      <form>
-                        <input
-                          type="range"
-                          className="form-range"
-                          id="priceRange"
-                          min="0"
-                          max="1000"
-                        />
-                        <div className="d-flex justify-content-between mb-3 text-muted small">
-                          <span>$0</span>
-                          <span>$1000</span>
-                        </div>
+                      <form
+                        onSubmit={e => {
+                          e.preventDefault()
+                          refetchWithQuery()
+                        }}
+                      >
                         <div className="input-group input-group-sm">
                           <input
                             type="number"
                             className="form-control"
                             placeholder="Min"
+                            value={minPrice ?? ""}
+                            onChange={e =>
+                              setMinPrice(e.target.value ? +e.target.value : undefined)
+                            }
+                            min={0}
                           />
                           <span className="input-group-text">-</span>
                           <input
                             type="number"
                             className="form-control"
                             placeholder="Max"
+                            value={maxPrice ?? ""}
+                            onChange={e =>
+                              setMaxPrice(e.target.value ? +e.target.value : undefined)
+                            }
+                            min={0}
+                          />
+                        </div>
+                        <button className="btn btn-dark btn-sm w-100 mt-3" type="submit">
+                          Apply Filter
+                        </button>
+                      </form>
+                    </motion.div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Material Filter */}
+            <div className="accordion mb-4 shadow-sm rounded" id="materialAccordion">
+              <div className="accordion-item border-0">
+                <h2 className="accordion-header" id="headingMaterial">
+                  <button
+                    className="accordion-button fw-bold bg-light"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseMaterial"
+                    aria-expanded="true"
+                    aria-controls="collapseMaterial"
+                  >
+                    <i className="bi bi-tags me-2"></i>Filter by Material
+                  </button>
+                </h2>
+                <div
+                  id="collapseMaterial"
+                  className="accordion-collapse collapse show"
+                  aria-labelledby="headingMaterial"
+                  data-bs-parent="#categoryAccordion"
+                >
+                  <div className="accordion-body p-0">
+                    <motion.div
+                      className="mb-4 p-3 border rounded shadow-sm bg-light"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                    >
+                      <h6 className="fw-semibold mb-3">
+                        <i className="bi bi-tag me-2"></i>Material
+                      </h6>
+                      <form
+                        onSubmit={e => {
+                          e.preventDefault()
+                          refetchWithQuery()
+                        }}
+                      >
+                        <input
+                          type="text"
+                          className="form-control form-control-sm"
+                          placeholder="Material"
+                          value={material}
+                          onChange={e => setMaterial(e.target.value)}
+                        />
+                        <button className="btn btn-dark btn-sm w-100 mt-3" type="submit">
+                          Apply Filter
+                        </button>
+                      </form>
+                    </motion.div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Color Filter */}
+            <div className="accordion mb-4 shadow-sm rounded" id="colorAccordion">
+              <div className="accordion-item border-0">
+                <h2 className="accordion-header" id="headingColor">
+                  <button
+                    className="accordion-button fw-bold bg-light"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseColor"
+                    aria-expanded="true"
+                    aria-controls="collapseColor"
+                  >
+                    <i className="bi bi-palette me-2"></i>Filter by Color
+                  </button>
+                </h2>
+                <div
+                  id="collapseColor"
+                  className="accordion-collapse collapse show"
+                  aria-labelledby="headingColor"
+                  data-bs-parent="#categoryAccordion"
+                >
+                  <div className="accordion-body p-0">
+                    <motion.div
+                      className="mb-4 p-3 border rounded shadow-sm bg-light"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                    >
+                      <h6 className="fw-semibold mb-3">
+                        <i className="bi bi-droplet me-2"></i>Color
+                      </h6>
+                      <form
+                        onSubmit={e => {
+                          e.preventDefault()
+                          refetchWithQuery()
+                        }}
+                      >
+                        <input
+                          type="text"
+                          className="form-control form-control-sm"
+                          placeholder="Color"
+                          value={color}
+                          onChange={e => setColor(e.target.value)}
+                        />
+                        <button className="btn btn-dark btn-sm w-100 mt-3" type="submit">
+                          Apply Filter
+                        </button>
+                      </form>
+                    </motion.div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Date Range Filter */}
+            <div className="accordion mb-4 shadow-sm rounded" id="dateAccordion">
+              <div className="accordion-item border-0">
+                <h2 className="accordion-header" id="headingDate">
+                  <button
+                    className="accordion-button fw-bold bg-light"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseDate"
+                    aria-expanded="true"
+                    aria-controls="collapseDate"
+                  >
+                    <i className="bi bi-calendar-event me-2"></i>Filter by Date
+                  </button>
+                </h2>
+                <div
+                  id="collapseDate"
+                  className="accordion-collapse collapse show"
+                  aria-labelledby="headingDate"
+                  data-bs-parent="#categoryAccordion"
+                >
+                  <div className="accordion-body p-0">
+                    <motion.div
+                      className="mb-4 p-3 border rounded shadow-sm bg-light"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                    >
+                      <h6 className="fw-semibold mb-3">
+                        <i className="bi bi-calendar-range me-2"></i>Date Range
+                      </h6>
+                      <form
+                        onSubmit={e => {
+                          e.preventDefault()
+                          refetchWithQuery()
+                        }}
+                      >
+                        <div className="mb-2">
+                          <label htmlFor="dateFrom" className="form-label">
+                            From
+                          </label>
+                          <input
+                            type="date"
+                            id="dateFrom"
+                            className="form-control form-control-sm"
+                            value={dateFrom}
+                            onChange={e => setDateFrom(e.target.value)}
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="dateTo" className="form-label">
+                            To
+                          </label>
+                          <input
+                            type="date"
+                            id="dateTo"
+                            className="form-control form-control-sm"
+                            value={dateTo}
+                            onChange={e => setDateTo(e.target.value)}
                           />
                         </div>
                         <button className="btn btn-dark btn-sm w-100 mt-3" type="submit">
@@ -234,7 +423,6 @@ const Shop = () => {
           </motion.div>
 
           <div className="col-sm-12 col-md-9 col-lg-9 main-col">
-
             <motion.div
               className="mb-3 input-group"
               initial={{ opacity: 0, y: -10 }}
@@ -249,12 +437,15 @@ const Shop = () => {
                 className="form-control"
                 placeholder="Search products..."
                 value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
+                onChange={e => {
+                  setSearchTerm(e.target.value)
+                  refetchWithQuery()
+                }}
               />
 
               <div className="toolbar border-1">
                 <select
-                  onChange={(e) => handleSortChange(e.target.value)}
+                  onChange={e => handleSortChange(e.target.value)}
                   className="form-select w-auto"
                   defaultValue="dateCreated-desc"
                 >
@@ -271,7 +462,6 @@ const Shop = () => {
             <hr />
 
             <div className="productList product-load-more">
-
               {loading ? (
                 <div className="text-center my-5">
                   <div className="spinner-border text-dark" role="status">
@@ -285,17 +475,9 @@ const Shop = () => {
                   className="grid-products grid--view-items"
                   initial="hidden"
                   animate="visible"
-                  variants={{
-                    hidden: {},
-                    visible: {
-                      transition: {
-                        staggerChildren: 0.05,
-                      },
-                    },
-                  }}
+                  variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
                 >
-                  <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4"
-                  >
+                  <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
                     {paginatedProducts.map(p => (
                       <motion.div
                         key={p.id}
@@ -304,10 +486,7 @@ const Shop = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4 }}
                       >
-                        <a
-                          className="card rounded border shadow  h-100"
-                          href={`/product/${p.id}`}
-                        >
+                        <a className="card rounded border shadow h-100" href={`/product/${p.id}`}>
                           <img
                             src={p.imageUrls[0]}
                             className="card-img-top h-100 w-100 object-fit-cover"
@@ -323,19 +502,17 @@ const Shop = () => {
                               >
                                 <i className="icon anm anm-heart-l"></i>
                               </a>
-
-                              {token &&
-                                user.roles.includes("ADMINISTRATOR") && (
-                                  <div className="edit-btn">
-                                    <Link
-                                      className="edit add-to-compare"
-                                      to={`/product/edit/${p.id}`}
-                                      title="Add to Compare"
-                                    >
-                                      <i className="icon anm anm-edit-l"></i>
-                                    </Link>
-                                  </div>
-                                )}
+                              {token && user.roles.includes("ADMINISTRATOR") && (
+                                <div className="edit-btn">
+                                  <Link
+                                    className="edit add-to-compare"
+                                    to={`/product/edit/${p.id}`}
+                                    title="Edit"
+                                  >
+                                    <i className="icon anm anm-edit-l"></i>
+                                  </Link>
+                                </div>
+                              )}
                             </div>
                           </div>
 
@@ -343,15 +520,8 @@ const Shop = () => {
                             <h5 className="card-title">{p.name}</h5>
                             <p className="card-text ">
                               <p className={"text-truncate"}>{p.desc}</p>
-
-                              <s className="old-price ">
-                                ${(p.price + p.price / 3).toFixed(2)}
-                              </s>
-
-                              <span className="price text-danger">
-                                {" "}
-                                ${p.price}
-                              </span>
+                              <s className="old-price">${(p.price + p.price / 3).toFixed(2)}</s>
+                              <span className="price text-danger"> ${p.price}</span>
                             </p>
                           </div>
                           <div className="card-footer fw-light small">

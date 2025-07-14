@@ -1,11 +1,15 @@
 import React from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
-export default function PayPalCheckout() {
+interface PayPalCheckoutProps {
+  amount: string;
+}
+
+export default function PayPalCheckout({ amount }: PayPalCheckoutProps) {
   return (
     <PayPalScriptProvider
       options={{
-        clientId: "AVZSRuyu6Goh94yBqag6okxD1DLF7eCNEFnwwg-UlHstWc60BHmB7PQ5e742KLsKgSPimpzpyhM7wxEQ", // ✅ camelCase
+        clientId: "AVZSRuyu6Goh94yBqag6okxD1DLF7eCNEFnwwg-UlHstWc60BHmB7PQ5e742KLsKgSPimpzpyhM7wxEQ",
         currency: "USD",
       }}
     >
@@ -18,17 +22,17 @@ export default function PayPalCheckout() {
               {
                 amount: {
                   currency_code: "USD",
-                  value: "10.00",
+                  value: amount,
                 },
               },
             ],
           });
         }}
-        onApprove={(_, actions) => {
-          return actions.order!.capture().then((details) => {
-            alert("Payment completed by " + details.payer?.name?.given_name);
-            // TODO: Notify your backend the payment is complete
-          });
+        onApprove={async (_, actions) => {
+          const details = await actions.order!.capture();
+          alert("Payment completed by " + details.payer?.name?.given_name);
+          // TODO: Notify your backend the payment is complete
+          // TODO: Clear cart and redirect user
         }}
         onError={(err) => {
           console.error("PayPal error:", err);

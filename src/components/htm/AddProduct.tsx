@@ -41,7 +41,7 @@ const emptyProduct: ProductT = {
   price: 0,
   category: "",
   color: "",
-  materials: [], // We'll still store it as an array, but only use one string
+  material:"", // We'll still store it as an array, but only use one string
   desc: "",
 };
 
@@ -80,9 +80,6 @@ const AddProduct: React.FC = () => {
     setProduct((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleMaterialChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setProduct((prev) => ({ ...prev, materials: [e.target.value] }));
-  };
 
   const handleColorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setProduct((prev) => ({ ...prev, color: e.target.value }));
@@ -230,8 +227,8 @@ const AddProduct: React.FC = () => {
           <label className="form-label">{labels.materials}</label>
           <select
             className="form-select"
-            value={product.materials[0] || ""}
-            onChange={handleMaterialChange}
+            value={product.material || ""}
+            onChange={handleChange("material")}
             disabled={saving}
           >
             <option value="">-- {labels.materials} --</option>

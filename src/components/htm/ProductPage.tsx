@@ -141,16 +141,12 @@ const ProductPage = () => {
                 </div>
               )}
 
-              {product.materials?.length > 0 && (
                 <div className="mb-3">
-                  <strong>Materials:</strong>
+                  <strong>Material:</strong>
                   <div className="d-flex flex-wrap gap-2 mt-1">
-                    {product.materials.map((m, i) => (
-                      <span key={i} className="badge bg-secondary">{m}</span>
-                    ))}
+                      <span  className="badge bg-secondary">{product.material}</span>
                   </div>
                 </div>
-              )}
 
               <div className="mb-3">
                 <strong>Description:</strong>

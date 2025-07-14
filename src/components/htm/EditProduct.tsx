@@ -46,7 +46,7 @@ const EditProduct: React.FC = () => {
     price: 0,
     category: "",
     color: "",
-    materials: [],
+    material: "",
     desc: "",
     dateCreated: undefined,
   });
@@ -82,9 +82,6 @@ const EditProduct: React.FC = () => {
     setProduct((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleMaterialChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setProduct((prev) => ({ ...prev, materials: [e.target.value] }));
-  };
 
   const handleColorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setProduct((prev) => ({ ...prev, color: e.target.value }));
@@ -361,8 +358,8 @@ const EditProduct: React.FC = () => {
             <label className="form-label">Material</label>
             <select
               className="form-select"
-              value={product.materials[0] || ""}
-              onChange={handleMaterialChange}
+              value={product.material || ""}
+              onChange={handleChange("material")}
               disabled={saving}
             >
               <option value="">-- Material --</option>
