@@ -10,7 +10,7 @@ const Header = () => {
   const {language} = useContext(ProductsContext)
 
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary p-0">
+    <nav className="navbar navbar-expand-lg  p-0">
       <div className="container ">
         <button
           className="navbar-toggler btn--link site-header__menu js-mobile-nav-toggle mobile-nav--open"
