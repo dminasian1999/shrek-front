@@ -84,7 +84,7 @@ const CartPage = () => {
             <h5 className="fw-bold mb-3">Cart Summary</h5>
             <div className="d-flex justify-content-between border-bottom pb-2">
               <span>Subtotal</span>
-              <span>${cart.totalPrice.toFixed(2)}</span>
+              <span>${cart.totalPrice?.toFixed(2)}</span>
             </div>
             <div className="d-flex justify-content-between border-bottom py-2">
               <span>Shipping</span>
@@ -92,7 +92,7 @@ const CartPage = () => {
             </div>
             <div className="d-flex justify-content-between border-bottom py-2 fw-bold">
               <span>Grand Total</span>
-              <span>${cart.totalPrice.toFixed(2)}</span>
+              <span>${cart.totalPrice?.toFixed(2)}</span>
             </div>
 
             <div className="form-check my-3">
@@ -109,7 +109,7 @@ const CartPage = () => {
               </label>
             </div>
 
-            <PayPalCheckout amount={cart.totalPrice.toFixed(2)} />
+            <PayPalCheckout amount={cart.totalPrice?.toFixed(2)} />
 
             <button
               type="submit"
