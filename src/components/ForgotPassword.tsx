@@ -1,49 +1,75 @@
-import React from 'react';
+import React, { useState } from "react";
+import { baseUrl, logoImg } from "../utils/constants.ts";
+import { useAppSelector } from "../app/hooks.ts";
 
 export default function ForgotPassword() {
-    return (
-        <div className="login-bg">
-            <div className="container p-0">
-                <div className="row g-0">
-                    <div className="col-xl-6 col-lg-12"></div>
-                    <div className="col-xl-6 col-lg-12">
-                        <div className="row align-items-center justify-content-center">
-                            <div className="col-xl-8 col-sm-4 col-12">
-                                <form action="index.html" className="my-5">
-                                    <div className="bg-white p-5 rounded-4">
-                                        <div className="login-form">
-                                            <a href="index.html" className="mb-4 d-flex">
-                                                <img
-                                                    src="assets/images/logo-dark.svg"
-                                                    className="img-fluid login-logo"
-                                                    alt="Admin Dashboards"
-                                                />
-                                            </a>
-                                            <h5 className="fw-light mb-4 lh-2">
-                                                In order to access your account, please enter the email id
-                                                you provided during the registration process.
-                                            </h5>
-                                            <div className="mb-3">
-                                                <label className="form-label">Your Email</label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    placeholder="Enter your email"
-                                                />
-                                            </div>
-                                            <div className="d-grid py-2">
-                                                <a href="index.html" className="btn btn-lg btn-primary">
-                                                    SUBMIT
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
+
+  const token = useAppSelector(state => state.token); // not used here but okay if needed later
+
+  const send = async () => {
+    if (!email) {
+      setMessage("Email is required.");
+      setStatus("error");
+      return;
+    }
+
+    setStatus("loading");
+
+    try {
+      const res = await fetch(`${baseUrl}/password/recovery/${email}`, {
+        method: "GET",
+      });
+
+      if (res.ok) {
+        setStatus("success");
+        setMessage("Password reset link sent! Please check your email.");
+      } else {
+        const errorData = await res.json();
+        setStatus("error");
+        setMessage(errorData.message || "Something went wrong.");
+      }
+    } catch (err) {
+      setStatus("error");
+      setMessage("Network error or server is unreachable.");
+    }
+  };
+
+  return (
+    <div className="container">
+      <div className="row">
+        <div className="col-12 col-sm-12 col-md-6 col-lg-6 main-col offset-md-3">
+          <div className="d-flex my-5 gap-3 flex-column align-items-center justify-content-around">
+            <img
+              className="login-logo"
+              src={logoImg}
+              alt="Logo"
+              height={100}
+            />
+            <input
+              type="email"
+              className="form-control"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <button
+              onClick={send}
+              disabled={status === "loading"}
+              className="btn btn-primary w-100"
+            >
+              {status === "loading" ? "Sending..." : "SUBMIT"}
+            </button>
+            {status !== "idle" && (
+              <div className={`alert ${status === "success" ? "alert-success" : "alert-danger"} w-100 text-center`}>
+                {message}
+              </div>
+            )}
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 }

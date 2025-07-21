@@ -24,11 +24,11 @@ import { useContext } from "react"
 import { ProductsContext } from "../utils/context.ts"
 import Register from "./htm/Register.tsx"
 import Collections from "./htm/Collections.tsx"
+import ResetPassword from "./ResetPassword.tsx"
 
 const Main = () => {
   const token = useAppSelector(state => state.token)
-  const {language} = useContext(ProductsContext)
-
+  const { language } = useContext(ProductsContext)
 
   return (
     <main className="">
@@ -50,20 +50,15 @@ const Main = () => {
         <Route path="/about" element={<About />} />
         <Route path="/wishlist" element={<WishList />} />
         <Route path="/account" element={<Account />} />
-        <Route
-          path={"/login"}
-          element={token ? <Navigate to={"/"} /> : <Login />}
-        ></Route>
-        <Route
-          path={"/register"}
-          element={token ? <Navigate to={"/profile"} /> : <Register />}
-        ></Route>
+        <Route path={"/login"} element={token ? <Navigate to={"/"} /> : <Login />}/>
+        <Route path={"/register"} element={token ? <Navigate to={"/"} /> : <Register />}/>
+        <Route path={"/forgot-password"} element={token ? <Navigate to={"/"} /> : <ForgotPassword />}/>
+        <Route path={"/reset-password/:token"} element={token ? <Navigate to={"/"} /> : <ResetPassword />}/>
         <Route path={"/sells"} element={token ? <Sells /> : <Guest />} />
         <Route path={"/new"} element={token ? <AddProduct /> : <Guest />} />
 
         <Route path="/receipts" element={<ReceiptsList />} />
         <Route path="/contact-us" element={<ContactUs />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/reports" element={<Reports />} />

@@ -55,7 +55,6 @@ const App = () => {
     }
   }
 
-
   useEffect(() => {
     window.scroll(0, 0)
   }, [location.pathname])
@@ -71,29 +70,12 @@ const App = () => {
       }}
     >
       <div className="container-fluid p-0 ">
-          <TopHeader />
-          <Header />
-          <Main />
-          <section
-            style={{
-              padding: "2rem",
-              backgroundColor: "#f9f9f9",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <h3 style={{ textAlign: "center", marginBottom: "1rem" }}>Оплатить PayPal</h3>
-          </section>
-          <Footer />
-          <span
-            id="site-scroll"
-            className="fixed bottom-4 right-4 bg-black text-white p-2 rounded-full"
-          >
-          <i className="text-xl">↑</i>
-        </span>
-          {/*<QuickViewPopup />*/}
-        </div>
+        <TopHeader />
+        <Header />
+        <Main />
+        <Footer />
+        {/*<QuickViewPopup />*/}
+      </div>
     </ProductsContext.Provider>
   )
 }
