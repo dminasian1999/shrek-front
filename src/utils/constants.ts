@@ -654,8 +654,8 @@ export const categories = (language: string) => [
 // export const baseUrl = "http://localhost:8080/users"
 // export const baseUrlBlog = "http://localhost:8080"
 
-export const baseUrl = "https://98.81.230.60:443/users"
-export const baseUrlBlog = "https://98.81.230.60:443"
+export const baseUrl = "https://98.81.230.60/users"
+export const baseUrlBlog = "https://98.81.230.60"
 
 // export const baseUrl = "https://shrek-back.onrender.com/users";
 // export const baseUrlBlog = "https://shrek-back.onrender.com";
