@@ -5,10 +5,10 @@ import { ProductsContext } from "../../utils/context.ts"
 const Footer = () => {
   const { language } = useContext(ProductsContext)
   return (
-    <footer id="footer">
+    <footer className={"p-0"} id="footer">
       <div className="newsletter-section">
-        <div className="container ">
-          <div className="row ">
+        <div className=" ">
+          <div className="p-0">
             <div className="col-12 col-sm-12 col-md-12 col-lg-7  d-flex justify-content-start align-items-center">
               <div className="display-table">
                 <div className="display-table-cell footer-newsletter">

@@ -59,6 +59,8 @@ const App = () => {
     window.scroll(0, 0)
   }, [location.pathname])
   return (
+    <div className="container-fluid row m-0 p-0">
+
     <ProductsContext.Provider
       value={{
         products,
@@ -69,14 +71,14 @@ const App = () => {
         setLanguage,
       }}
     >
-      <div className="container-fluid p-0 ">
-        <TopHeader />
-        <Header />
-        <Main />
-        <Footer />
-        {/*<QuickViewPopup />*/}
-      </div>
+          <TopHeader />
+          <Header />
+          <Main />
+          <Footer />
+          {/*<QuickViewPopup />*/}
+
     </ProductsContext.Provider>
+</div>
   )
 }
 

@@ -31,7 +31,7 @@ const Main = () => {
   const { language } = useContext(ProductsContext)
 
   return (
-    <main className="">
+    <div className="p-0">
       <Routes>
         {[`/`, `/${navItems[0].route}`].map(path => (
           <Route key={path} path={path} element={<Home />} />
@@ -63,7 +63,7 @@ const Main = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/reports" element={<Reports />} />
       </Routes>
-    </main>
+    </div>
   )
 }
 

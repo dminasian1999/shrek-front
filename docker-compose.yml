@@ -1,0 +1,34 @@
+version: '3'
+services:
+  front-end:
+    image: dminasian1999/shrek-front
+    container_name: sevan-view
+    networks:
+      - sevan-net
+    ports:
+      - "9090:80"
+    depends_on:
+      - back-end
+
+  back-end:
+    image: dminasian1999/shrek-back
+    container_name: sevan-service
+    networks:
+      - sevan-net
+    environment:
+      - spring.data.mongodb.authentication-database=admin
+      - spring.data.mongodb.host=db
+      - spring.data.mongodb.port=27017
+      - spring.data.mongodb.database=sevan
+    depends_on:
+      - db
+
+
+  db:
+    image: mongo
+    container_name: sevan-db
+    environment:
+      - MONGO_INITDB_DATABASE=sevan
+
+networks:
+  sevan-net:

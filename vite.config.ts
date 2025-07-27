@@ -4,10 +4,13 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
+  // base: '/otis-kit-pro/',
   build: {
     outDir: 'dist'
   },
   server: {
-    open: true
+    host: true,
+    port: 8080,
+    // open: true
   }
 });

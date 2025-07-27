@@ -653,12 +653,18 @@ export const categories = (language: string) => [
 
 // export const baseUrl = "http://localhost:8080/users"
 // export const baseUrlBlog = "http://localhost:8080"
+// export const baseUrl  = "https://ec2-100-27-204-4.compute-1.amazonaws.com:8080/users"
+// export const baseUrlBlog  = "https://ec2-100-27-204-4.compute-1.amazonaws.com:8080/"
+// export const baseUrl = "http://100.27.204.4:9000/users"
+// export const baseUrlBlog = "http://100.27.204.4:9000/"
+// export const baseUrl = "http://100.27.204.4:8080/users"
+// export const baseUrlBlog = "http://100.27.204.4:8080/"
 
-export const baseUrl = "https://5.102.228.200:32/users"
-export const baseUrlBlog = "https://5.102.228.200:32"
+// export const baseUrl = "https://5.102.228.200:32/users"
+// export const baseUrlBlog = "https://5.102.228.200:32"
 
-// export const baseUrl = "https://shrek-back.onrender.com/users";
-// export const baseUrlBlog = "https://shrek-back.onrender.com";
+export const baseUrl = "https://shrek-back.onrender.com/users";
+export const baseUrlBlog = "https://shrek-back.onrender.com";
 export const createToken = (login: string, password: string) =>
   `Basic ${window.btoa(login + ":" + password)}`
 
