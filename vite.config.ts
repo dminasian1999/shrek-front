@@ -9,8 +9,8 @@ export default defineConfig({
     outDir: 'dist'
   },
   server: {
-    host: true,
-    port: 8080,
+    // host: true,
+    // port: 8080,
     // open: true
   }
 });
