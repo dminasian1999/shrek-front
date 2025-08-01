@@ -36,21 +36,6 @@ export interface ProductT {
 }
 
 
-export interface ReceiptT {
-  id: string
-  name: string
-  imageUrl: string
-  quantity: number
-  sell: number
-  buy: number
-  income: number
-  seller: string
-  category: string
-  type: string
-  desc: string
-  dateCreated: Date
-}
-
 export interface Adjustment {
   num: number
   add: boolean
@@ -104,7 +89,7 @@ export interface UserProfile {
   cart: Cart,
   paymentMethod?:PaymentMethodT,
   wishList?: string[]
-  orders?: Order[]
+  orders?: OrderT[]
 }
 
 export interface PaymentMethodT {
@@ -139,26 +124,46 @@ export interface AddressT {
   country: string
   phone: string
 }
+export interface ReceiptT {
+  id: string
+  name: string
+  imageUrl: string
+  quantity: number
+  sell: number
+  buy: number
+  income: number
+  seller: string
+  category: string
+  type: string
+  desc: string
+  dateCreated: Date
+}
 
-export interface Order {
+
+export interface ProductT {
+  productId: string
+  name: string
+  // add other product fields if needed
+}
+
+export interface OrderItemT {
+  orderItemId: string
+  product: ProductT
+  quantity: number
+  unitPrice: number
+}
+
+export interface OrderT {
   orderId: string
   userId: string
-  status: "pending" | "paid" | "shipped" | "delivered" | "cancelled"
-  orderItems: [OrderItem]
-  totalAmount: 0
+  status: string
+  orderItems: OrderItemT[]
+  totalAmount: number
   shippingAddress: AddressT
-  paymentMethod: "card" | "paypal" | "bank" | "cash"
-  paymentStatus: "unpaid" | "paid" | "failed"
-  createdAt: Date
+  paymentMethod: string
+  dateCreated: Date
 }
 
-export interface OrderItem {
-  id: string
-  orderId: string
-  productId: string
-  quantity: 0
-  priceAtPurchase: 0
-}
 
 export interface Cart {
   userId: string

@@ -1,13 +1,11 @@
-import React, { useState, useEffect, useContext } from "react"
+import React, { useState, useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
 import { updateAddress } from "../../features/api/accountActions.ts"
 import { AddressT } from "../../utils/types.ts"
-import { ProductsContext } from "../../utils/context.ts"
 
 const Address = () => {
   const dispatch = useAppDispatch()
   const address = useAppSelector((state) => state.user.profile.address)
-  const { language } = useContext(ProductsContext)
 
   const [formData, setFormData] = useState<AddressT>({
     fullName: "",
@@ -55,48 +53,13 @@ const Address = () => {
   }
 
   const labels: Record<keyof AddressT, string> = {
-    fullName:
-      language === "Armenian"
-        ? "Ամբողջական անուն"
-        : language === "Russian"
-          ? "Полное имя"
-          : "Full Name",
-    street:
-      language === "Armenian"
-        ? "Փողոց"
-        : language === "Russian"
-          ? "Улица"
-          : "Street Address",
-    city:
-      language === "Armenian"
-        ? "Քաղաք"
-        : language === "Russian"
-          ? "Город"
-          : "City",
-    state:
-      language === "Armenian"
-        ? "Մարզ / Շրջան"
-        : language === "Russian"
-          ? "Область / Регион"
-          : "State / Region",
-    zipCode:
-      language === "Armenian"
-        ? "Փոստային ինդեքս"
-        : language === "Russian"
-          ? "Почтовый индекс"
-          : "Postal Code",
-    country:
-      language === "Armenian"
-        ? "Երկիր"
-        : language === "Russian"
-          ? "Страна"
-          : "Country",
-    phone:
-      language === "Armenian"
-        ? "Հեռախոսահամար"
-        : language === "Russian"
-          ? "Номер телефона"
-          : "Phone Number",
+    fullName: "Full Name",
+    street: "Street Address",
+    city: "City",
+    state: "State / Region",
+    zipCode: "Postal Code",
+    country: "Country",
+    phone: "Phone Number",
   }
 
   return (
@@ -111,11 +74,7 @@ const Address = () => {
             aria-expanded="false"
             aria-controls="collapseAddress"
           >
-            {language === "Armenian"
-              ? "Հասցե"
-              : language === "Russian"
-                ? "Адрес"
-                : "Billing Address"}
+            Billing Address
           </button>
         </h2>
         <div
@@ -126,20 +85,11 @@ const Address = () => {
           <div className="accordion-body">
             <form>
               <fieldset>
-                <h5 className="mb-3">
-                  {language === "Armenian"
-                    ? "Վճարման տվյալներ"
-                    : language === "Russian"
-                      ? "Платежные данные"
-                      : "Billing Details"}
-                </h5>
+                <h5 className="mb-3">Billing Details</h5>
 
                 <div className="row">
                   {Object.entries(labels).map(([name, label]) => (
-                    <div
-                      key={name}
-                      className="form-group col-sm-6 col-12 mb-3"
-                    >
+                    <div key={name} className="form-group col-sm-6 col-12 mb-3">
                       <label htmlFor={`input-${name}`}>{label}</label>
                       {edit ? (
                         <input
@@ -168,22 +118,14 @@ const Address = () => {
                       className="btn btn-outline-secondary"
                       onClick={handleCancel}
                     >
-                      {language === "Armenian"
-                        ? "Չեղարկել"
-                        : language === "Russian"
-                          ? "Отмена"
-                          : "Cancel"}
+                      Cancel
                     </button>
                     <button
                       type="button"
                       className="btn btn-primary"
                       onClick={handleSave}
                     >
-                      {language === "Armenian"
-                        ? "Պահպանել"
-                        : language === "Russian"
-                          ? "Сохранить"
-                          : "Save"}
+                      Save
                     </button>
                   </>
                 ) : (
@@ -192,11 +134,7 @@ const Address = () => {
                     className="btn btn-primary"
                     onClick={() => setEdit(true)}
                   >
-                    {language === "Armenian"
-                      ? "Խմբագրել"
-                      : language === "Russian"
-                        ? "Редактировать"
-                        : "Edit"}
+                    Edit
                   </button>
                 )}
               </div>

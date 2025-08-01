@@ -4,7 +4,6 @@ import { ProductT } from "../../utils/types.ts";
 import { getPostByIds } from "../../features/api/postActions.tsx";
 import { addCartList, removeWishlist } from "../../features/api/accountActions.ts";
 import { ProductsContext } from "../../utils/context.ts";
-import { categories } from "../../utils/constants.ts";
 
 const WishList = () => {
   const { language } = useContext(ProductsContext); // if you still use it elsewhere

@@ -13,7 +13,7 @@ const Shop = () => {
 
   const { category } = useParams()
   const [sort, setSort] = useState("dateCreated")
-  const [asc, setAsc] = useState(true)
+  const [asc, setAsc] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState("")

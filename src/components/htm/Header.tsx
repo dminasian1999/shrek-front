@@ -1,5 +1,5 @@
 import React, { useContext } from "react"
-import { categories, logoImg, navItems } from "../../utils/constants.ts"
+import {  logoImg, navItems } from "../../utils/constants.ts"
 import { Link, useNavigate } from "react-router-dom"
 import { useAppSelector } from "../../app/hooks.ts"
 import { ProductsContext } from "../../utils/context.ts"

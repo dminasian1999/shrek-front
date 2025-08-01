@@ -50,7 +50,7 @@ const ProductPage = () => {
     );
   }
 
-  const categoryTitle = categories("English").find(c => c.route === product.category)?.title || product.category || "-";
+  const categoryTitle = categories.find(c => c.route === product.category)?.title || product.category || "-";
 
   return (
     <main className="container-fluid p-0">

@@ -11,6 +11,7 @@ import PaymentInfo from "./PaymentInfo.tsx"
 import AddProduct from "./AddProduct.tsx"
 import { ProductsContext } from "../../utils/context.ts"
 import Products from "./Products.tsx"
+import Orders from "./Orders.tsx"
 
 const Account = () => {
   const dispatch = useAppDispatch()
@@ -281,7 +282,7 @@ const Account = () => {
         </div>
       </div>
 
-      {/* Additional Sections */}
+     <Orders/>
       <Address />
       <PaymentInfo />
       {profile.roles.includes("ADMINISTRATOR") && <Products />}

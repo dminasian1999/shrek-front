@@ -146,7 +146,8 @@ const Footer = () => {
                       : "Shop"}
                 </h4>
                 <ul>
-                  {categories(language).map(c => (
+                  {/*categories(language).map*/}
+                  {categories.map(c => (
                     <li>
                       <a href={`/category/${c.route}`}>{c.title}</a>
                     </li>
@@ -258,15 +259,15 @@ const Footer = () => {
                 <ul className="addressFooter">
                   <li>
                     <i className="icon anm anm-map-marker-al"></i>
-                    <p>{adminInfo(language).address}</p>
+                    <p>{adminInfo.address}</p>
                   </li>
                   <li className="phone">
                     <i className="icon anm anm-phone-s"></i>
-                    <p> {adminInfo(language).phone}</p>
+                    <p> {adminInfo.phone}</p>
                   </li>
                   <li className="email">
                     <i className="icon anm anm-envelope-l"></i>
-                    <p> {adminInfo(language).email}</p>
+                    <p> {adminInfo.email}</p>
                   </li>
                 </ul>
               </div>

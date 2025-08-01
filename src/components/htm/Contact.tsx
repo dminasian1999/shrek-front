@@ -161,15 +161,15 @@ const Contact = () => {
           <ul className="list-unstyled fs-6 d-flex flex-column gap-3 mb-4">
             <li>
               <i className="icon anm anm-map-marker-al me-2"></i>
-              {adminInfo(language).address}
+              {adminInfo.address}
             </li>
             <li>
               <i className="icon anm anm-phone-s me-2"></i>
-              {adminInfo(language).phone}
+              {adminInfo.phone}
             </li>
             <li>
               <i className="icon anm anm-envelope-l me-2"></i>
-              {adminInfo(language).email}
+              {adminInfo.email}
             </li>
           </ul>
 
