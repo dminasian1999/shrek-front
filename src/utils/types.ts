@@ -140,11 +140,6 @@ export interface ReceiptT {
 }
 
 
-export interface ProductT {
-  productId: string
-  name: string
-  // add other product fields if needed
-}
 
 export interface OrderItemT {
   orderItemId: string
