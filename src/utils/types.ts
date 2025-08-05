@@ -110,7 +110,6 @@ export interface UserRegister {
 export interface UserEditData {
   firstName: string
   lastName: string
-  paymentMethod?: paymentMethodT,
 }
 
 export interface UserUpdatePassword {
