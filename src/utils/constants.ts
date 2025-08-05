@@ -63,7 +63,6 @@ export const collections = [
   { title: "Magnets", route: "magnets", image: magnets },
 ];
 
-// ====== URLs & Auth ======
 // export const baseUrl = "http://localhost:8080/users";
 // export const baseUrlBlog = "http://localhost:8080";
 export const baseUrl = "https://shrek-back.onrender.com/users";

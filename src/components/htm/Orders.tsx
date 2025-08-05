@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { useAppSelector } from "../../app/hooks.ts"
-import { AddressT, OrderItemT, OrderT } from "../../utils/types.ts"
+import { OrderItemT, OrderT } from "../../utils/types.ts"
 import { baseUrlBlog } from "../../utils/constants.ts"
 
 const statusMap: Record<string, string> = {
@@ -188,7 +188,9 @@ const Orders = () => {
                                   </td>
                                   <td>
                                       <span
-                                        className={`badge bg-success -${statusMap[order.status ?? "Paid"]}`}
+                                        className={`badge bg-${
+                                          statusMap[order.status ?? "Paid"] ?? "secondary"
+                                        }`}
                                       >
                                         {order.status}
                                       </span>
@@ -220,7 +222,7 @@ const Orders = () => {
                                   </td>
                                 </tr>
                               )
-                            })
+                            }),
                           )}
                           </tbody>
                         </table>

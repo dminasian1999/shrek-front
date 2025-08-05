@@ -25,19 +25,22 @@ import { ProductsContext } from "../utils/context.ts"
 import Register from "./htm/Register.tsx"
 import Collections from "./htm/Collections.tsx"
 import ResetPassword from "./ResetPassword.tsx"
+import AllOrders from "./htm/AllOrders.tsx"
+import OrderDetails from "./htm/OrderDetails.tsx"
 
 const Main = () => {
   const token = useAppSelector(state => state.token)
   const { language } = useContext(ProductsContext)
 
   return (
-    <div className="p-0">
+    <div className="container-fluid p-0">
       <Routes>
         {[`/`, `/${navItems[0].route}`].map(path => (
           <Route key={path} path={path} element={<Home />} />
         ))}
         {/*<Route path="/products" element={<Products />} />*/}
         <Route path="/cart" element={<CartPage />} />
+        <Route path="/orders/:orderId" element={<OrderDetails />} />
 
         <Route path="/shop" element={<Shop />} />
         <Route path="/collections" element={<Collections />} />
@@ -62,6 +65,7 @@ const Main = () => {
         <Route path="/faq" element={<FAQ />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/reports" element={<Reports />} />
+        <Route path="/all-orders" element={<AllOrders />} />
       </Routes>
     </div>
   )
