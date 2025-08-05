@@ -90,12 +90,12 @@ const ShippingEstimator = () => {
           <div className="mt-3">
             <h6>Shipping Rates:</h6>
             <ul className="list-group">
-              {rates.map((rate) => (
-                <li key={rate.object_id} className="list-group-item d-flex justify-content-between align-items-center">
-                  {rate.provider} - {rate.servicelevel.name}
-                  <span>{rate.currency} {rate.amount}</span>
-                </li>
-              ))}
+              {/*{rates.map((rate) => (*/}
+              {/*  <li key={rate.object_id} className="list-group-item d-flex justify-content-between align-items-center">*/}
+              {/*    {rate.provider} - {rate.servicelevel.name}*/}
+              {/*    <span>{rate.currency} {rate.amount}</span>*/}
+              {/*  </li>*/}
+              {/*))}*/}
             </ul>
           </div>
         )}
