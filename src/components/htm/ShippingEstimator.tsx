@@ -24,7 +24,7 @@ const ShippingEstimator = () => {
       const data = await response.json();
       setRates(data.rates || []);
     } catch (err) {
-      setError(err.message);
+      setError(null);
     } finally {
       setLoading(false);
     }
