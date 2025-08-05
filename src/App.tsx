@@ -54,10 +54,10 @@ const App = () => {
       setLoading(false)
     }
   }
-
-  useEffect(() => {
-    window.scroll(0, 0)
-  }, [location.pathname])
+  //
+  // useEffect(() => {
+  //   window.scroll(0, 0)
+  // }, [location.pathname])
   return (
     <div className="container-fluid row m-0 p-0">
 

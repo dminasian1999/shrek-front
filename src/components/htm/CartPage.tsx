@@ -1,13 +1,53 @@
 import React, { useState } from "react"
-import { useAppSelector } from "../../app/hooks.ts";
-import CartPageRow from "./CartPageRow.tsx";
-import PayPalCheckout from "../../paymant/PayPalCheckout.tsx";
-import { paymentImg } from "../../utils/constants.ts"
-import ShippingEstimator from "./ShippingEstimator.tsx"
+import { useAppDispatch, useAppSelector } from "../../app/hooks"
+import CartPageRow from "./CartPageRow"
+import PayPalCheckout from "../../paymant/PayPalCheckout"
+import { baseUrl } from "../../utils/constants"
+import ShippingEstimator from "./ShippingEstimator"
+import { checkOut } from "../../features/api/accountActions.ts"
+import { OrderT } from "../../utils/types.ts"
 
 const CartPage = () => {
-  const cart = useAppSelector((state) => state.user.profile.cart);
-  const [termsAccepted, setTermsAccepted] = useState(false);
+  const dispatch = useAppDispatch()
+
+  const profile = useAppSelector(state => state.user.profile)
+  const [termsAccepted, setTermsAccepted] = useState(false)
+  const token = useAppSelector(state => state.token)
+
+  const handleCheckout = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!termsAccepted) {
+      alert("Please accept the terms to proceed.")
+      return
+    }
+
+    const orderItems = profile.cart.items.map(item => ({
+      productId: item.product.id,
+      quantity: item.quantity,
+      unitPrice: item.product.price,
+    }))
+
+    const orderPayload: OrderT = {
+      userId: profile.login,
+      paymentMethod: "PayPal",
+      shippingAddress: profile.address!,
+      orderItems,
+    }
+
+    try {
+      // Dispatch the async thunk instead of fetch
+      const resultAction = await dispatch(checkOut(orderPayload))
+
+      if (checkOut.fulfilled.match(resultAction)) {
+        alert("Your order(s) have been successfully placed!")
+        // TODO: clear cart or redirect user
+      } else {
+        throw new Error( "Order creation failed.")
+      }
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "There was a problem placing your order.")
+    }
+  }
 
   return (
     <div className="px-1">
@@ -32,7 +72,7 @@ const CartPage = () => {
           </tr>
           </thead>
           <tbody>
-          {cart.items.map((item) => (
+          {profile.cart.items.map(item => (
             <CartPageRow key={item.cartItemId} cardItem={item} />
           ))}
           </tbody>
@@ -49,15 +89,14 @@ const CartPage = () => {
       </div>
 
       <div className="row gy-4">
-        {/* Estimate Shipping */}
-<ShippingEstimator/>
-        {/* Cart Summary */}
+        <ShippingEstimator />
+
         <div className="col-12 col-md-6">
           <div className="border rounded p-4 shadow-sm h-100">
             <h5 className="fw-bold mb-3">Cart Summary</h5>
             <div className="d-flex justify-content-between border-bottom pb-2">
               <span>Subtotal</span>
-              <span>${cart.totalPrice?.toFixed(2)}</span>
+              <span>${profile.cart.totalPrice?.toFixed(2)}</span>
             </div>
             <div className="d-flex justify-content-between border-bottom py-2">
               <span>Shipping</span>
@@ -65,7 +104,7 @@ const CartPage = () => {
             </div>
             <div className="d-flex justify-content-between border-bottom py-2 fw-bold">
               <span>Grand Total</span>
-              <span>${cart.totalPrice?.toFixed(2)}</span>
+              <span>${profile.cart.totalPrice?.toFixed(2)}</span>
             </div>
 
             <div className="form-check my-3">
@@ -75,39 +114,28 @@ const CartPage = () => {
                 id="terms"
                 required
                 checked={termsAccepted}
-                onChange={(e) => setTermsAccepted(e.target.checked)}
+                onChange={e => setTermsAccepted(e.target.checked)}
               />
               <label className="form-check-label" htmlFor="terms">
                 I agree with the terms and conditions
               </label>
             </div>
 
-            <PayPalCheckout amount={cart.totalPrice?.toFixed(2)} />
+            <PayPalCheckout amount={profile.cart.totalPrice?.toFixed(2)} />
 
             <button
               type="submit"
+              onClick={handleCheckout}
               className="btn btn-primary w-100 mt-3"
               disabled={!termsAccepted}
             >
               Proceed To Checkout
             </button>
-
-            <div className="text-center mt-3">
-              <img
-                src={paymentImg}
-                alt="Accepted payment methods"
-                className="img-fluid"
-                style={{ maxHeight: "60px" }}
-              />
-              <p className="mt-2 mb-0">
-                <a href="#">Checkout with Multiple Addresses</a>
-              </p>
-            </div>
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CartPage;
+export default CartPage

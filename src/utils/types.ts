@@ -87,17 +87,19 @@ export interface UserProfile {
   roles: string[]
   address?: AddressT
   cart: Cart,
-  paymentMethod?:PaymentMethodT,
+  paymentMethod?:paymentMethodT,
   wishList?: string[]
-  orders?: OrderT[]
+  orders: OrderT[]
 }
 
-export interface PaymentMethodT {
-  type: string
-  provider: string
-  accountNumberMasked: string
-  expiryDate: string
+export type paymentMethodT = {
+  cardname: string
+  cardtype: string
+  cardno: string
+  cvv: string
+  exdate: string
 }
+
 export interface UserRegister {
   login: string
   firstName: string
@@ -108,6 +110,7 @@ export interface UserRegister {
 export interface UserEditData {
   firstName: string
   lastName: string
+  paymentMethod?: paymentMethodT,
 }
 
 export interface UserUpdatePassword {
@@ -142,22 +145,30 @@ export interface ReceiptT {
 
 
 export interface OrderItemT {
-  orderItemId: string
-  product: ProductT
+  productId?: string
   quantity: number
   unitPrice: number
 }
-
 export interface OrderT {
-  orderId: string
+  orderId?: string
   userId: string
-  status: string
+  status?: string
   orderItems: OrderItemT[]
-  totalAmount: number
   shippingAddress: AddressT
   paymentMethod: string
-  dateCreated: Date
+  dateCreated?:  Date  // ISO string preferred when sending
 }
+
+// export interface OrderT {
+//   orderId: string
+//   userId: string
+//   status?: string
+//   orderItems: OrderItemT[]
+//   totalAmount: number
+//   shippingAddress: AddressT
+//   paymentMethod: string
+//   dateCreated: Date
+// }
 
 
 export interface Cart {

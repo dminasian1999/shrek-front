@@ -2,11 +2,11 @@ import { createSlice } from "@reduxjs/toolkit"
 import { UserProfile } from "../../utils/types"
 import {
   addCartList,
-  addWishlist,
+  addWishlist, checkOut,
   fetchUser,
   registerUser, removeCartList,
   removeWishlist,
-  updateAddress, updateCartList,
+  updateAddress, updateCartList, updatePaymentInfo,
   updateUser
 } from "../api/accountActions.ts"
 
@@ -133,6 +133,31 @@ const userSlice = createSlice({
       .addCase(updateCartList.rejected, (state, action) => {
         state.loading = false
         state.errorMessage = action.error.message || "updateCartList failed!"
+      })
+      .addCase(updatePaymentInfo.fulfilled, (state, action) => {
+        state.profile = action.payload
+        state.loading = false
+      })
+      .addCase(updatePaymentInfo.pending, state => {
+        state.loading = true
+      })
+      .addCase(updatePaymentInfo.rejected, (state, action) => {
+        state.loading = false
+        state.errorMessage = action.error.message || "Update failed!"
+      })
+      .addCase(checkOut.pending, state => {
+        state.loading = true
+        state.errorMessage = null
+      })
+      .addCase(checkOut.fulfilled, (state, action) => {
+        // You might want to update profile or orders in the state if needed
+        // For example, if backend returns updated user profile with orders:
+        state.profile.orders = [...state.profile.orders, action.payload]
+        state.loading = false
+      })
+      .addCase(checkOut.rejected, (state, action) => {
+        state.loading = false
+        state.errorMessage =  action.error.message || "Order creation failed!"
       })
   },
 })

@@ -1,13 +1,13 @@
 import { RootState } from "../../app/store"
 import { createAsyncThunk } from "@reduxjs/toolkit"
-import { baseUrl, createToken } from "../../utils/constants"
+import { baseUrl, baseUrlBlog, createToken } from "../../utils/constants"
 import {
   AddressT,
-  CartItem,
+  CartItem, paymentMethodT,
   UserEditData,
   UserProfile,
   UserRegister,
-  UserUpdatePassword,
+  UserUpdatePassword
 } from "../../utils/types"
 
 export const registerUser = createAsyncThunk("user/register", async (user: UserRegister) => {
@@ -37,6 +37,43 @@ export const fetchUser = createAsyncThunk("user/login", async (token: string) =>
   const data = await res.json()
   return { data, token }
 })
+// In ../api/accountActions.ts
+
+export const checkOut = createAsyncThunk(
+  "user/createOrder",
+  async (orderPayload: any, { getState, rejectWithValue }) => {
+    try {
+      const state = getState() as any;
+      const token = state.token; // or wherever your token is in state
+      const userId = state.user.profile.login;
+
+      // const response = await fetch(`${baseUrl}/${userId}/payment/createOrder?isAdd=true`, {
+      //   method: "POST",
+      //   headers: {
+      //     Authorization: token,
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(orderPayload),
+      // });
+      const response = await fetch(`${baseUrlBlog}/checkOut`, {
+        method: "POST",
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderPayload),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create order.");
+      }
+
+      return await response.json();
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 export const fetchAllUsers = async () => {
   const response = await fetch(`${baseUrl}/users`)
@@ -57,6 +94,24 @@ export const updateUser = createAsyncThunk<any, UserEditData, { state: RootState
     })
     if (!res.ok) throw new Error(`Oops,something went wrong!`)
     return res.json()
+  },
+)
+export const updatePaymentInfo = createAsyncThunk<any, paymentMethodT, { state: RootState }>(
+  "user/payment",
+  async (paymentInfo, { getState }) => {
+    const res = await fetch(
+      `${baseUrl}/payment-method/${getState().user.profile.login}`,
+      {
+        method: "Put",
+        body: JSON.stringify(paymentInfo),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getState().token,
+        },
+      },
+    )
+    if (!res.ok) throw new Error("Oops, something went wrong!")
+    return await res.json()
   },
 )
 

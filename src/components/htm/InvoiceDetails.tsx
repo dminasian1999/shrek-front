@@ -1,22 +1,22 @@
 import React from "react"
 
 type InvoiceItem = {
-  title: string
-  description: string
-  productId: string
-  hours: number
-  amount: number
+  title?: string
+  description?: string
+  productId?: string
+  hours?: number
+  amount?: number
 }
 
 type InvoiceProps = {
-  invoiceId: string
+  invoiceId?: string
   date: string
-  status: "Paid" | "Pending" | "Overdue"
-  billedTo: string
-  shippedTo: string
+  status?: string
+  billedTo?: string
+  shippedTo?: string
   items: InvoiceItem[]
   notes?: string
-  discount: number
+  discount?: number
   vat: number
 }
 
@@ -28,17 +28,17 @@ const InvoiceDetails: React.FC<InvoiceProps> = ({
                                                   shippedTo,
                                                   items,
                                                   notes,
-                                                  discount,
+                                                  discount = 0,
                                                   vat,
                                                 }) => {
-  const subtotal = items.reduce((acc, item) => acc + item.amount, 0)
+  const subtotal = items.reduce((acc, item) => acc + (item.amount ?? 0), 0)
   const total = subtotal - discount + vat
 
   const statusClass = {
     Paid: "success",
     Pending: "warning",
     Overdue: "danger",
-  }[status]
+  }[status ?? "Paid"] || "secondary"
 
   return (
     <div className="row gx-3">
@@ -70,12 +70,12 @@ const InvoiceDetails: React.FC<InvoiceProps> = ({
             <div className="row justify-content-between">
               <div className="col-lg-6 col-12">
                 <h6 className="fw-semibold">Billed To:</h6>
-                <p className="m-0">{billedTo}</p>
+                <p className="m-0" style={{ whiteSpace: "pre-line" }}>{billedTo}</p>
               </div>
               <div className="col-lg-6 col-12">
                 <div className="text-end">
                   <h6 className="fw-semibold">Shipped To:</h6>
-                  <p className="text-end m-0">{shippedTo}</p>
+                  <p className="text-end m-0" style={{ whiteSpace: "pre-line" }}>{shippedTo}</p>
                 </div>
               </div>
               <div className="col-12 mb-3"></div>
@@ -108,7 +108,7 @@ const InvoiceDetails: React.FC<InvoiceProps> = ({
                           <h6>{item.hours}</h6>
                         </td>
                         <td>
-                          <h6>${item.amount.toFixed(2)}</h6>
+                          <h6>${(item.amount ?? 0).toFixed(2)}</h6>
                         </td>
                       </tr>
                     ))}

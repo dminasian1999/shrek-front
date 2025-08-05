@@ -15,7 +15,7 @@ const EditUser = ({close}:Props) => {
         setLastName("");
     }
     const handleClickSave=()=>{
-        dispatch(updateUser({firstName, lastName}))
+        dispatch(updateUser({firstName, lastName,paymentMethod:{type:""}}))
         close();
     }
     return (
