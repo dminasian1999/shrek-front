@@ -1,17 +1,71 @@
-import React, { useState } from "react"
+import React, { useState, useMemo } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import CartPageRow from "./CartPageRow"
 import PayPalCheckout from "../../paymant/PayPalCheckout"
-import ShippingEstimator from "./ShippingEstimator"
 import { checkOut } from "../../features/api/accountActions.ts"
 import { OrderT } from "../../utils/types.ts"
 
-const CartPage = () => {
-  const dispatch = useAppDispatch()
+// ===== SHIPPING CALC UTILS =====
+type VolumeTier = "1-4" | "5-25";
 
+const ECO_TABLE: Array<[number, number, number]> = [
+  [100, 45, 39],
+  [250, 50, 43],
+  [500, 61, 50],
+  [750, 70, 61],
+  [1000, 82, 64],
+  [1500, 102, 75],
+  [2000, 117, 88],
+];
+
+const ecoPrice = (weight: number, tier: VolumeTier): number | null => {
+  if (weight <= 0 || weight > 2000) return null;
+  for (const [max, price14, price525] of ECO_TABLE) {
+    if (weight <= max) return tier === "5-25" ? price525 : price14;
+  }
+  return null;
+};
+
+const emsPrice = (weight: number): number => {
+  const base = 145;
+  if (weight <= 500) return base;
+  const extra = Math.ceil((weight - 500) / 500);
+  return base + 20 * extra;
+};
+
+const getBestShipping = (weight: number, monthlyShipments: number) => {
+  const tier: VolumeTier = monthlyShipments >= 5 ? "5-25" : "1-4";
+  const eco = ecoPrice(weight, tier);
+  const ems = emsPrice(weight);
+
+  if (eco == null) {
+    return { method: "EMS", cost: ems, notes: ["EcoPost supports only up to 2000g"] };
+  }
+  if (eco <= ems) {
+    return { method: "ECOPOST", cost: eco, notes: [`Tier ${tier}`] };
+  }
+  return { method: "EMS", cost: ems, notes: [`EMS cheaper than EcoPost (Tier ${tier})`] };
+};
+
+// ===== MAIN COMPONENT =====
+const CartPage2 = () => {
+  const dispatch = useAppDispatch()
   const profile = useAppSelector(state => state.user.profile)
-  const [termsAccepted, setTermsAccepted] = useState(false)
   const token = useAppSelector(state => state.token)
+  const [termsAccepted, setTermsAccepted] = useState(false)
+
+  // 🏷️ Calculate cart total weight
+  const totalWeight = useMemo(() => {
+    return profile.cart.items.reduce(
+      (sum, item) => sum + item.product.weight * item.quantity,
+      0
+    )
+  }, [profile.cart.items])
+
+  // 🏷️ Choose shipping option
+  const shippingQuote = useMemo(() => {
+    return getBestShipping(totalWeight, profile.cart.items.length)
+  }, [totalWeight, profile.cart.items.length])
 
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -34,31 +88,26 @@ const CartPage = () => {
     }
 
     try {
-      // Dispatch the async thunk instead of fetch
       const resultAction = await dispatch(checkOut(orderPayload))
-
       if (checkOut.fulfilled.match(resultAction)) {
         alert("Your order(s) have been successfully placed!")
         // TODO: clear cart or redirect user
       } else {
-        throw new Error( "Order creation failed.")
+        throw new Error("Order creation failed.")
       }
     } catch (error) {
       alert(error instanceof Error ? error.message : "There was a problem placing your order.")
     }
   }
-  const countShipping =()=>{
 
-  }
+  const subtotal = profile.cart.totalPrice ?? 0
+  const shippingCost = shippingQuote?.cost ?? 0
+  const grandTotal = subtotal + shippingCost
+
   return (
     <div className="px-1">
       <div className="text-center mb-4">
         <h1 className="fw-bold">Shopping Cart</h1>
-      </div>
-
-      <div className="alert alert-success text-center">
-        <i className="fa fa-truck me-2" />
-        <strong>Congratulations!</strong> You've got free shipping!
       </div>
 
       <div className="table-responsive mb-4">
@@ -90,24 +139,24 @@ const CartPage = () => {
       </div>
 
       <div className="row gy-4">
-        <ShippingEstimator />
-
         <div className="col-12 col-md-6">
           <div className="border rounded p-4 shadow-sm h-100">
             <h5 className="fw-bold mb-3">Cart Summary</h5>
             <div className="d-flex justify-content-between border-bottom pb-2">
               <span>Subtotal</span>
-              <span>${profile.cart.totalPrice?.toFixed(2)}</span>
+              <span>${subtotal.toFixed(2)}</span>
             </div>
             <div className="d-flex justify-content-between border-bottom py-2">
-              <span>Shipping</span>
-              <span>Free</span>
-              {/*<span>{countShipping()}</span>*/}
+              <span>Shipping ({shippingQuote?.method})</span>
+              <span>₪{shippingCost.toFixed(2)}</span>
             </div>
             <div className="d-flex justify-content-between border-bottom py-2 fw-bold">
               <span>Grand Total</span>
-              <span>${profile.cart.totalPrice?.toFixed(2)}</span>
+              <span>₪{grandTotal.toFixed(2)}</span>
             </div>
+            {shippingQuote?.notes && (
+              <small className="text-muted">Note: {shippingQuote.notes.join(", ")}</small>
+            )}
 
             <div className="form-check my-3">
               <input
@@ -123,7 +172,7 @@ const CartPage = () => {
               </label>
             </div>
 
-            <PayPalCheckout amount={profile.cart.totalPrice?.toFixed(2)} />
+            <PayPalCheckout amount={grandTotal.toFixed(2)} />
 
             <button
               type="submit"
@@ -140,4 +189,4 @@ const CartPage = () => {
   )
 }
 
-export default CartPage
+export default CartPage2

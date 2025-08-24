@@ -19,7 +19,7 @@ const Slideshow = () => {
               <h1>Welcome to the Sevan Armenian Ceramics Center – Jerusalem’s Online Shop for Authentic Souvenirs</h1>
             </div>
 
-        </div>
+          </div>
         </div>
         <div className="carousel-item">
           <div className="carousel-img-wrapper">

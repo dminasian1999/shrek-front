@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { ProductsContext } from "../../utils/context.ts";
 import { useAppSelector } from "../../app/hooks.ts";
 import { ProductT } from "../../utils/types.ts";
-import { allMaterials, baseUrlBlog, collections } from "../../utils/constants.ts";
+import { allMaterials, baseUrlBlog, collections, sizeOptions } from "../../utils/constants.ts"
 
 const exampleColors = [
   { name: "Red", value: "red" },
@@ -40,10 +40,13 @@ const emptyProduct: ProductT = {
   quantity: 0,
   price: 0,
   category: "",
+  weight: 0,
+  size: "",
   color: "",
   material:"", // We'll still store it as an array, but only use one string
   desc: "",
 };
+
 
 const AddProduct: React.FC = () => {
   const [product, setProduct] = useState<ProductT>(emptyProduct);
@@ -169,6 +172,51 @@ const AddProduct: React.FC = () => {
               </option>
             ))}
           </select>
+        </div>
+
+        {/* Wight */}
+        <div className="col-md-4">
+          <label className="form-label">Wight</label>
+          <input
+            type="number"
+            min={0}
+            className="form-control"
+            value={product.weight}
+            onChange={handleChange("weight")}
+            disabled={saving}
+          />
+        </div>
+        {/* Size */}
+
+        <div className="col-md-6">
+          <label className="form-label">Size</label>
+          <select
+            className="form-select"
+            value={product.size || ""}
+            onChange={handleChange("size")}
+            disabled={saving}
+          >
+            <option value="">-- Size --</option>
+            {sizeOptions.map((s) => (
+              <option key={s.value} value={s.value}>
+                {s.name}
+              </option>
+            ))}
+          </select>
+
+          {/* Optional custom size input */}
+          {product.size === "custom" && (
+            <input
+              type="text"
+              className="form-control mt-2"
+              placeholder="e.g., 10×15 cm or 20 cm diameter"
+              value={product.size || "" as any}
+              onChange={(e) =>
+                setProduct((prev) => ({ ...prev, customSizeText: e.target.value as any }))
+              }
+              disabled={saving}
+            />
+          )}
         </div>
 
         {/* Quantity */}

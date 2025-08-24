@@ -160,3 +160,11 @@ export const categories = [
     ],
   },
 ];
+export const sizeOptions = [
+  { name: "XS", value: "XS" },
+  { name: "S", value: "S" },
+  { name: "M", value: "M" },
+  { name: "L", value: "L" },
+  { name: "XL", value: "XL" },
+  { name: "Custom…", value: "custom" },
+];

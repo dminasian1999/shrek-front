@@ -27,6 +27,7 @@ import Collections from "./htm/Collections.tsx"
 import ResetPassword from "./ResetPassword.tsx"
 import AllOrders from "./htm/AllOrders.tsx"
 import OrderDetails from "./htm/OrderDetails.tsx"
+import CartPage2 from "./htm/CartPage2.tsx"
 
 const Main = () => {
   const token = useAppSelector(state => state.token)
@@ -40,7 +41,7 @@ const Main = () => {
         ))}
         {/*<Route path="/products" element={<Products />} />*/}
         <Route path="/cart" element={<CartPage />} />
-        <Route path="/orders/:orderId" element={<OrderDetails />} />
+        <Route path="/order/:orderId" element={<OrderDetails />} />
 
         <Route path="/shop" element={<Shop />} />
         <Route path="/collections" element={<Collections />} />

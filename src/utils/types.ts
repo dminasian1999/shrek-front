@@ -29,6 +29,8 @@ export interface ProductT {
   quantity: number
   price: number
   category: string
+  weight : number,
+  size: string,
   color: string
   material: string
   desc: string

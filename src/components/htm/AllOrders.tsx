@@ -137,7 +137,9 @@ const AllOrders = () => {
         return (
           <div key={order.orderId} className="card p-4 order-card">
             <div className="order-header">
-              <h5 className="mb-0 fw-semibold">Order #{order.orderId}</h5>
+              <div className="mb-0 fw-semibold ">Order#
+                <Link className="text-decoration-underline text-primary" to={'/order/'+order.orderId}> {order.orderId}</Link>
+            </div>
               <span
                 className={`order-status badge ${
                   order.status === "Paid"
