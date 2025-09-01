@@ -125,15 +125,15 @@ const ProductPageSide = () => {
             </div>
             <p className="product-single__price product-single__price-product-template">
               <span className="visually-hidden">Regular price</span>
-              <s id="ComparePrice-product-template"><span className="money">$900.00</span></s>
+              <s id="ComparePrice-product-template"><span className="money">₪900.00</span></s>
               <span
                 className="product-price__price product-price__price-product-template product-price__sale product-price__sale--single">
-  <span id="ProductPrice-product-template"><span className="money">$788.00</span></span>
+  <span id="ProductPrice-product-template"><span className="money">₪788.00</span></span>
   </span>
               <span className="discount-badge"> <span className="devider">|</span>&nbsp;
                 <span>You Save</span>
   <span id="SaveAmount-product-template" className="product-single__save-amount">
-  <span className="money">$100.00</span>
+  <span className="money">₪100.00</span>
   </span>
   <span className="off">(<span>16</span>%)</span>
   </span>

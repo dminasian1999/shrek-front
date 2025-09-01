@@ -14,7 +14,8 @@ export default function PayPalCheckout({ amount }: PayPalCheckoutProps) {
       }}
     >
       <PayPalButtons
-        style={{ layout: "vertical" }}
+        style={{ layout: "vertical",disableMaxWidth: true }}
+
         createOrder={(_, actions) => {
           return actions.order.create({
             intent: "CAPTURE",

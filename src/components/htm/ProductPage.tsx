@@ -119,10 +119,10 @@ const ProductPage = () => {
 
             <div className="mb-3">
               <span className="text-muted me-2 text-decoration-line-through">
-                ${(product.price * 1.3).toFixed(2)}
+               ₪{(product.price * 1.3).toFixed(2)}
               </span>
               <span className="text-success fs-4 fw-semibold">
-                ${product.price.toFixed(2)}
+             ₪{product.price.toFixed(2)}
               </span>
             </div>
 

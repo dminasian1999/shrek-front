@@ -142,24 +142,24 @@ const CheckOut = () => {
                     <tbody>
                       <tr>
                         <td className="text-left">Spike Jacket</td>
-                        <td>$99</td>
+                        <td>₪99</td>
                         <td>S</td>
                         <td>1</td>
-                        <td>$99</td>
+                        <td>₪99</td>
                       </tr>
                       <tr>
                         <td className="text-left">Argon Sweater</td>
-                        <td>$199</td>
+                        <td>₪199</td>
                         <td>M</td>
                         <td>2</td>
-                        <td>$298</td>
+                        <td>₪298</td>
                       </tr>
                       <tr>
                         <td className="text-left">Babydoll Bow Dress</td>
-                        <td>$299</td>
+                        <td>₪299</td>
                         <td>XL</td>
                         <td>3</td>
-                        <td>$398</td>
+                        <td>₪398</td>
                       </tr>
                     </tbody>
                     <tfoot className="font-weight-600">
@@ -167,13 +167,13 @@ const CheckOut = () => {
                         <td colSpan={4} className="text-right">
                           Shipping
                         </td>
-                        <td>$50.00</td>
+                        <td>₪50.00</td>
                       </tr>
                       <tr>
                         <td colSpan={4} className="text-right">
                           Total
                         </td>
-                        <td>$845.00</td>
+                        <td>₪845.00</td>
                       </tr>
                     </tfoot>
                   </table>

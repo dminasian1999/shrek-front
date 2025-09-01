@@ -41,7 +41,7 @@ const CartPageRow = ({ cardItem }: { cardItem: CartItem }) => {
         <strong>{cardItem.product.name}</strong>
         <div className="text-muted small">{cardItem.product.category}</div>
       </td>
-      <td>${cardItem.product.price.toFixed(2)}</td>
+      <td>₪{cardItem.product.price.toFixed(2)}</td>
       <td>
         <div className="input-group input-group-sym justify-content-center">
           <button
@@ -68,7 +68,7 @@ const CartPageRow = ({ cardItem }: { cardItem: CartItem }) => {
           </button>
         </div>
       </td>
-      <td>${(cardItem.product.price * cardItem.quantity).toFixed(2)}</td>
+      <td>₪{(cardItem.product.price * cardItem.quantity).toFixed(2)}</td>
       <td>
         <button
           className="btn btn-outline-danger btn-sm"

@@ -1,33 +1,26 @@
 import React, { useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
+import { estimateShipping } from "../../features/api/accountActions.ts"
 
 const ShippingEstimator = () => {
-  const [country, setCountry] = useState("");
-  const [state, setState] = useState("");
+  const user = useAppSelector(state => state.user.profile)
+  const [country, setCountry] = useState(user.address!.country);
+
+  const [weight, setWeight] = useState(user.cart.items.reduce((total, t) => total + (t.product.weight * t.quantity), 0));
   const [zip, setZip] = useState("");
   const [rates, setRates] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const dispatch = useAppDispatch()
+  const token = useAppSelector(state => state.token)
+
 
   const handleCalculate = async () => {
+    dispatch(estimateShipping({ token, country, weight }))
     setLoading(true);
     setError(null);
     setRates([]);
 
-    try {
-      const response = await fetch("/api/shipping", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ country, state, zip }),
-      });
-      if (!response.ok) throw new Error("Failed to fetch rates");
-
-      const data = await response.json();
-      setRates(data.rates || []);
-    } catch (err) {
-      setError(null);
-    } finally {
-      setLoading(false);
-    }
   };
 
 
@@ -46,37 +39,21 @@ const ShippingEstimator = () => {
             <select
               className="form-select"
               id="country"
-              value={country}
+              value={user.address!.country}
               onChange={(e) => setCountry(e.target.value)}
               required
             >
-              <option value="">Select Country</option>
-              <option>Armenia</option>
-              <option>United States</option>
-              <option>Germany</option>
-              <option>France</option>
-              <option>United Kingdom</option>
+              <option>{user.address?.country}</option>
             </select>
           </div>
           <div className="mb-3">
-            <label htmlFor="state" className="form-label">State</label>
+            <label htmlFor="weight" className="form-label">Weight</label>
             <input
-              type="text"
-              id="state"
+              type="number"
+              id="weight"
               className="form-control"
-              value={state}
-              onChange={(e) => setState(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="zip" className="form-label">Postal Code</label>
-            <input
-              type="text"
-              id="zip"
-              className="form-control"
-              value={zip}
-              onChange={(e) => setZip(e.target.value)}
+              value={user.cart.items.reduce((total, t) => total + (t.product.weight * t.quantity), 0)}
+              onChange={(e) => setWeight(e.target.value)}
               required
             />
           </div>

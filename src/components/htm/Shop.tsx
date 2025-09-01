@@ -520,8 +520,8 @@ const Shop = () => {
                             <h5 className="card-title">{p.name}</h5>
                             <p className="card-text ">
                               <p className={"text-truncate"}>{p.desc}</p>
-                              <s className="old-price">${(p.price + p.price / 3).toFixed(2)}</s>
-                              <span className="price text-danger"> ${p.price}</span>
+                              <s className="old-price">₪{(p.price + p.price / 3).toFixed(2)}</s>
+                              <span className="price text-danger"> ₪{p.price}</span>
                             </p>
                           </div>
                           <div className="card-footer fw-light small">

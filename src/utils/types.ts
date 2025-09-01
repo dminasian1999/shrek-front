@@ -175,6 +175,7 @@ export interface OrderT {
 export interface Cart {
   userId: string
   items: CartItem[]
+  shippingPrice: number
   totalPrice: number
 }
 

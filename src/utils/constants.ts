@@ -22,11 +22,13 @@ import rings from "../images/categories/rings.jpg";
 import souvenirs from "../images/categories/souvenirs.jpg";
 import tiles from "../images/categories/tiles.jpg";
 import vases from "../images/categories/vases.jpg";
+import bghero from "../images/bgHero.jpg";
 
 import payment from "../images/payment-img.jpg";
 import { NavItemT } from "./types.ts";
 
 // ====== Assets ======
+export const bgHero = bghero;
 export const banner1Img = banner1;
 export const banner2Img = banner2;
 export const banner3Img = banner3;

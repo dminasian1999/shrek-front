@@ -108,7 +108,7 @@ const InvoiceDetails: React.FC<InvoiceProps> = ({
                           <h6>{item.hours}</h6>
                         </td>
                         <td>
-                          <h6>${(item.amount ?? 0).toFixed(2)}</h6>
+                          <h6>₪{(item.amount ?? 0).toFixed(2)}</h6>
                         </td>
                       </tr>
                     ))}
@@ -121,10 +121,10 @@ const InvoiceDetails: React.FC<InvoiceProps> = ({
                         <h5 className="mt-4 text-primary">Total USD</h5>
                       </td>
                       <td>
-                        <p>${subtotal.toFixed(2)}</p>
-                        <p>${discount.toFixed(2)}</p>
-                        <p>${vat.toFixed(2)}</p>
-                        <h5 className="mt-4 text-primary">${total.toFixed(2)}</h5>
+                        <p>₪{subtotal.toFixed(2)}</p>
+                        <p>₪{discount.toFixed(2)}</p>
+                        <p>₪{vat.toFixed(2)}</p>
+                        <h5 className="mt-4 text-primary">₪{total.toFixed(2)}</h5>
                       </td>
                     </tr>
                     {notes && (
