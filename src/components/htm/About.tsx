@@ -23,8 +23,8 @@ const About = () => {
               <div className="rte-setting">
                 <p>
                   We are proud to have two shops in the Old City:
-                  <p> • Shop 1: Next to Zion Gate, No. 15</p>
-                  <p className="">
+                  <p className={'fw-bold'}> • Shop 1: Next to Zion Gate, No. 15</p>
+                  <p className="fw-bold">
                     • Shop 2: On Habad Street, No. 84, near the Jewish Quarter
                   </p>
                   <p>
@@ -42,7 +42,7 @@ const About = () => {
         <div className="col-md-12 text-center">
           <img className="blur-up w-100 p-5" src={bgHero} alt="About Us" />
         </div>
-        <div className="row">
+        <div className="row px-2">
           <div className="col-12">
             <h2>History </h2>
             <p>

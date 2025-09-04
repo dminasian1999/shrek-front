@@ -164,20 +164,20 @@ const userSlice = createSlice({
         state.loading = false
         state.errorMessage = action.error.message || "Order creation failed!"
       })
-      .addCase(estimateShipping.pending, state => {
-        state.loading = true
-        state.errorMessage = null
-      })
-      .addCase(estimateShipping.fulfilled, (state, action) => {
-        // You might want to update profile or orders in the state if needed
-        // For example, if backend returns updated user profile with orders:
-        state.profile.cart.shippingPrice =  action.payload
-        state.loading = false
-      })
-      .addCase(estimateShipping.rejected, (state, action) => {
-        state.loading = false
-        state.errorMessage = action.error.message || "Order creation failed!"
-      })
+      // .addCase(estimateShipping.pending, state => {
+      //   state.loading = true
+      //   state.errorMessage = null
+      // })
+      // .addCase(estimateShipping.fulfilled, (state, action) => {
+      //   // You might want to update profile or orders in the state if needed
+      //   // For example, if backend returns updated user profile with orders:
+      //   state.profile.cart.shippingPrice =  action.payload
+      //   state.loading = false
+      // })
+      // .addCase(estimateShipping.rejected, (state, action) => {
+      //   state.loading = false
+      //   state.errorMessage = action.error.message || "Order creation failed!"
+      // })
   },
 })
 

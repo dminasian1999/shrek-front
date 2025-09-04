@@ -59,27 +59,27 @@ export const fetchUser = createAsyncThunk(
 // )
 // In ../api/accountActions.ts
 
-export const estimateShipping = createAsyncThunk<any, any, { state: RootState }>(
-  "user/estimateShipping",
-  async ({ country, weight }, {}) => {
-    const res = await fetch(
-      `http://localhost:8080/shippingCost/${country}/${weight}`,
-    )
-    if (!res.ok) throw new Error(`Oops,something went wrong!`)
-    return  res.json()
-  },
-)
+// export const estimateShipping = createAsyncThunk<any, any, { state: RootState }>(
+//   "user/estimateShipping",
+//   async ({ country, weight }, {}) => {
+//     const res = await fetch(
+//       `http://localhost:8080/shippingCost/${country}/${weight}`,
+//     )
+//     if (!res.ok) throw new Error(`Oops,something went wrong!`)
+//     return  res.json()
+//   },
+// )
 
-// export const estimateShipping = async ( country:string, weight :number ) => {
-//   const response = await fetch(`http://localhost:8080/shippingCost/${country}/${weight+''}`, );
-//
-//   if (!response.ok) {
-//     throw new Error(`Failed: ${response.status} ${response.statusText}`);
-//   }
-//
-//   const res = await response.json();
-//   return res;
-// };
+export const estimateShipping = async ( country:string, weight :number ) => {
+  const response = await fetch(`http://localhost:8080/shippingCost/${country}/${weight+''}`, );
+
+  if (!response.ok) {
+    throw new Error(`Failed: ${response.status} ${response.statusText}`);
+  }
+
+  const res = await response.json();
+  return res;
+};
 
 
 

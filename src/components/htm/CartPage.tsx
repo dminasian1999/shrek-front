@@ -71,10 +71,10 @@ const CartPage = () => {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    dispatch(estimateShipping({ country, weight })).then(r =>
-      setShippingPrice(r.payload),
-    )
-    // estimateShipping(country,weight).then(setShippingPrice)
+    // dispatch(estimateShipping({ country, weight })).then(r =>
+    //   setShippingPrice(r.payload),
+    // )
+    estimateShipping(country!,weight).then(setShippingPrice)
   }, [subtotal])
 
   return (
