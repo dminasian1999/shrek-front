@@ -10,20 +10,34 @@ const Login = () => {
   const dispatch = useAppDispatch()
   const { loading, errorMessage } = useAppSelector(state => state.user)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!login || !password) {
-      alert("Please fill in all fields.")
-      return
-    }
-
-    dispatch(fetchUser(createToken(login, password)))
-  }
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault()
+  //
+  //   if (!login || !password) {
+  //     alert("Please fill in all fields.")
+  //     return
+  //   }
+  //
+  //   dispatch(fetchUser(createToken(login, password)))
+  // }
 
   // useEffect(() => {
   //   return () =>set
   // })
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!login || !password) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    await dispatch(fetchUser(createToken(login, password)));
+    setTimeout(() => setIsSubmitting(false), 1500); // ensure 1.5s spinner
+  };
 
   return (
     <div id="page-content">
@@ -86,14 +100,23 @@ const Login = () => {
                       type="submit"
                       className="btn mb-3"
                       onClick={handleSubmit}
-                      // disabled={loading}
+                      disabled={loading || isSubmitting}
                     >
-                      {loading ? (
-                        <div className="spinner-border" />
-                      ) : (
-                        "Sign In"
-                      )}
+                      {(loading || isSubmitting) ? <div className="spinner-border" /> : "Sign In"}
                     </button>
+
+                    {/*<button*/}
+                    {/*  type="submit"*/}
+                    {/*  className="btn mb-3"*/}
+                    {/*  onClick={handleSubmit}*/}
+                    {/*  // disabled={loading}*/}
+                    {/*>*/}
+                    {/*  {loading ? (*/}
+                    {/*    <div className="spinner-border" />*/}
+                    {/*  ) : (*/}
+                    {/*    "Sign In"*/}
+                    {/*  )}*/}
+                    {/*</button>*/}
 
                     {errorMessage && (
                       <div className="alert alert-danger" role="alert">
