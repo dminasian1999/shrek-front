@@ -4,6 +4,7 @@ import CartPageRow from "./CartPageRow"
 import PayPalCheckout from "../../paymant/PayPalCheckout"
 import { checkOut, estimateShipping } from "../../features/api/accountActions.ts"
 import { OrderT } from "../../utils/types.ts"
+import CheckOut from "../CheckOut.tsx"
 
 const CartPage = () => {
   const dispatch = useAppDispatch()
@@ -71,10 +72,9 @@ const CartPage = () => {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    // dispatch(estimateShipping({ country, weight })).then(r =>
-    //   setShippingPrice(r.payload),
-    // )
-    estimateShipping(country!,weight).then(setShippingPrice)
+    // dispatch(estimateShipping({ country, weight }))
+    // setShippingPrice(profile.cart.shippingPrice)
+    // estimateShipping(country!,weight).then(setShippingPrice)
   }, [subtotal])
 
   return (
@@ -124,48 +124,8 @@ const CartPage = () => {
 
         <div className="col-12 col-md-12">
           <div className="border rounded p-4 shadow-sm h-100">
-            <h5 className="fw-bold mb-3">Cart Summary</h5>
-            <div className="d-flex justify-content-between border-bottom pb-2">
-              <span>Subtotal</span>
-              <span>₪{subtotal}</span>
-            </div>
-            <div className="d-flex justify-content-between border-bottom py-2">
-              <span>Shipping</span>
-              <span>{shippingPrice}</span>
-              {/*<span>{dispatch(estimateShipping({ token, country, weight }))}</span>*/}
-              {/*<span>{countShipping()}</span>*/}
-            </div>
-            <div className="d-flex justify-content-between border-bottom py-2 fw-bold">
-              <span>Grand Total</span>
-              <span>
-                ₪{profile.cart.totalPrice + profile.cart.shippingPrice}
-              </span>
-            </div>
+            <CheckOut/>
 
-            <div className="form-check my-3">
-              <input
-                type="checkbox"
-                className="me-2"
-                id="terms"
-                required
-                checked={termsAccepted}
-                onChange={e => setTermsAccepted(e.target.checked)}
-              />
-              <label className="form-check-label" htmlFor="terms">
-                I agree with the terms and conditions
-              </label>
-            </div>
-
-            <PayPalCheckout amount={profile.cart.totalPrice?.toFixed(2)} />
-
-            <button
-              type="submit"
-              onClick={handleCheckout}
-              className="btn btn-primary w-100 mt-3"
-              disabled={!termsAccepted}
-            >
-              Proceed To Checkout
-            </button>
           </div>
         </div>
       </div>

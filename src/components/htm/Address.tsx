@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react"
-import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
-import { updateAddress } from "../../features/api/accountActions.ts"
-import { AddressT } from "../../utils/types.ts"
+import React, { useState, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
+import { updateAddress } from "../../features/api/accountActions.ts";
+import { AddressT } from "../../utils/types.ts";
+import { countries } from "../../utils/constants.ts"
+
 
 const Address = () => {
-  const dispatch = useAppDispatch()
-  const address = useAppSelector((state) => state.user.profile.address)
+  const dispatch = useAppDispatch();
+  const address = useAppSelector((state) => state.user.profile?.address);
 
   const [formData, setFormData] = useState<AddressT>({
     fullName: "",
@@ -15,8 +17,8 @@ const Address = () => {
     zipCode: "",
     country: "",
     phone: "",
-  })
-  const [edit, setEdit] = useState(false)
+  });
+  const [edit, setEdit] = useState(false);
 
   useEffect(() => {
     if (address) {
@@ -28,29 +30,60 @@ const Address = () => {
         zipCode: address.zipCode || "",
         country: address.country || "",
         phone: address.phone || "",
-      })
+      });
+    } else {
+      // optional: ensure empty defaults if no address yet
+      setFormData({
+        fullName: "",
+        street: "",
+        city: "",
+        state: "",
+        zipCode: "",
+        country: "",
+        phone: "",
+      });
     }
-  }, [address])
+  }, [address]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
   const handleCancel = () => {
     if (address) {
-      setFormData({ ...address })
+      setFormData({
+        fullName: address.fullName || "",
+        street: address.street || "",
+        city: address.city || "",
+        state: address.state || "",
+        zipCode: address.zipCode || "",
+        country: address.country || "",
+        phone: address.phone || "",
+      });
+    } else {
+      setFormData({
+        fullName: "",
+        street: "",
+        city: "",
+        state: "",
+        zipCode: "",
+        country: "",
+        phone: "",
+      });
     }
-    setEdit(false)
-  }
+    setEdit(false);
+  };
 
   const handleSave = () => {
-    dispatch(updateAddress(formData))
-    setEdit(false)
-  }
+    dispatch(updateAddress(formData));
+    setEdit(false);
+  };
 
   const labels: Record<keyof AddressT, string> = {
     fullName: "Full Name",
@@ -60,7 +93,10 @@ const Address = () => {
     zipCode: "Postal Code",
     country: "Country",
     phone: "Phone Number",
-  }
+  };
+
+  const inputTypeFor = (field: keyof AddressT) =>
+    field === "phone" ? "tel" : "text";
 
   return (
     <div className="accordion" id="accordionAddress">
@@ -77,32 +113,67 @@ const Address = () => {
             Billing Address
           </button>
         </h2>
+
         <div
           id="collapseAddress"
           className="accordion-collapse collapse"
           aria-labelledby="headingAddress"
         >
           <div className="accordion-body">
-            <form>
+            <form onSubmit={(e) => e.preventDefault()}>
               <fieldset>
                 <h5 className="mb-3">Billing Details</h5>
 
                 <div className="row">
-                  {Object.entries(labels).map(([name, label]) => (
+                  {(
+                    Object.keys(labels) as Array<keyof AddressT>
+                  ).map((name) => (
                     <div key={name} className="form-group col-sm-6 col-12 mb-3">
-                      <label htmlFor={`input-${name}`}>{label}</label>
+                      <label htmlFor={`input-${name}`} className="form-label">
+                        {labels[name]}
+                      </label>
+
                       {edit ? (
-                        <input
-                          id={`input-${name}`}
-                          name={name}
-                          type="text"
-                          className="form-control"
-                          value={formData[name as keyof AddressT]}
-                          onChange={handleChange}
-                        />
+                        name === "country" ? (
+                          <select
+                            id={`input-${name}`}
+                            name={name}
+                            className="form-select"
+                            value={formData[name] || ""}
+                            onChange={handleChange}
+                            required
+                          >
+                            <option value="">Select country</option>
+                            {countries.map((c) => (
+                              <option key={c} value={c}>
+                                {c}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <input
+                            id={`input-${name}`}
+                            name={name}
+                            type={inputTypeFor(name)}
+                            className="form-control"
+                            value={formData[name] || ""}
+                            onChange={handleChange}
+                            // simple hints:
+                            placeholder={
+                              name === "zipCode"
+                                ? "e.g. 94105"
+                                : name === "phone"
+                                  ? "e.g. +1 415 555 1234"
+                                  : undefined
+                            }
+                            required={
+                              name !== "state" // example: state optional
+                            }
+                          />
+                        )
                       ) : (
-                        <p className="form-control-plaintext">
-                          {formData[name as keyof AddressT] || "-"}
+                        <p className="form-control-plaintext mb-0">
+                          {formData[name] || "-"}
                         </p>
                       )}
                     </div>
@@ -143,7 +214,7 @@ const Address = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Address
+export default Address;

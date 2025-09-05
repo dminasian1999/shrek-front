@@ -1,7 +1,15 @@
 import { RootState } from "../../app/store"
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import { baseUrl, baseUrlBlog, createToken } from "../../utils/constants"
-import { AddressT, CartItem, paymentMethodT, UserEditData, UserRegister, UserUpdatePassword } from "../../utils/types"
+import {
+  AddressT,
+  CartItem,
+  OrderT,
+  paymentMethodT,
+  UserEditData,
+  UserRegister,
+  UserUpdatePassword
+} from "../../utils/types"
 
 export const registerUser = createAsyncThunk(
   "user/register",
@@ -59,66 +67,81 @@ export const fetchUser = createAsyncThunk(
 // )
 // In ../api/accountActions.ts
 
-// export const estimateShipping = createAsyncThunk<any, any, { state: RootState }>(
-//   "user/estimateShipping",
-//   async ({ country, weight }, {}) => {
-//     const res = await fetch(
-//       `http://localhost:8080/shippingCost/${country}/${weight}`,
-//     )
-//     if (!res.ok) throw new Error(`Oops,something went wrong!`)
-//     return  res.json()
-//   },
-// )
-
-export const estimateShipping = async ( country:string, weight :number ) => {
-  const response = await fetch(`http://localhost:8080/shippingCost/${country}/${weight+''}`, );
-
-  if (!response.ok) {
-    throw new Error(`Failed: ${response.status} ${response.statusText}`);
-  }
-
-  const res = await response.json();
-  return res;
-};
-
-
-
-
-export const checkOut = createAsyncThunk(
-  "user/createOrder",
-  async (orderPayload: any, { getState, rejectWithValue }) => {
-    try {
-      const state = getState() as any
-      const token = state.token // or wherever your token is in state
-      const userId = state.user.profile.login
-
-      // const response = await fetch(`${baseUrl}/${userId}/payment/createOrder?isAdd=true`, {
-      //   method: "POST",
-      //   headers: {
-      //     Authorization: token,
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(orderPayload),
-      // });
-      const response = await fetch(`${baseUrlBlog}/checkOut`, {
-        method: "POST",
-        headers: {
-          Authorization: token,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(orderPayload),
-      })
-
-      if (!response.ok) {
-        throw new Error("Failed to create order.")
-      }
-
-      return await response.json()
-    } catch (error: any) {
-      return rejectWithValue(error.message)
-    }
+export const estimateShipping = createAsyncThunk<any, any, { state: RootState }>(
+  "user/estimateShipping",
+  async ({ country, weight }:{country:string,weight:number}, {}) => {
+    const res = await fetch(
+      `http://localhost:8080/shippingCost/${country}/${weight}`,
+    )
+    if (!res.ok) throw new Error(`Oops,something went wrong!`)
+    return  res.json()
   },
 )
+
+// export const estimateShipping = async ( country:string, weight :number ) => {
+//   const response = await fetch(`http://localhost:8080/shippingCost/${country}/${weight+''}`, );
+//
+//   if (!response.ok) {
+//     throw new Error(`Failed: ${response.status} ${response.statusText}`);
+//   }
+//
+//   const res = await response.json();
+//   return res;
+// };
+
+
+export const checkOut = createAsyncThunk<any, OrderT, { state: RootState }>(
+  "user/createOrder",
+  async (orderPayload: any, { getState }) => {
+    const res = await fetch(`${baseUrlBlog}/checkOut`, {
+      method: "POST",
+      headers: {
+        Authorization: getState().token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(orderPayload),
+    })
+    if (!res.ok) throw new Error(`Oops,something went wrong!`)
+    return res.json()
+  },
+
+)
+
+// export const checkOut = createAsyncThunk(
+//   "user/createOrder",
+//   async (orderPayload: any, { getState, rejectWithValue }) => {
+//     try {
+//       const state = getState() as any
+//       const token = state.token // or wherever your token is in state
+//       const userId = state.user.profile.login
+//
+//       // const response = await fetch(`${baseUrl}/${userId}/payment/createOrder?isAdd=true`, {
+//       //   method: "POST",
+//       //   headers: {
+//       //     Authorization: token,
+//       //     "Content-Type": "application/json",
+//       //   },
+//       //   body: JSON.stringify(orderPayload),
+//       // });
+//       const response = await fetch(`${baseUrlBlog}/checkOut`, {
+//         method: "POST",
+//         headers: {
+//           Authorization: token,
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(orderPayload),
+//       })
+//
+//       if (!response.ok) {
+//         throw new Error("Failed to create order.")
+//       }
+//
+//       return await response.json()
+//     } catch (error: any) {
+//       return rejectWithValue(error.message)
+//     }
+//   },
+// )
 
 export const fetchAllUsers = async () => {
   const response = await fetch(`${baseUrl}/users`)

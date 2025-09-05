@@ -45,6 +45,17 @@ export const navItems: NavItemT[] = [
   { title: "Contact", route: "contact" },
 ];
 
+export const countries = [
+  "Uganda","Uzbekistan","Austria","Australia","Ukraine","Uruguay","Azores (Isles)","Azerbaijan","United Arab Emirates",
+  "Italy","Indonesia","Iceland","Ireland","El Salvador","Albania","Angola","Andorra","Netherlands Antilles (see Curaçao)",
+  "Estonia","Ecuador","Argentina","Aruba (Isle)","Armenia","USA","Ethiopia","Bahamas (Isles)","Bhutan","Bulgaria",
+  "Bolivia","Bosnia and Herzegovina","Botswana","Burundi","Burkina Faso","Bahrain","Belgium","Belarus","Bangladesh",
+  "Benin","Barbados","Brazil","Great Britain and Northern Ireland","Bermuda (Isles)","Djibouti","Gibraltar","Jamaica",
+  "Ghana","Gabon","Guadeloupe","Guatemala","Guam (Isle)","Guyana","French Guiana","Guinea","Guinea-Bissau","Georgia",
+  "Greenland (see Denmark)","Germany","Dominican Republic","Denmark","South Africa","Haiti","India","Netherlands",
+  "Hong Kong","Hungary","Honduras","Vatican City","Vietnam","Vanuatu (Isles)","Venezuela","Zimbabwe","Zambia",
+  "Cote d'Ivoire","Tajikistan","Togo","Turkmenistan","Tibet (see China PR)"
+] ;
 // ====== Collections ======
 export const collections = [
   { title: "Tiles", route: "tiles", image: tiles },

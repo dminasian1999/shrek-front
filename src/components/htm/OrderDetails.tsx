@@ -1,73 +1,76 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { OrderT, ProductT } from "../../utils/types.ts";
-import { baseUrlBlog } from "../../utils/constants.ts";
-import { getPostById } from "../../features/api/postActions.tsx";
+import React, { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
+import { OrderT, ProductT } from "../../utils/types.ts"
+import { baseUrlBlog } from "../../utils/constants.ts"
+import { getPostById } from "../../features/api/postActions.tsx"
+import { useAppSelector } from "../../app/hooks.ts"
 
 const OrderDetails = () => {
-  const { orderId } = useParams<{ orderId: string }>();
-  const [order, setOrder] = useState<OrderT | null>(null);
-  const [products, setProducts] = useState<Record<string, ProductT>>({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
+  const { orderId } = useParams<{ orderId: string }>()
+  const [order, setOrder] = useState<OrderT | null>(null)
+  const [products, setProducts] = useState<Record<string, ProductT>>({})
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const profile = useAppSelector(state =>state.user.profile)
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const res = await fetch(`${baseUrlBlog}/order/${orderId}`);
-        if (!res.ok) throw new Error("Failed to load order");
-        const data: OrderT = await res.json();
-        setOrder(data);
+        const res = await fetch(`${baseUrlBlog}/order/${orderId}`)
+        if (!res.ok) throw new Error("Failed to load order")
+        const data: OrderT = await res.json()
+        setOrder(data)
 
         const productIds = Array.from(
           new Set(data.orderItems?.map((item) => item.productId).filter(Boolean))
-        );
+        )
 
         const productEntries = await Promise.all(
           productIds.map(async (id) => {
             try {
-              const product = await getPostById(id!);
-              return [id, product] as const;
+              const product = await getPostById(id!)
+              return [id, product] as const
             } catch {
-              return [id, null] as const;
+              return [id, null] as const
             }
           })
-        );
+        )
 
-        const productMap: Record<string, ProductT> = {};
+        const productMap: Record<string, ProductT> = {}
         for (const [id, product] of productEntries) {
-          if (product) productMap[id!] = product;
+          if (product) productMap[id!] = product
         }
-        setProducts(productMap);
+        setProducts(productMap)
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Unknown error");
+        setError(e instanceof Error ? e.message : "Unknown error")
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    if (orderId) fetchOrder();
-  }, [orderId]);
+    if (orderId) fetchOrder()
+  }, [orderId])
 
-  if (loading) return <div className="text-center mt-5">Loading order...</div>;
-  if (error) return <div className="alert alert-danger">Error: {error}</div>;
-  if (!order) return <div className="alert alert-warning">No order found.</div>;
+  if (loading) return <div className="text-center mt-5">Loading order...</div>
+  if (error) return <div className="alert alert-danger">Error: {error}</div>
+  if (!order) return <div className="alert alert-warning">No order found.</div>
 
   // ---- Totals ----
   const subTotal =
-    order.orderItems?.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0) || 0;
+    order.orderItems?.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0) || 0
 
   // If your API returns shipping, add `shippingPrice?: number` to OrderT and use it. Fallback to 0.
-  const shipping = (order as any).shippingPrice ?? 0;
-  const grandTotal = subTotal + shipping;
+  // const shipping = (order as any).shippingPrice ?? 0;
+  const shipping = profile.cart.shippingPrice ??
+  0
+  const grandTotal = subTotal + shipping
 
   const badge =
-    order.status === "Paid" ? "success" : order.status === "Pending" ? "warning" : "danger";
+    order.status === "Paid" ? "success" : order.status === "Pending" ? "warning" : "danger"
 
   const created =
     order.dateCreated
       ? new Date(order.dateCreated as unknown as string).toLocaleDateString()
-      : "-";
+      : "-"
 
   return (
     <div className="container-fluid mt-4">
@@ -136,9 +139,9 @@ const OrderDetails = () => {
 
               {/* Items list (multi) */}
               {order.orderItems?.map((item, idx) => {
-                const product = item.productId ? products[item.productId] : undefined;
-                const img = product?.imageUrls?.[0];
-                const lineTotal = (item.unitPrice * item.quantity).toFixed(2);
+                const product = item.productId ? products[item.productId] : undefined
+                const img = product?.imageUrls?.[0]
+                const lineTotal = (item.unitPrice * item.quantity).toFixed(2)
 
                 return (
                   <div className="row my-2 mx-1 justify-content-center" key={`${item.productId}-${idx}`}>
@@ -190,7 +193,7 @@ const OrderDetails = () => {
                               backgroundColor: product.color,
                               borderRadius: "50%",
                               border: "1px solid #ccc",
-                              display: "inline-block",
+                              display: "inline-block"
                             }}
                           />
                           <span className="text-capitalize">{product.color}</span>
@@ -216,7 +219,7 @@ const OrderDetails = () => {
                       </h5>
                     </div>
                   </div>
-                );
+                )
               })}
 
               <hr />
@@ -246,7 +249,7 @@ const OrderDetails = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default OrderDetails;
+export default OrderDetails
