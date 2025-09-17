@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
 import { updateAddress } from "../../features/api/accountActions.ts";
 import { AddressT } from "../../utils/types.ts";
-import { countries } from "../../utils/constants.ts"
-
+import { countries } from "../../utils/constants.ts";
 
 const Address = () => {
   const dispatch = useAppDispatch();
@@ -32,7 +31,6 @@ const Address = () => {
         phone: address.phone || "",
       });
     } else {
-      // optional: ensure empty defaults if no address yet
       setFormData({
         fullName: "",
         street: "",
@@ -49,10 +47,7 @@ const Address = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleCancel = () => {
@@ -85,7 +80,7 @@ const Address = () => {
     setEdit(false);
   };
 
-  const labels: Record<keyof AddressT, string> = {
+  const labels = {
     fullName: "Full Name",
     street: "Street Address",
     city: "City",
@@ -93,10 +88,11 @@ const Address = () => {
     zipCode: "Postal Code",
     country: "Country",
     phone: "Phone Number",
-  };
+  } as const;
 
-  const inputTypeFor = (field: keyof AddressT) =>
-    field === "phone" ? "tel" : "text";
+  const renderPlain = (val?: string) => (
+    <p className="form-control-plaintext mb-0">{val || "-"}</p>
+  );
 
   return (
     <div className="accordion" id="accordionAddress">
@@ -125,59 +121,162 @@ const Address = () => {
                 <h5 className="mb-3">Billing Details</h5>
 
                 <div className="row">
-                  {(
-                    Object.keys(labels) as Array<keyof AddressT>
-                  ).map((name) => (
-                    <div key={name} className="form-group col-sm-6 col-12 mb-3">
-                      <label htmlFor={`input-${name}`} className="form-label">
-                        {labels[name]}
-                      </label>
+                  {/* Full Name */}
+                  <div className="form-group col-12 col-sm-6 mb-3">
+                    <label htmlFor="input-fullName" className="form-label">
+                      {labels.fullName}
+                    </label>
+                    {edit ? (
+                      <input
+                        id="input-fullName"
+                        name="fullName"
+                        type="text"
+                        className="form-control"
+                        value={formData.fullName}
+                        onChange={handleChange}
+                        required
+                        autoComplete="name"
+                      />
+                    ) : (
+                      renderPlain(formData.fullName)
+                    )}
+                  </div>
 
-                      {edit ? (
-                        name === "country" ? (
-                          <select
-                            id={`input-${name}`}
-                            name={name}
-                            className="form-select"
-                            value={formData[name] || ""}
-                            onChange={handleChange}
-                            required
-                          >
-                            <option value="">Select country</option>
-                            {countries.map((c) => (
-                              <option key={c} value={c}>
-                                {c}
-                              </option>
-                            ))}
-                          </select>
-                        ) : (
-                          <input
-                            id={`input-${name}`}
-                            name={name}
-                            type={inputTypeFor(name)}
-                            className="form-control"
-                            value={formData[name] || ""}
-                            onChange={handleChange}
-                            // simple hints:
-                            placeholder={
-                              name === "zipCode"
-                                ? "e.g. 94105"
-                                : name === "phone"
-                                  ? "e.g. +1 415 555 1234"
-                                  : undefined
-                            }
-                            required={
-                              name !== "state" // example: state optional
-                            }
-                          />
-                        )
-                      ) : (
-                        <p className="form-control-plaintext mb-0">
-                          {formData[name] || "-"}
-                        </p>
-                      )}
-                    </div>
-                  ))}
+                  {/* Street */}
+                  <div className="form-group col-12 col-sm-6 mb-3">
+                    <label htmlFor="input-street" className="form-label">
+                      {labels.street}
+                    </label>
+                    {edit ? (
+                      <input
+                        id="input-street"
+                        name="street"
+                        type="text"
+                        className="form-control"
+                        value={formData.street}
+                        onChange={handleChange}
+                        required
+                        autoComplete="street-address"
+                      />
+                    ) : (
+                      renderPlain(formData.street)
+                    )}
+                  </div>
+
+                  {/* City */}
+                  <div className="form-group col-12 col-sm-6 mb-3">
+                    <label htmlFor="input-city" className="form-label">
+                      {labels.city}
+                    </label>
+                    {edit ? (
+                      <input
+                        id="input-city"
+                        name="city"
+                        type="text"
+                        className="form-control"
+                        value={formData.city}
+                        onChange={handleChange}
+                        required
+                        autoComplete="address-level2"
+                      />
+                    ) : (
+                      renderPlain(formData.city)
+                    )}
+                  </div>
+
+                  {/* State */}
+                  <div className="form-group col-12 col-sm-6 mb-3">
+                    <label htmlFor="input-state" className="form-label">
+                      {labels.state}
+                    </label>
+                    {edit ? (
+                      <input
+                        id="input-state"
+                        name="state"
+                        type="text"
+                        className="form-control"
+                        value={formData.state}
+                        onChange={handleChange}
+                        autoComplete="address-level1"
+                      />
+                    ) : (
+                      renderPlain(formData.state)
+                    )}
+                  </div>
+
+                  {/* Zip Code */}
+                  <div className="form-group col-12 col-sm-6 mb-3">
+                    <label htmlFor="input-zipCode" className="form-label">
+                      {labels.zipCode}
+                    </label>
+                    {edit ? (
+                      <input
+                        id="input-zipCode"
+                        name="zipCode"
+                        type="text"
+                        className="form-control"
+                        value={formData.zipCode}
+                        onChange={handleChange}
+                        required
+                        placeholder="e.g. 94105"
+                        autoComplete="postal-code"
+                        inputMode="numeric"
+                        pattern="\d*"
+                      />
+                    ) : (
+                      renderPlain(formData.zipCode)
+                    )}
+                  </div>
+
+                  {/* Country */}
+                  <div className="form-group col-12 col-sm-6 mb-3">
+                    <label htmlFor="input-country" className="form-label">
+                      {labels.country}
+                    </label>
+                    {edit ? (
+                      <select
+                        id="input-country"
+                        name="country"
+                        className="form-select"
+                        value={formData.country}
+                        onChange={handleChange}
+                        required
+                        autoComplete="country-name"
+                      >
+                        <option value="">Select country</option>
+                        {countries.map((c) => (
+                          <option key={c} value={c}>
+                            {c}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      renderPlain(formData.country)
+                    )}
+                  </div>
+
+                  {/* Phone */}
+                  <div className="form-group col-12 col-sm-6 mb-3">
+                    <label htmlFor="input-phone" className="form-label">
+                      {labels.phone}
+                    </label>
+                    {edit ? (
+                      <input
+                        id="input-phone"
+                        name="phone"
+                        type="tel"
+                        className="form-control"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        required
+                        placeholder="e.g. +1 415 555 1234"
+                        autoComplete="tel"
+                        inputMode="tel"
+                      />
+                    ) : (
+                      renderPlain(formData.phone)
+                    )}
+                  </div>
                 </div>
               </fieldset>
 

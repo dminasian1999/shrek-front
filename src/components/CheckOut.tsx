@@ -202,49 +202,139 @@ const CheckOut = () => {
         <form className="needs-validation" noValidate onSubmit={handleSubmit}>
           <h5 className="mb-3">Billing & Shipping Details</h5>
 
+          {/*<div className="row">*/}
+          {/*  {(Object.keys(LABELS) as Array<keyof AddressT>).map((name) => (*/}
+          {/*  ))}*/}
+          {/*</div>*/}
           <div className="row">
-            {(Object.keys(LABELS) as Array<keyof AddressT>).map((name) => (
-              <div key={name} className="col-sm-6 col-12 mb-3">
-                <label htmlFor={`addr-${name}`} className="form-label">
-                  {LABELS[name]}
-                </label>
+            {/* Full Name */}
+            <div className="col-12 col-sm-6 mb-3">
+              <label htmlFor="addr-fullName" className="form-label">
+                {LABELS.fullName}
+              </label>
+              <input
+                id="addr-fullName"
+                name="fullName"
+                type="text"
+                className="form-control"
+                value={addr.fullName}
+                onChange={onAddrChange}
+                required
+                autoComplete="name"
+              />
+            </div>
 
-                {name === "country" ? (
-                  <select
-                    id={`addr-${name}`}
-                    name={name}
-                    className="form-select"
-                    value={addr[name]}
-                    onChange={onAddrChange}
-                    required
-                  >
-                    <option value="">Select country</option>
-                    {countries.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <input
-                    id={`addr-${name}`}
-                    name={name}
-                    type={inputTypeFor(name)}
-                    className="form-control"
-                    value={addr[name]}
-                    onChange={onAddrChange}
-                    required={name !== "state"}
-                    placeholder={
-                      name === "zipCode"
-                        ? "e.g. 94105"
-                        : name === "phone"
-                          ? "e.g. +1 415 555 1234"
-                          : undefined
-                    }
-                  />
-                )}
-              </div>
-            ))}
+            {/* Street */}
+            <div className="col-12 col-sm-6 mb-3">
+              <label htmlFor="addr-street" className="form-label">
+                {LABELS.street}
+              </label>
+              <input
+                id="addr-street"
+                name="street"
+                type="text"
+                className="form-control"
+                value={addr.street}
+                onChange={onAddrChange}
+                required
+                autoComplete="street-address"
+              />
+            </div>
+
+            {/* City */}
+            <div className="col-12 col-sm-6 mb-3">
+              <label htmlFor="addr-city" className="form-label">
+                {LABELS.city}
+              </label>
+              <input
+                id="addr-city"
+                name="city"
+                type="text"
+                className="form-control"
+                value={addr.city}
+                onChange={onAddrChange}
+                required
+                autoComplete="address-level2"
+              />
+            </div>
+
+            {/* State */}
+            <div className="col-12 col-sm-6 mb-3">
+              <label htmlFor="addr-state" className="form-label">
+                {LABELS.state}
+              </label>
+              <input
+                id="addr-state"
+                name="state"
+                type="text"
+                className="form-control"
+                value={addr.state}
+                onChange={onAddrChange}
+                autoComplete="address-level1"
+              />
+            </div>
+
+            {/* Zip Code */}
+            <div className="col-12 col-sm-6 mb-3">
+              <label htmlFor="addr-zipCode" className="form-label">
+                {LABELS.zipCode}
+              </label>
+              <input
+                id="addr-zipCode"
+                name="zipCode"
+                type="text"
+                className="form-control"
+                value={addr.zipCode}
+                onChange={onAddrChange}
+                required
+                placeholder="e.g. 94105"
+                autoComplete="postal-code"
+                inputMode="numeric"
+                pattern="\d*"
+              />
+            </div>
+
+            {/* Country */}
+            <div className="col-12 col-sm-6 mb-3">
+              <label htmlFor="addr-country" className="form-label">
+                {LABELS.country}
+              </label>
+              <select
+                id="addr-country"
+                name="country"
+                className="form-select"
+                value={addr.country}
+                onChange={onAddrChange}
+                required
+                autoComplete="country-name"
+              >
+                <option value="">Select country</option>
+                {countries.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Phone */}
+            <div className="col-12 col-sm-6 mb-3">
+              <label htmlFor="addr-phone" className="form-label">
+                {LABELS.phone}
+              </label>
+              <input
+                id="addr-phone"
+                name="phone"
+                type="tel"
+                className="form-control"
+                value={addr.phone}
+                onChange={onAddrChange}
+                required
+                placeholder="e.g. +1 415 555 1234"
+                autoComplete="tel"
+                inputMode="tel"
+              />
+            </div>
           </div>
 
           <div className="row g-3 mt-2">
