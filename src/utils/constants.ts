@@ -76,10 +76,10 @@ export const collections = [
   { title: "Magnets", route: "magnets", image: magnets },
 ];
 
-// export const baseUrl = "http://localhost:8080/users";
-// export const baseUrlBlog = "http://localhost:8080";
-export const baseUrl = "https://shrek-back.onrender.com/users";
-export const baseUrlBlog = "https://shrek-back.onrender.com";
+// export const baseUrlUsers = "http://localhost:8080/users";
+// export const baseUrl = "http://localhost:8080";
+export const baseUrlUsers = "https://shrek-back.onrender.com/users";
+export const baseUrl = "https://shrek-back.onrender.com";
 export const createToken = (login: string, password: string) =>
   `Basic ${window.btoa(`${login}:${password}`)}`;
 

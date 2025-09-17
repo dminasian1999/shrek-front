@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { OrderT, ProductT } from "../../utils/types.ts"
-import { baseUrlBlog } from "../../utils/constants.ts"
+import { baseUrl } from "../../utils/constants.ts"
 import { getPostById } from "../../features/api/postActions.tsx"
 import { useAppSelector } from "../../app/hooks.ts"
 
@@ -15,7 +15,7 @@ const OrderDetails = () => {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const res = await fetch(`${baseUrlBlog}/order/${orderId}`)
+        const res = await fetch(`${baseUrl}/order/${orderId}`)
         if (!res.ok) throw new Error("Failed to load order")
         const data: OrderT = await res.json()
         setOrder(data)

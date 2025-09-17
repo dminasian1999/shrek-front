@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react"
-import { banner3Img, baseUrlBlog, collections } from "../../utils/constants.ts"
+import { banner3Img, baseUrl, collections } from "../../utils/constants.ts"
 import { ProductsContext } from "../../utils/context.ts"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { ProductT, QueryT } from "../../utils/types.ts"
@@ -43,7 +43,7 @@ const Shop = () => {
   const fetchProducts = async (query: QueryT) => {
     try {
       setLoading(true)
-      const response = await fetch(`${baseUrlBlog}/posts/search`, {
+      const response = await fetch(`${baseUrl}/posts/search`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

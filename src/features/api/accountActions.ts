@@ -1,6 +1,6 @@
 import { RootState } from "../../app/store"
 import { createAsyncThunk } from "@reduxjs/toolkit"
-import { baseUrl, baseUrlBlog, createToken } from "../../utils/constants"
+import { baseUrlUsers, baseUrl, createToken } from "../../utils/constants"
 import {
   AddressT,
   CartItem,
@@ -14,7 +14,7 @@ import {
 export const registerUser = createAsyncThunk(
   "user/register",
   async (user: UserRegister) => {
-    const res = await fetch(`${baseUrl}/register`, {
+    const res = await fetch(`${baseUrlUsers}/register`, {
       method: "POST",
       body: JSON.stringify(user),
       headers: { "Content-Type": "application/json" },
@@ -31,7 +31,7 @@ export const registerUser = createAsyncThunk(
 export const fetchUser = createAsyncThunk(
   "user/login",
   async (token: string) => {
-    const res = await fetch(`${baseUrl}/login`, {
+    const res = await fetch(`${baseUrlUsers}/login`, {
       method: "POST",
       headers: { Authorization: token },
     })
@@ -71,7 +71,7 @@ export const estimateShipping = createAsyncThunk<any, any, { state: RootState }>
   "user/estimateShipping",
   async ({ country, weight }:{country:string,weight:number}, {}) => {
     const res = await fetch(
-      `http://localhost:8080/shippingCost/${country}/${weight}`,
+      `${baseUrl}/shippingCost/${country}/${weight}`,
     )
     if (!res.ok) throw new Error(`Oops,something went wrong!`)
     return  res.json()
@@ -93,7 +93,7 @@ export const estimateShipping = createAsyncThunk<any, any, { state: RootState }>
 export const checkOut = createAsyncThunk<any, OrderT, { state: RootState }>(
   "user/createOrder",
   async (orderPayload: any, { getState }) => {
-    const res = await fetch(`${baseUrlBlog}/checkOut`, {
+    const res = await fetch(`${baseUrl}/checkOut`, {
       method: "POST",
       headers: {
         Authorization: getState().token,
@@ -144,7 +144,7 @@ export const checkOut = createAsyncThunk<any, OrderT, { state: RootState }>(
 // )
 
 export const fetchAllUsers = async () => {
-  const response = await fetch(`${baseUrl}/users`)
+  const response = await fetch(`${baseUrlUsers}/users`)
   if (!response.ok) throw new Error(`Failed: ${response.statusText}`)
   return response.json()
 }
@@ -154,7 +154,7 @@ export const updateUser = createAsyncThunk<
   UserEditData,
   { state: RootState }
 >("user/update", async (user, { getState }) => {
-  const res = await fetch(baseUrl, {
+  const res = await fetch(baseUrlUsers, {
     method: "PUT",
     body: JSON.stringify(user),
     headers: {
@@ -171,7 +171,7 @@ export const updatePaymentInfo = createAsyncThunk<
   { state: RootState }
 >("user/payment", async (paymentInfo, { getState }) => {
   const res = await fetch(
-    `${baseUrl}/payment-method/${getState().user.profile.login}`,
+    `${baseUrlUsers}/payment-method/${getState().user.profile.login}`,
     {
       method: "Put",
       body: JSON.stringify(paymentInfo),
@@ -188,7 +188,7 @@ export const updatePaymentInfo = createAsyncThunk<
 export const removeUser = createAsyncThunk<any, string, { state: RootState }>(
   "user/delete",
   async (login, { getState }) => {
-    const res = await fetch(`${baseUrl}/user/${login}`, {
+    const res = await fetch(`${baseUrlUsers}/user/${login}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -203,7 +203,7 @@ export const removeUser = createAsyncThunk<any, string, { state: RootState }>(
 export const addRole = createAsyncThunk<any, string, { state: RootState }>(
   "user/addRole",
   async (email, { getState }) => {
-    await fetch(`${baseUrl}/user/${email}/role/MODERATOR`, {
+    await fetch(`${baseUrlUsers}/user/${email}/role/MODERATOR`, {
       method: "PUT",
       headers: { Authorization: getState().token },
     })
@@ -213,7 +213,7 @@ export const addRole = createAsyncThunk<any, string, { state: RootState }>(
 export const removeRole = createAsyncThunk<any, string, { state: RootState }>(
   "user/removeRole",
   async (email, { getState }) => {
-    await fetch(`${baseUrl}/user/${email}/role/MODERATOR`, {
+    await fetch(`${baseUrlUsers}/user/${email}/role/MODERATOR`, {
       method: "DELETE",
       headers: { Authorization: getState().token },
     })
@@ -225,7 +225,7 @@ export const changePassword = createAsyncThunk<
   UserUpdatePassword,
   { state: RootState }
 >("user/password", async (password, { getState }) => {
-  const res = await fetch(`${baseUrl}/password`, {
+  const res = await fetch(`${baseUrlUsers}/password`, {
     method: "PUT",
     headers: {
       Authorization: createToken(
@@ -244,7 +244,7 @@ export const recoveryPassword = createAsyncThunk<
   UserUpdatePassword,
   { state: RootState }
 >("user/recovery", async (password, { getState }) => {
-  const res = await fetch(`${baseUrl}/password/recovery/${getState().token}`, {
+  const res = await fetch(`${baseUrlUsers}/password/recovery/${getState().token}`, {
     method: "PUT",
     headers: { "X-Password": password.newPassword },
   })
@@ -258,7 +258,7 @@ export const updateAddress = createAsyncThunk<
   { state: RootState }
 >("user/address", async (address, { getState }) => {
   const res = await fetch(
-    `${baseUrl}/address/${getState().user.profile.login}`,
+    `${baseUrlUsers}/address/${getState().user.profile.login}`,
     {
       method: "POST",
       body: JSON.stringify(address),
@@ -276,7 +276,7 @@ export const addWishlist = createAsyncThunk<any, string, { state: RootState }>(
   "user/addWishList",
   async (id, { getState }) => {
     const res = await fetch(
-      `${baseUrl}/${getState().user.profile.login}/wishList/${id}`,
+      `${baseUrlUsers}/${getState().user.profile.login}/wishList/${id}`,
       {
         method: "PUT",
         headers: {
@@ -296,7 +296,7 @@ export const removeWishlist = createAsyncThunk<
   { state: RootState }
 >("user/removeWishlist", async (id, { getState }) => {
   const res = await fetch(
-    `${baseUrl}/${getState().user.profile.login}/wishList/${id}`,
+    `${baseUrlUsers}/${getState().user.profile.login}/wishList/${id}`,
     {
       method: "DELETE",
       headers: { Authorization: getState().token },
@@ -312,7 +312,7 @@ export const addCartList = createAsyncThunk<
   { state: RootState }
 >("user/addCartList", async (cartItem, { getState }) => {
   const res = await fetch(
-    `${baseUrl}/${getState().user.profile.login}/cartList`,
+    `${baseUrlUsers}/${getState().user.profile.login}/cartList`,
     {
       method: "PUT",
       headers: {
@@ -332,7 +332,7 @@ export const removeCartList = createAsyncThunk<
   { state: RootState }
 >("user/removeCartList", async (cartItem, { getState }) => {
   const res = await fetch(
-    `${baseUrl}/${getState().user.profile.login}/cartList`,
+    `${baseUrlUsers}/${getState().user.profile.login}/cartList`,
     {
       method: "DELETE",
       headers: {
@@ -352,7 +352,7 @@ export const updateCartList = createAsyncThunk<
   { state: RootState }
 >("user/updateCartList", async ({ productId, isAdd }, { getState }) => {
   const res = await fetch(
-    `${baseUrl}/${getState().user.profile.login}/cartList/${productId}/update/${isAdd}`,
+    `${baseUrlUsers}/${getState().user.profile.login}/cartList/${productId}/update/${isAdd}`,
     {
       method: "PUT",
       headers: { Authorization: getState().token },

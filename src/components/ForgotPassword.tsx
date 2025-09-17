@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { baseUrl, logoImg } from "../utils/constants.ts";
+import { baseUrlUsers, logoImg } from "../utils/constants.ts";
 import { useAppSelector } from "../app/hooks.ts";
 
 export default function ForgotPassword() {
@@ -19,7 +19,7 @@ export default function ForgotPassword() {
     setStatus("loading");
 
     try {
-      const res = await fetch(`${baseUrl}/password/recovery/${email}`, {
+      const res = await fetch(`${baseUrlUsers}/password/recovery/${email}`, {
         method: "GET",
       });
 

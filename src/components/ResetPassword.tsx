@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useSearchParams } from "react-router-dom"
-import { baseUrl } from "../utils/constants";
+import { baseUrlUsers } from "../utils/constants";
 import { changePassword } from "../features/api/accountActions.ts"
 import { useAppDispatch } from "../app/hooks.ts"
 
@@ -24,7 +24,7 @@ export default function ResetPassword() {
 
     try {
 
-      const res = await fetch(`${baseUrl}/password/recovery/${token}`, {
+      const res = await fetch(`${baseUrlUsers}/password/recovery/${token}`, {
         method: "Put",
         headers: {
           "Authorization": token,

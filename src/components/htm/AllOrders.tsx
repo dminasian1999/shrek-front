@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { OrderItemT, OrderT } from "../../utils/types.ts";
-import { baseUrlBlog } from "../../utils/constants.ts";
+import { baseUrl } from "../../utils/constants.ts";
 import { useAppSelector } from "../../app/hooks.ts";
 import OrderRow from "./OrderRow";
 import { Link } from "react-router-dom"
@@ -29,7 +29,7 @@ const AllOrders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await fetch(`${baseUrlBlog}/ordersByUser/${user.login}`);
+        const res = await fetch(`${baseUrl}/ordersByUser/${user.login}`);
         if (!res.ok) throw new Error(`Failed to fetch orders (${res.status})`);
         const data: OrderT[] = await res.json();
         setOrders(data);

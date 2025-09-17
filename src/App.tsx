@@ -4,7 +4,7 @@ import "./App.css"
 import TopHeader from "./components/htm/TopHeader.tsx"
 import Header from "./components/htm/Header.tsx"
 import Main from "./components/Main.tsx"
-import { baseUrlBlog } from "./utils/constants.ts"
+import { baseUrl } from "./utils/constants.ts"
 import { ProductT, ReceiptT } from "./utils/types.ts"
 import { useEffect, useState } from "react"
 import { ProductsContext } from "./utils/context.ts"
@@ -40,7 +40,7 @@ const App = () => {
   // }
   const fetchReceipts = async () => {
     try {
-      const res = await fetch(`${baseUrlBlog}/posts/receipts`, {
+      const res = await fetch(`${baseUrl}/posts/receipts`, {
         method: "get",
         headers: { Authorization: token },
       })

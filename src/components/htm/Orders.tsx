@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useAppSelector } from "../../app/hooks.ts"
 import { OrderItemT, OrderT } from "../../utils/types.ts"
-import { baseUrlBlog } from "../../utils/constants.ts"
+import { baseUrl } from "../../utils/constants.ts"
 import { Link } from "react-router-dom"
 
 const statusMap: Record<string, string> = {
@@ -22,7 +22,7 @@ const Orders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await fetch(`${baseUrlBlog}/ordersByUser/${user.login}`)
+        const res = await fetch(`${baseUrl}/ordersByUser/${user.login}`)
         if (!res.ok) throw new Error(`Failed to fetch orders (${res.status})`)
         const data: OrderT[] = await res.json()
         setOrders(data)

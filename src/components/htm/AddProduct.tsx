@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { ProductsContext } from "../../utils/context.ts";
 import { useAppSelector } from "../../app/hooks.ts";
 import { ProductT } from "../../utils/types.ts";
-import { allMaterials, baseUrlBlog, collections, sizeOptions } from "../../utils/constants.ts"
+import { allMaterials, baseUrl, collections, sizeOptions } from "../../utils/constants.ts"
 
 const exampleColors = [
   { name: "Red", value: "red" },
@@ -99,7 +99,7 @@ const AddProduct: React.FC = () => {
     for (const file of imageFiles) {
       const fd = new FormData();
       fd.append("file", file);
-      const res = await fetch(`${baseUrlBlog}/post/file/upload`, {
+      const res = await fetch(`${baseUrl}/post/file/upload`, {
         method: "POST",
         headers: { Authorization: token },
         body: fd,
@@ -123,7 +123,7 @@ const AddProduct: React.FC = () => {
     try {
       const imageUrls = await uploadImages();
       const toPost = { ...product, imageUrls };
-      const res = await fetch(`${baseUrlBlog}/post/${user.login}`, {
+      const res = await fetch(`${baseUrl}/post/${user.login}`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: token },
         body: JSON.stringify(toPost),

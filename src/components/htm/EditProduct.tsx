@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { ProductT } from "../../utils/types.ts";
 import { useAppSelector } from "../../app/hooks.ts";
 import { ProductsContext } from "../../utils/context.ts";
-import { allMaterials, baseUrlBlog, collections, sizeOptions } from "../../utils/constants.ts"
+import { allMaterials, baseUrl, collections, sizeOptions } from "../../utils/constants.ts"
 
 const exampleColors = [
   { name: "Red", value: "red" },
@@ -62,7 +62,7 @@ const EditProduct: React.FC = () => {
   useEffect(() => {
     if (!id) return;
     setLoading(true);
-    fetch(`${baseUrlBlog}/post/${id}`, {
+    fetch(`${baseUrl}/post/${id}`, {
       headers: { Authorization: token },
     })
       .then(async (res) => {
@@ -122,7 +122,7 @@ const EditProduct: React.FC = () => {
     for (const file of imageFiles) {
       const fd = new FormData();
       fd.append("file", file);
-      const res = await fetch(`${baseUrlBlog}/post/file/upload`, {
+      const res = await fetch(`${baseUrl}/post/file/upload`, {
         method: "POST",
         headers: { Authorization: token },
         body: fd,
@@ -155,7 +155,7 @@ const EditProduct: React.FC = () => {
 
       const toPost = { ...product, imageUrls: finalImageUrls };
 
-      const res = await fetch(`${baseUrlBlog}/post/${id}`, {
+      const res = await fetch(`${baseUrl}/post/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

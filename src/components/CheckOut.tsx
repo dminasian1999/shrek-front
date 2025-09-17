@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks.ts";
 import { checkOut, estimateShipping } from "../features/api/accountActions.ts";
 import PayPalCheckout from "../paymant/PayPalCheckout.tsx";
@@ -22,7 +22,7 @@ const CheckOut = () => {
   const profile = useAppSelector((s) => s.user.profile);
   const cartItems = profile?.cart?.items ?? [];
 
-  // Derived values (simple calculations on render)
+  // Derived (compute directly on render)
   const subtotal = cartItems.reduce(
     (sum: number, t: any) => sum + (t.product?.price ?? 0) * (t.quantity ?? 0),
     0
@@ -36,7 +36,7 @@ const CheckOut = () => {
   const [isEstimating, setIsEstimating] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
 
-  // Prefill address once
+  // Address (prefill from profile once available)
   const [addr, setAddr] = useState<AddressT>({
     fullName: "",
     street: "",
@@ -62,31 +62,42 @@ const CheckOut = () => {
     }
   }, [profile?.address]);
 
-  // Estimate shipping whenever country/weight change
+  // Prevent stale async updates: only the latest request can set state
+  const reqIdRef = useRef(0);
+
   useEffect(() => {
-    let cancelled = false;
+    const hasInputs = !!addr.country && totalWeight > 0;
+
+    if (!hasInputs) {
+      // No estimation needed: show dash in UI and reset price to 0
+      setIsEstimating(false);
+      setShippingPrice(0);
+      return;
+    }
+
+    const id = ++reqIdRef.current; // mark this as the latest request
+    setIsEstimating(true);
 
     (async () => {
-      if (!addr.country || totalWeight <= 0) {
-        setShippingPrice(0);
-        return;
-      }
-      setIsEstimating(true);
       try {
         const price = await dispatch(
           estimateShipping({ country: addr.country, weight: totalWeight })
         ).unwrap();
-        if (!cancelled) setShippingPrice(Number(price) || 0);
+
+        // Only update if this is still the latest request
+        if (reqIdRef.current === id) {
+          setShippingPrice(Number(price) || 0);
+        }
       } catch {
-        if (!cancelled) setShippingPrice(0);
+        if (reqIdRef.current === id) {
+          setShippingPrice(0);
+        }
       } finally {
-        if (!cancelled) setIsEstimating(false);
+        if (reqIdRef.current === id) {
+          setIsEstimating(false);
+        }
       }
     })();
-
-    return () => {
-      cancelled = true;
-    };
   }, [dispatch, addr.country, totalWeight]);
 
   const grandTotal = subtotal + shippingPrice;
@@ -141,6 +152,8 @@ const CheckOut = () => {
     }
   };
 
+  const showDash = !addr.country || totalWeight <= 0 || isEstimating;
+
   return (
     <div className="row g-5">
       {/* Summary */}
@@ -155,7 +168,7 @@ const CheckOut = () => {
 
           <div className="d-flex justify-content-between border-bottom py-2">
             <span>Shipping</span>
-            <span>{isEstimating ? "—" : fmt(shippingPrice)}</span>
+            <span>{showDash ? "—" : fmt(shippingPrice)}</span>
           </div>
 
           <div className="d-flex justify-content-between border-bottom py-2">
