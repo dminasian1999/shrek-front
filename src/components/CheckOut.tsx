@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks.ts";
 import { checkOut, estimateShipping } from "../features/api/accountActions.ts";
 import PayPalCheckout from "../paymant/PayPalCheckout.tsx";
@@ -22,23 +22,14 @@ const CheckOut = () => {
   const profile = useAppSelector((s) => s.user.profile);
   const cartItems = profile?.cart?.items ?? [];
 
-  // Derived
-  const subtotal = useMemo(
-    () =>
-      cartItems.reduce(
-        (sum, t: any) => sum + (t.product?.price ?? 0) * (t.quantity ?? 0),
-        0
-      ),
-    [cartItems]
+  // Derived (computed directly on render — no useMemo)
+  const subtotal = cartItems.reduce(
+    (sum: number, t: any) => sum + (t.product?.price ?? 0) * (t.quantity ?? 0),
+    0
   );
-
-  const totalWeight = useMemo(
-    () =>
-      cartItems.reduce(
-        (sum, t: any) => sum + (t.product?.weight ?? 0) * (t.quantity ?? 0),
-        0
-      ),
-    [cartItems]
+  const totalWeight = cartItems.reduce(
+    (sum: number, t: any) => sum + (t.product?.weight ?? 0) * (t.quantity ?? 0),
+    0
   );
 
   const [shippingPrice, setShippingPrice] = useState(0);
@@ -82,7 +73,7 @@ const CheckOut = () => {
       try {
         const price = await dispatch(
           estimateShipping({ country: addr.country, weight: totalWeight })
-        ).unwrap(); // <-- get the number from thunk
+        ).unwrap();
         if (!cancelled) setShippingPrice(Number(price) || 0);
       } catch {
         if (!cancelled) setShippingPrice(0);
@@ -94,7 +85,7 @@ const CheckOut = () => {
     };
   }, [dispatch, addr.country, totalWeight]);
 
-  const grandTotal = useMemo(() => subtotal + shippingPrice, [subtotal, shippingPrice]);
+  const grandTotal = subtotal + shippingPrice;
 
   const inputTypeFor = (field: keyof AddressT) => (field === "phone" ? "tel" : "text");
 
@@ -110,7 +101,7 @@ const CheckOut = () => {
       return;
     }
 
-    const orderItems = (profile.cart.items ?? []).map((item: any) => ({
+    const orderItems = (profile?.cart?.items ?? []).map((item: any) => ({
       productId: item.product.id,
       quantity: item.quantity,
       unitPrice: item.product.price,
@@ -119,9 +110,9 @@ const CheckOut = () => {
     const orderPayload: OrderT = {
       userId: profile.login,
       paymentMethod: "PayPal",
-      shippingAddress: addr,                 // <-- use the current form address
+      shippingAddress: addr,
       orderItems,
-      // If your backend expects these, consider adding:
+      // Optionally include:
       // shippingPrice,
       // totalAmount: grandTotal,
       // totalWeight,
