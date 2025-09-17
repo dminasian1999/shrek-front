@@ -3,17 +3,9 @@ import { useAppDispatch, useAppSelector } from "../app/hooks.ts";
 import { checkOut, estimateShipping } from "../features/api/accountActions.ts";
 import PayPalCheckout from "../paymant/PayPalCheckout.tsx";
 import { AddressT, OrderT } from "../utils/types.ts";
-import { countries } from "../utils/constants.ts";
+import { countries, LABELS } from "../utils/constants.ts"
 
-const LABELS: Record<keyof AddressT, string> = {
-  fullName: "Full Name",
-  street: "Street Address",
-  city: "City",
-  state: "State / Region",
-  zipCode: "Postal Code",
-  country: "Country",
-  phone: "Phone Number",
-};
+
 
 const fmt = (n: number) => `₪${n.toFixed(2)}`;
 

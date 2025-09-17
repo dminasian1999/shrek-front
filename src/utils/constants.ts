@@ -25,7 +25,7 @@ import vases from "../images/categories/vases.jpg";
 import bghero from "../images/bgHero.jpg";
 
 import payment from "../images/payment-img.jpg";
-import { NavItemT } from "./types.ts";
+import { AddressT, NavItemT } from "./types.ts"
 
 // ====== Assets ======
 export const bgHero = bghero;
@@ -76,10 +76,10 @@ export const collections = [
   { title: "Magnets", route: "magnets", image: magnets },
 ];
 
-export const baseUrl = "http://localhost:8080/users";
-export const baseUrlBlog = "http://localhost:8080";
-// export const baseUrl = "https://shrek-back.onrender.com/users";
-// export const baseUrlBlog = "https://shrek-back.onrender.com";
+// export const baseUrl = "http://localhost:8080/users";
+// export const baseUrlBlog = "http://localhost:8080";
+export const baseUrl = "https://shrek-back.onrender.com/users";
+export const baseUrlBlog = "https://shrek-back.onrender.com";
 export const createToken = (login: string, password: string) =>
   `Basic ${window.btoa(`${login}:${password}`)}`;
 
@@ -181,3 +181,12 @@ export const sizeOptions = [
   { name: "XL", value: "XL" },
   { name: "Custom…", value: "custom" },
 ];
+export  const LABELS: Record<keyof AddressT, string> = {
+  fullName: "Full Name",
+  street: "Street Address",
+  city: "City",
+  state: "State / Region",
+  zipCode: "Postal Code",
+  country: "Country",
+  phone: "Phone Number",
+};
