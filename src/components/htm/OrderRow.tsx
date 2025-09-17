@@ -63,7 +63,7 @@ const OrderRow: React.FC<OrderRowProps> = ({
             onChange={onChange}
           />
         ) : (
-          <span>${item.unitPrice.toFixed(2)}</span>
+          <span>₪{item.unitPrice.toFixed(2)}</span>
         )}
       </td>
 

@@ -28,6 +28,7 @@ import ResetPassword from "./ResetPassword.tsx"
 import AllOrders from "./htm/AllOrders.tsx"
 import OrderDetails from "./htm/OrderDetails.tsx"
 import CartPage2 from "./htm/CartPage2.tsx"
+import Contact from "./htm/Contact.tsx"
 
 const Main = () => {
   const token = useAppSelector(state => state.token)
@@ -62,7 +63,8 @@ const Main = () => {
         <Route path={"/new"} element={token ? <AddProduct /> : <Guest />} />
 
         <Route path="/receipts" element={<ReceiptsList />} />
-        <Route path="/contact-us" element={<ContactUs />} />
+        {/*<Route path="/contact-us" element={<ContactUs />} />*/}
+        <Route path="/contact" element={<Contact/>} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/reports" element={<Reports />} />

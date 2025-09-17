@@ -145,7 +145,7 @@ const CheckOut = () => {
 
           <div className="d-flex justify-content-between border-bottom py-2">
             <span>Shipping</span>
-            <span>{shippingPrice ? fmt(shippingPrice) : "-"}</span>
+            <span>{ fmt(shippingPrice)}</span>
           </div>
 
           <div className="d-flex justify-content-between border-bottom py-2">
