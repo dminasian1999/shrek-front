@@ -3,9 +3,17 @@ import { useAppDispatch, useAppSelector } from "../app/hooks.ts";
 import { checkOut, estimateShipping } from "../features/api/accountActions.ts";
 import PayPalCheckout from "../paymant/PayPalCheckout.tsx";
 import { AddressT, OrderT } from "../utils/types.ts";
-import { countries, LABELS } from "../utils/constants.ts"
+import { countries } from "../utils/constants.ts";
 
-
+const LABELS: Record<keyof AddressT, string> = {
+  fullName: "Full Name",
+  street: "Street Address",
+  city: "City",
+  state: "State / Region",
+  zipCode: "Postal Code",
+  country: "Country",
+  phone: "Phone Number",
+};
 
 const fmt = (n: number) => `₪${n.toFixed(2)}`;
 
@@ -14,7 +22,7 @@ const CheckOut = () => {
   const profile = useAppSelector((s) => s.user.profile);
   const cartItems = profile?.cart?.items ?? [];
 
-  // Derived (computed directly on render — no useMemo)
+  // Derived values (simple calculations on render)
   const subtotal = cartItems.reduce(
     (sum: number, t: any) => sum + (t.product?.price ?? 0) * (t.quantity ?? 0),
     0
@@ -25,6 +33,7 @@ const CheckOut = () => {
   );
 
   const [shippingPrice, setShippingPrice] = useState(0);
+  const [isEstimating, setIsEstimating] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
 
   // Prefill address once
@@ -62,6 +71,7 @@ const CheckOut = () => {
         setShippingPrice(0);
         return;
       }
+      setIsEstimating(true);
       try {
         const price = await dispatch(
           estimateShipping({ country: addr.country, weight: totalWeight })
@@ -69,19 +79,24 @@ const CheckOut = () => {
         if (!cancelled) setShippingPrice(Number(price) || 0);
       } catch {
         if (!cancelled) setShippingPrice(0);
+      } finally {
+        if (!cancelled) setIsEstimating(false);
       }
     })();
 
     return () => {
       cancelled = true;
     };
-  }, [shippingPrice, addr.country, totalWeight]);
+  }, [dispatch, addr.country, totalWeight]);
 
   const grandTotal = subtotal + shippingPrice;
 
-  const inputTypeFor = (field: keyof AddressT) => (field === "phone" ? "tel" : "text");
+  const inputTypeFor = (field: keyof AddressT) =>
+    field === "phone" ? "tel" : "text";
 
-  const onAddrChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const onAddrChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setAddr((p) => ({ ...p, [name]: value }));
   };
@@ -104,7 +119,6 @@ const CheckOut = () => {
       paymentMethod: "PayPal",
       shippingAddress: addr,
       orderItems,
-      // Optionally include:
       // shippingPrice,
       // totalAmount: grandTotal,
       // totalWeight,
@@ -119,7 +133,11 @@ const CheckOut = () => {
         throw new Error("Order creation failed.");
       }
     } catch (error) {
-      alert(error instanceof Error ? error.message : "There was a problem placing your order.");
+      alert(
+        error instanceof Error
+          ? error.message
+          : "There was a problem placing your order."
+      );
     }
   };
 
@@ -137,8 +155,7 @@ const CheckOut = () => {
 
           <div className="d-flex justify-content-between border-bottom py-2">
             <span>Shipping</span>
-            <span>{profile.cart.shippingPrice}</span>
-            {/*<span>{ fmt(shippingPrice)}</span>*/}
+            <span>{isEstimating ? "—" : fmt(shippingPrice)}</span>
           </div>
 
           <div className="d-flex justify-content-between border-bottom py-2">
