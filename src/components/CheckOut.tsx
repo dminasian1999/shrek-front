@@ -75,7 +75,7 @@ const CheckOut = () => {
     return () => {
       cancelled = true;
     };
-  }, [dispatch, addr.country, totalWeight]);
+  }, [shippingPrice, addr.country, totalWeight]);
 
   const grandTotal = subtotal + shippingPrice;
 
