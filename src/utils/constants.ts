@@ -258,3 +258,36 @@ export  const LABELS: Record<keyof AddressT, string> = {
   country: "Country",
   phone: "Phone Number",
 };
+
+export const allColors = [
+  { name: "Red", value: "red" },
+  { name: "Blue", value: "blue" },
+  { name: "Green", value: "green" },
+  { name: "Black", value: "black" },
+  { name: "White", value: "white" },
+  { name: "Yellow", value: "yellow" },
+  { name: "Orange", value: "orange" },
+  { name: "Purple", value: "purple" },
+  { name: "Brown", value: "brown" },
+  { name: "Gray", value: "gray" },
+  { name: "Beige", value: "beige" },
+  { name: "Pink", value: "pink" },
+  { name: "Gold", value: "gold" },
+  { name: "Silver", value: "silver" },
+  { name: "Ivory", value: "ivory" },
+  { name: "Cyan", value: "cyan" },
+  { name: "Teal", value: "teal" },
+  { name: "Olive", value: "olive" },
+  { name: "Maroon", value: "maroon" },
+  { name: "Navy", value: "navy" },
+  { name: "Turquoise", value: "turquoise" },
+  { name: "Coral", value: "coral" },
+  { name: "Lavender", value: "lavender" },
+  { name: "Mint", value: "mintcream" },
+  { name: "Charcoal", value: "#36454F" },
+  { name: "Sand", value: "#C2B280" },
+  { name: "Other", value: "other" },
+];
+
+
+

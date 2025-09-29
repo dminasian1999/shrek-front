@@ -148,11 +148,11 @@ const CartPage2 = () => {
             </div>
             <div className="d-flex justify-content-between border-bottom py-2">
               <span>Shipping ({shippingQuote?.method})</span>
-              <span>₪{shippingCost.toFixed(2)}</span>
+              <span>${shippingCost.toFixed(2)}</span>
             </div>
             <div className="d-flex justify-content-between border-bottom py-2 fw-bold">
               <span>Grand Total</span>
-              <span>₪{grandTotal.toFixed(2)}</span>
+              <span>${grandTotal.toFixed(2)}</span>
             </div>
             {shippingQuote?.notes && (
               <small className="text-muted">Note: {shippingQuote.notes.join(", ")}</small>

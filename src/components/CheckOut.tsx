@@ -15,7 +15,7 @@ const LABELS: Record<keyof AddressT, string> = {
   phone: "Phone Number",
 };
 
-const fmt = (n: number) => `₪${n.toFixed(2)}`;
+const fmt = (n: number) => `$${n.toFixed(2)}`;
 
 const CheckOut = () => {
   const dispatch = useAppDispatch();

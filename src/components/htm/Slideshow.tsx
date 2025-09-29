@@ -16,7 +16,7 @@ const Slideshow = () => {
               alt="Slide 1"
             />
             <div className="carousel-caption top-50 start-50 translate-middle text-center">
-              <h1>Welcome to the Sevan Armenian Ceramics Center – Jerusalem’s Online Shop for Authentic Souvenirs</h1>
+              <h1>Welcome to the Gejekoushian's Armenian Ceramics Center – Jerusalem’s Online Shop for Authentic Souvenirs</h1>
             </div>
 
           </div>

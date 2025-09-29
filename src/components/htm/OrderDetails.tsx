@@ -209,13 +209,13 @@ const OrderDetails = () => {
 
                     <div className="col-md-3 mb-4 mb-md-0">
                       <h6 className="mb-1">
-                        <span className="text-muted small me-2">Unit:</span>₪{item.unitPrice.toFixed(2)}
+                        <span className="text-muted small me-2">Unit:</span>${item.unitPrice.toFixed(2)}
                       </h6>
                       <h6 className="mb-1">
                         <span className="text-muted small me-2">Qty:</span>{item.quantity}
                       </h6>
                       <h5 className="mb-0">
-                        <span className="align-middle">₪{lineTotal}</span>
+                        <span className="align-middle">${lineTotal}</span>
                       </h5>
                     </div>
                   </div>
@@ -232,15 +232,15 @@ const OrderDetails = () => {
                 <div className="col-xl-3">
                   <ul className="list-unstyled">
                     <li className="text-muted ms-3">
-                      <span className="text-black me-4">SubTotal</span>₪{subTotal.toFixed(2)}
+                      <span className="text-black me-4">SubTotal</span>${subTotal.toFixed(2)}
                     </li>
                     <li className="text-muted ms-3 mt-2">
-                      <span className="text-black me-4">Shipping</span>₪{shipping.toFixed(2)}
+                      <span className="text-black me-4">Shipping</span>${shipping.toFixed(2)}
                     </li>
                   </ul>
                   <p className="text-black float-start">
                     <span className="text-black me-3">Total Amount</span>
-                    <span style={{ fontSize: "25px" }}>₪
+                    <span style={{ fontSize: "25px" }}>$
                       {grandTotal.toFixed(2)}</span>
                   </p>
                 </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { ProductT } from "../../utils/types.ts";
 import { getPostById } from "../../features/api/postActions.tsx";
@@ -15,6 +15,10 @@ const ProductPage = () => {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  // zoom modal
+  const [isZoomOpen, setIsZoomOpen] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
   useEffect(() => {
     const fetchProduct = async () => {
       setLoading(true);
@@ -22,6 +26,7 @@ const ProductPage = () => {
         const data = await getPostById(id);
         setProduct(data);
         setSelectedImage(data.imageUrls?.[0] || null);
+        setCurrentIndex(0);
         setErrorMessage(null);
       } catch {
         setErrorMessage("Error loading product.");
@@ -32,6 +37,22 @@ const ProductPage = () => {
 
     fetchProduct();
   }, [id]);
+
+  // Handle keyboard navigation
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (!isZoomOpen) return;
+      if (e.key === "Escape") setIsZoomOpen(false);
+      if (e.key === "ArrowRight") nextImage();
+      if (e.key === "ArrowLeft") prevImage();
+    },
+    [isZoomOpen]
+  );
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleKeyDown]);
 
   if (loading) {
     return (
@@ -55,7 +76,6 @@ const ProductPage = () => {
     product.category ||
     "-";
 
-  // ---- Size & Weight helpers ----
   const displaySize =
     product.size === "custom"
       ? product.size || "Custom"
@@ -66,13 +86,32 @@ const ProductPage = () => {
     return grams >= 1000 ? `${(grams / 1000).toFixed(2)} kg` : `${Math.round(grams)} g`;
   };
 
+  // ---- Image Navigation ----
+  const nextImage = () => {
+    if (!product?.imageUrls) return;
+    const next = (currentIndex + 1) % product.imageUrls.length;
+    setCurrentIndex(next);
+    setSelectedImage(product.imageUrls[next]);
+  };
+
+  const prevImage = () => {
+    if (!product?.imageUrls) return;
+    const prev = (currentIndex - 1 + product.imageUrls.length) % product.imageUrls.length;
+    setCurrentIndex(prev);
+    setSelectedImage(product.imageUrls[prev]);
+  };
+
   return (
-    <main className="container-fluid p-0">
+    <div className="container-fluid px-2">
       <div className="row">
         {/* Image Section */}
         <div className="col-md-6">
           {/* Main Image */}
-          <div className="rounded shadow-sm mb-3 overflow-hidden position-relative">
+          <div
+            className="rounded shadow-sm mb-3 overflow-hidden position-relative"
+            onClick={() => setIsZoomOpen(true)}
+            style={{ cursor: "zoom-in" }}
+          >
             <img
               src={selectedImage || ""}
               alt="Selected Product"
@@ -105,7 +144,10 @@ const ProductPage = () => {
                   cursor: "pointer",
                   transition: "all 0.2s ease-in-out",
                 }}
-                onClick={() => setSelectedImage(url)}
+                onClick={() => {
+                  setSelectedImage(url);
+                  setCurrentIndex(idx);
+                }}
                 aria-label={`Select image ${idx + 1}`}
               />
             ))}
@@ -118,16 +160,12 @@ const ProductPage = () => {
             <h2 className="card-title fw-bold mb-3">{product.name}</h2>
 
             <div className="mb-3">
-              <span className="text-muted me-2 text-decoration-line-through">
-               ₪{(product.price * 1.3).toFixed(2)}
-              </span>
               <span className="text-success fs-4 fw-semibold">
-             ₪{product.price.toFixed(2)}
+                ${product.price.toFixed(2)}
               </span>
             </div>
 
             <div className="mb-3">
-              <span className="badge bg-light text-dark me-2">ID: {product.id}</span>
               <span className="badge bg-info text-white">{categoryTitle}</span>
             </div>
 
@@ -140,7 +178,6 @@ const ProductPage = () => {
               )}
             </div>
 
-            {/* Color */}
             {product.color && (
               <div className="mb-3 d-flex align-items-center gap-2">
                 <strong>Color:</strong>
@@ -158,7 +195,6 @@ const ProductPage = () => {
               </div>
             )}
 
-            {/* Material */}
             <div className="mb-3">
               <strong>Material:</strong>
               <div className="d-flex flex-wrap gap-2 mt-1">
@@ -166,7 +202,6 @@ const ProductPage = () => {
               </div>
             </div>
 
-            {/* Size */}
             {product.size && (
               <div className="mb-3">
                 <strong>Size:</strong>{" "}
@@ -174,7 +209,6 @@ const ProductPage = () => {
               </div>
             )}
 
-            {/* Weight */}
             {product.weight != null && (
               <div className="mb-3">
                 <strong>Weight:</strong>{" "}
@@ -182,19 +216,11 @@ const ProductPage = () => {
               </div>
             )}
 
-            {/* Description */}
             <div className="mb-3">
               <strong>Description:</strong>
               <p className="mt-1 text-break" style={{ whiteSpace: "pre-wrap" }}>
                 {product.desc || "-"}
               </p>
-            </div>
-
-            <div className="mb-4">
-              <strong>Created:</strong>{" "}
-              {product.dateCreated
-                ? new Date(product.dateCreated).toLocaleDateString()
-                : "-"}
             </div>
 
             <div className="d-flex flex-wrap gap-3">
@@ -222,7 +248,54 @@ const ProductPage = () => {
           </div>
         </div>
       </div>
-    </main>
+
+      {/* Zoom Modal with Slide */}
+      {isZoomOpen && (
+        <div
+          className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-90 d-flex align-items-center justify-content-center"
+          style={{ zIndex: 2000 }}
+        >
+          {/* Close */}
+          <button
+            className="btn btn-light position-absolute top-0 end-0 m-3"
+            onClick={() => setIsZoomOpen(false)}
+          >
+            ✕
+          </button>
+
+          {/* Prev */}
+          <button
+            className="btn btn-outline-light position-absolute start-0 m-3 fs-3"
+            style={{ height: 60, width: 60 }}
+            onClick={prevImage}
+          >
+            ‹
+          </button>
+
+          {/* Image */}
+          <img
+            src={product.imageUrls?.[currentIndex] || ""}
+            alt="Zoomed Product"
+            className="img-fluid"
+            style={{
+              maxHeight: "90%",
+              maxWidth: "90%",
+              objectFit: "contain",
+              transition: "opacity 0.3s ease-in-out",
+            }}
+          />
+
+          {/* Next */}
+          <button
+            className="btn btn-outline-light position-absolute end-0 m-3 fs-3"
+            style={{ height: 60, width: 60 }}
+            onClick={nextImage}
+          >
+            ›
+          </button>
+        </div>
+      )}
+    </div>
   );
 };
 
