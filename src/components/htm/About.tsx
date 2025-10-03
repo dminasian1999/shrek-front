@@ -1,6 +1,8 @@
 import React from "react"
 import { bgHero } from "../../utils/constants.ts"
-import MapLocation from "./MapLocation.tsx"
+import MapLocation from "./MapLocation1.tsx"
+import MapLocation1 from "./MapLocation1.tsx"
+import MapLocation2 from "./MapLocation2.tsx"
 
 const About = () => {
   return (
@@ -75,23 +77,10 @@ const About = () => {
 
         <div className="row">
           <div className="col-12 col-sm-12 col-md-6 col-lg-6 mb-4">
-            <MapLocation />
+            <MapLocation1 />
           </div>
           <div className="col-12 col-sm-12 col-md-6 col-lg-6 mb-4">
-            <div className="map-section map">
-              <iframe
-                title="Store Location"
-                width="100%"
-                height="350"
-                style={{ border: 0 }}
-                loading="lazy"
-                allowFullScreen
-                referrerPolicy="no-referrer-when-downgrade"
-
-
-              src="https://www.google.com/maps?q=31.774012,35.230711&z=15&output=embed"
-              />
-            </div>
+            <MapLocation2 />
           </div>
           <div className="col-12 col-sm-12 col-md-6 col-lg-6">
             <h2 className="h2">Contact Us</h2>

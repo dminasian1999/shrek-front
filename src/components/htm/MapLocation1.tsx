@@ -1,6 +1,6 @@
 import React from "react"
 
-const MapLocation = () => {
+const MapLocation1 = () => {
   return (
     <div className="map-section map">
       <iframe
@@ -21,4 +21,4 @@ const MapLocation = () => {
 
 }
 
-export default MapLocation
+export default MapLocation1

@@ -1,5 +1,5 @@
 import React from "react"
-import MapLocation from "./MapLocation.tsx"
+import MapLocation from "./MapLocation1.tsx"
 
 const NavContactUs = () => {
   return (

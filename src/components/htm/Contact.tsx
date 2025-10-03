@@ -1,16 +1,26 @@
 import React from "react"
-import MapLocation from "./MapLocation.tsx"
+import MapLocation from "./MapLocation1.tsx"
 import { adminInfo } from "../../utils/constants.ts"
+import MapLocation1 from "./MapLocation1.tsx"
+import MapLocation2 from "./MapLocation2.tsx"
 
 const Contact = () => {
   return (
     <div className="container">
       <div className="row">
         {/* Map Component */}
-        <MapLocation />
+   <div className="col-md-6">
+     <MapLocation1 />
+
+   </div>
+   <div className="col-md-6">
+     <MapLocation2 />
+
+   </div>
 
         {/* Contact Form */}
         <div className="col-md-8 mb-4">
+
           <h2>Contact Us</h2>
           <p className="mb-3 text-muted">
             We'd love to hear from you. Please fill out the form below and we'll get back to you as soon as possible.
