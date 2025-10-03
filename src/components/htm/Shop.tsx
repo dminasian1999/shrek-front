@@ -133,53 +133,101 @@ const Shop = () => {
             transition={{ duration: 0.4 }}
           >
             {/* Categories Accordion */}
-            <div
-              className="accordion mb-4 shadow-sm rounded"
-              id="categoryAccordion"
-            >
-              <div className="accordion-item border-0">
-                <h2 className="accordion-header" id="headingCategories">
-                  <button
-                    className="accordion-button fw-bold bg-light"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#collapseCategories"
-                    aria-expanded="true"
-                    aria-controls="collapseCategories"
+            <div className="accordion mb-4 shadow-sm rounded" id="categoryAccordion">
+              {collections.map((cat) => (
+                <div key={cat.route} className="accordion-item border-0">
+                  <h2 className="accordion-header" id={`heading-${cat.route}`}>
+                    <button
+                      className="accordion-button fw-bold bg-light"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target={`#collapse-${cat.route}`}
+                      aria-expanded="false"
+                      aria-controls={`collapse-${cat.route}`}
+                    >
+                      <i className="bi bi-tags me-2"></i>
+                      {cat.title}
+                    </button>
+                  </h2>
+                  <div
+                    id={`collapse-${cat.route}`}
+                    className="accordion-collapse collapse"
+                    aria-labelledby={`heading-${cat.route}`}
+                    data-bs-parent="#categoryAccordion"
                   >
-                    <i className="bi bi-tags me-2"></i>Categories
-                  </button>
-                </h2>
-                <div
-                  id="collapseCategories"
-                  className="accordion-collapse collapse show"
-                  aria-labelledby="headingCategories"
-                  data-bs-parent="#categoryAccordion"
-                >
-                  <div className="accordion-body p-0">
-                    <ul className="list-group list-group-flush">
-                      {collections.map((cat, idx) => (
-                        <motion.li
-                          key={idx}
-                          className="list-group-item px-3 py-2"
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: idx * 0.03 }}
-                        >
-                          <Link
-                            to={`/shop/${cat.route}`}
-                            className="d-block text-decoration-none rounded fw-medium text-dark hover-transition"
+                    <div className="accordion-body p-0">
+                      <ul className="list-group list-group-flush">
+                        {cat.subCategory?.map((sub, subIdx) => (
+                          <motion.li
+                            key={sub.route}
+                            className="list-group-item px-4 py-2"
+                            initial={{ opacity: 0, x: -15 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: subIdx * 0.02, type: "spring", stiffness: 100 }}
                           >
-                            <i className="bi bi-chevron-right me-2 text-muted small"></i>
-                            {cat.title}
-                          </Link>
-                        </motion.li>
-                      ))}
-                    </ul>
+                            <Link
+                              to={`/shop/${sub.route}`}
+                              className="d-block text-decoration-none rounded fw-medium text-dark hover-transition"
+                            >
+                              <i className="bi bi-chevron-right me-2 text-muted small"></i>
+                              {sub.title}
+                            </Link>
+                          </motion.li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
+
+            {/*<div*/}
+            {/*  className="accordion mb-4 shadow-sm rounded"*/}
+            {/*  id="categoryAccordion"*/}
+            {/*>*/}
+            {/*  <div className="accordion-item border-0">*/}
+            {/*    <h2 className="accordion-header" id="headingCategories">*/}
+            {/*      <button*/}
+            {/*        className="accordion-button fw-bold bg-light"*/}
+            {/*        type="button"*/}
+            {/*        data-bs-toggle="collapse"*/}
+            {/*        data-bs-target="#collapseCategories"*/}
+            {/*        aria-expanded="true"*/}
+            {/*        aria-controls="collapseCategories"*/}
+            {/*      >*/}
+            {/*        <i className="bi bi-tags me-2"></i>Categories*/}
+            {/*      </button>*/}
+            {/*    </h2>*/}
+            {/*    <div*/}
+            {/*      id="collapseCategories"*/}
+            {/*      className="accordion-collapse collapse show"*/}
+            {/*      aria-labelledby="headingCategories"*/}
+            {/*      data-bs-parent="#categoryAccordion"*/}
+            {/*    >*/}
+            {/*      <div className="accordion-body p-0">*/}
+            {/*        <ul className="list-group list-group-flush">*/}
+            {/*          {collections.map((cat, idx) => (*/}
+            {/*            <motion.li*/}
+            {/*              key={idx}*/}
+            {/*              className="list-group-item px-3 py-2"*/}
+            {/*              initial={{ opacity: 0, x: -10 }}*/}
+            {/*              animate={{ opacity: 1, x: 0 }}*/}
+            {/*              transition={{ delay: idx * 0.03 }}*/}
+            {/*            >*/}
+            {/*              <Link*/}
+            {/*                to={`/shop/${cat.route}`}*/}
+            {/*                className="d-block text-decoration-none rounded fw-medium text-dark hover-transition"*/}
+            {/*              >*/}
+            {/*                <i className="bi bi-chevron-right me-2 text-muted small"></i>*/}
+            {/*                {cat.title}*/}
+            {/*              </Link>*/}
+            {/*            </motion.li>*/}
+            {/*          ))}*/}
+            {/*        </ul>*/}
+            {/*      </div>*/}
+            {/*    </div>*/}
+            {/*  </div>*/}
+            {/*</div>*/}
 
             {/* Price Filter Accordion */}
             <div
@@ -581,9 +629,15 @@ const Shop = () => {
                               </span>
                             </p>
                           </div>
-                          <div className="card-footer fw-light small">
-                            {moment(p.dateCreated).format("MMMM DD, YYYY")}
-                          </div>
+                          {/*<div className="card-footer fw-light small">*/}
+                          {/*  {moment(p.dateCreated).format("MMMM DD, YYYY")}*/}
+                          {/*</div>*/}
+                          {token &&
+                            user.roles.includes("ADMINISTRATOR") && (
+                              <div className="card-footer fw-light small">
+                                {moment(p.dateCreated).format("MMMM DD, YYYY")}
+                              </div>
+                            )}
                         </a>
                       </motion.div>
                     ))}

@@ -91,30 +91,30 @@ const CartPage = () => {
       <div className="table-responsive mb-4">
         <table className="table table-hover align-middle text-center">
           <thead className="table-light">
-            <tr>
-              <th colSpan={2}>Product</th>
-              <th>Price</th>
-              <th>Quantity</th>
-              <th>Total</th>
-              <th />
-            </tr>
+          <tr>
+            <th colSpan={2}>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th />
+          </tr>
           </thead>
           <tbody>
-            {profile.cart.items.map(item => (
-              <CartPageRow key={item.cartItemId} cardItem={item} />
-            ))}
+          {profile.cart.items.map(item => (
+            <CartPageRow key={item.cartItemId} cardItem={item} />
+          ))}
           </tbody>
           <tfoot>
-            <tr>
-              <td colSpan={6}>
-                <a
-                  href="/"
-                  className="btn btn-outline-secondary w-100 w-md-auto"
-                >
-                  Continue Shopping
-                </a>
-              </td>
-            </tr>
+          <tr>
+            <td colSpan={6}>
+              <a
+                href="/"
+                className="btn btn-outline-secondary w-100 w-md-auto"
+              >
+                Continue Shopping
+              </a>
+            </td>
+          </tr>
           </tfoot>
         </table>
       </div>

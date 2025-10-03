@@ -20,6 +20,7 @@ const EditProduct: React.FC = () => {
     quantity: 0,
     price: 0,
     category: "",
+    subCategory:"",
     weight: 0,
     size: "",
     color: "",
@@ -262,11 +263,10 @@ const EditProduct: React.FC = () => {
               disabled={saving}
             />
           </div>
-
           <div className="mb-3">
             <label className="form-label">Category</label>
             <select
-              className="form-select"
+              className="form-select mb-2"
               value={product.category}
               onChange={handleChange("category")}
               disabled={saving}
@@ -278,7 +278,27 @@ const EditProduct: React.FC = () => {
                 </option>
               ))}
             </select>
+
+            {/* Subcategory select */}
+            {product.category && (
+              <select
+                className="form-select"
+                value={product.subCategory || ""}
+                onChange={handleChange("subCategory")}
+                disabled={saving}
+              >
+                <option value="">-- Subcategory --</option>
+                {collections
+                  .find(cat => cat.route === product.category)
+                  ?.subCategory?.map(sub => (
+                    <option key={sub.route} value={sub.route}>
+                      {sub.title}
+                    </option>
+                  ))}
+              </select>
+            )}
           </div>
+
           <div className="col-md-4">
             <label className="form-label">Wight</label>
             <input
@@ -312,11 +332,11 @@ const EditProduct: React.FC = () => {
                 type="text"
                 className="form-control mt-2"
                 placeholder="e.g., 10×15 cm or 20 cm diameter"
-                value={product.size || ("" as any)}
+                value={product.size}
                 onChange={e =>
                   setProduct(prev => ({
                     ...prev,
-                    customSizeText: e.target.value as any,
+                    size: e.target.value,
                   }))
                 }
                 disabled={saving}

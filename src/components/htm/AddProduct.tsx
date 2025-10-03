@@ -40,6 +40,7 @@ const emptyProduct: ProductT = {
   quantity: 0,
   price: 0,
   category: "",
+  subCategory: "",
   weight: 0,
   size: "",
   color: "",

@@ -1,188 +1,266 @@
-import React, { useState, useMemo } from "react"
-import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import CartPageRow from "./CartPageRow"
-import PayPalCheckout from "../../paymant/PayPalCheckout"
-import { checkOut } from "../../features/api/accountActions.ts"
-import { OrderT } from "../../utils/types.ts"
+import React, { useCallback, useEffect, useState, useMemo } from "react"
+// Assuming these imports are necessary for Redux dispatch/actions in your actual project
+import { useAppDispatch } from "../../app/hooks.ts"
 
-// ===== SHIPPING CALC UTILS =====
-type VolumeTier = "1-4" | "5-25";
-
-const ECO_TABLE: Array<[number, number, number]> = [
-  [100, 45, 39],
-  [250, 50, 43],
-  [500, 61, 50],
-  [750, 70, 61],
-  [1000, 82, 64],
-  [1500, 102, 75],
-  [2000, 117, 88],
-];
-
-const ecoPrice = (weight: number, tier: VolumeTier): number | null => {
-  if (weight <= 0 || weight > 2000) return null;
-  for (const [max, price14, price525] of ECO_TABLE) {
-    if (weight <= max) return tier === "5-25" ? price525 : price14;
+// --- 1. Cart Item Data Structure ---
+// Defines the expected structure of an item stored in the cart state/backend.
+interface CartItemT {
+  cartItemId: string // Unique identifier for the item/variant in the cart (e.g., "productId-sku-size")
+  product: {
+    id: string
+    name: string
+    price: number // Current price of the variant
+    imageUrls?: string[]
+    size: string // Specific variant detail (e.g., Ring size, T-shirt size)
+    sku: string // Stock Keeping Unit
+    oldPrice?: number // Optional old price for discount display
   }
-  return null;
-};
+  quantity: number
+}
 
-const emsPrice = (weight: number): number => {
-  const base = 145;
-  if (weight <= 500) return base;
-  const extra = Math.ceil((weight - 500) / 500);
-  return base + 20 * extra;
-};
+// Mock Cart Data to simulate a fetched list, mirroring the structure in the images
+const MOCK_CART_DATA: CartItemT[] = [
+  {
+    cartItemId: "prod1-scroll-2823",
+    product: {
+      id: "prod1",
+      name: '"Shaddai" Hebrew Protection scroll necklace',
+      price: 28.23,
+      imageUrls: ["/shaddai-scroll.jpg"], // Placeholder image URL
+      size: "925 Sterling Silver", // Variant detail
+      sku: "nec-001-925",
+      oldPrice: 31.36, // For discount line-through
+    },
+    quantity: 1,
+  },
+  {
+    cartItemId: "prod2-ring-5",
+    product: {
+      id: "prod2",
+      name: "Four Hebrew Blessings Ring",
+      price: 151.78,
+      imageUrls: ["/hebrew-ring.jpg"], // Placeholder image URL
+      size: "5",
+      sku: "rin-c2-5",
+      oldPrice: 168.64, // For discount line-through
+    },
+    quantity: 1,
+  },
+]
+// ----------------------------------------------------------------------
 
-const getBestShipping = (weight: number, monthlyShipments: number) => {
-  const tier: VolumeTier = monthlyShipments >= 5 ? "5-25" : "1-4";
-  const eco = ecoPrice(weight, tier);
-  const ems = emsPrice(weight);
-
-  if (eco == null) {
-    return { method: "EMS", cost: ems, notes: ["EcoPost supports only up to 2000g"] };
-  }
-  if (eco <= ems) {
-    return { method: "ECOPOST", cost: eco, notes: [`Tier ${tier}`] };
-  }
-  return { method: "EMS", cost: ems, notes: [`EMS cheaper than EcoPost (Tier ${tier})`] };
-};
-
-// ===== MAIN COMPONENT =====
+/**
+ * Renders the shopping cart page.
+ * Displays individual cart items, manages quantity, removal, and calculates totals.
+ */
 const CartPage2 = () => {
-  const dispatch = useAppDispatch()
-  const profile = useAppSelector(state => state.user.profile)
-  const token = useAppSelector(state => state.token)
-  const [termsAccepted, setTermsAccepted] = useState(false)
+  // const dispatch = useAppDispatch() // For real Redux usage
+  const [cartItems, setCartItems] = useState<CartItemT[]>(MOCK_CART_DATA)
+  const [loading, setLoading] = useState(false)
 
-  // 🏷️ Calculate cart total weight
-  const totalWeight = useMemo(() => {
-    return profile.cart.items.reduce(
-      (sum, item) => sum + item.product.weight * item.quantity,
-      0
+  // --- 2. Core Calculation Logic ---
+  const { totalItems, productSubtotal } = useMemo(() => {
+    // Only consider items with quantity > 0 for totals
+    const activeItems = cartItems.filter(item => item.quantity > 0)
+
+    const totalItems = activeItems.reduce((sum, item) => sum + item.quantity, 0)
+
+    const productSubtotal = activeItems.reduce(
+      (sum, item) => sum + item.product.price * item.quantity,
+      0,
     )
-  }, [profile.cart.items])
+    return { totalItems, productSubtotal }
+  }, [cartItems])
 
-  // 🏷️ Choose shipping option
-  const shippingQuote = useMemo(() => {
-    return getBestShipping(totalWeight, profile.cart.items.length)
-  }, [totalWeight, profile.cart.items.length])
+  // Simulate fetching the cart list (optional, for demo structure)
+  useEffect(() => {
+    setLoading(true)
+    const timer = setTimeout(() => {
+      // In a real app: dispatch(fetchCartList()).then(data => setCartItems(data));
+      setCartItems(MOCK_CART_DATA)
+      setLoading(false)
+    }, 50)
+    return () => clearTimeout(timer)
+  }, [])
 
-  const handleCheckout = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!termsAccepted) {
-      alert("Please accept the terms to proceed.")
-      return
-    }
+  // --- 3. Handlers for Cart Actions ---
 
-    const orderItems = profile.cart.items.map(item => ({
-      productId: item.product.id,
-      quantity: item.quantity,
-      unitPrice: item.product.price,
-    }))
+  // Handles incrementing/decrementing item quantity
+  const handleQuantityChange = useCallback(
+    (cartItemId: string, delta: number) => {
+      setCartItems(prevItems =>
+        prevItems.map(item => {
+          if (item.cartItemId === cartItemId) {
+            const newQty = item.quantity + delta
+            // Enforce minimum of 1 (or 0 if you allow it, but we use a dedicated remove button here)
+            // And a max stock limit (mocked at 99)
+            if (newQty >= 1 && newQty <= 99) {
+              // In a real app: dispatch(updateCartItemQuantity(cartItemId, newQty))
+              return { ...item, quantity: newQty }
+            }
+          }
+          return item
+        }),
+      )
+    },
+    [],
+  )
 
-    const orderPayload: OrderT = {
-      userId: profile.login,
-      paymentMethod: "PayPal",
-      shippingAddress: profile.address!,
-      orderItems,
-    }
+  // Handles removing an item entirely from the cart
+  const handleRemoveItem = useCallback(
+    (cartItemId: string) => {
+      // In a real app: dispatch(removeCartItem(cartItemId))
+      setCartItems(prevItems =>
+        prevItems.filter(item => item.cartItemId !== cartItemId),
+      )
+    },
+    [],
+  )
 
-    try {
-      const resultAction = await dispatch(checkOut(orderPayload))
-      if (checkOut.fulfilled.match(resultAction)) {
-        alert("Your order(s) have been successfully placed!")
-        // TODO: clear cart or redirect user
-      } else {
-        throw new Error("Order creation failed.")
-      }
-    } catch (error) {
-      alert(error instanceof Error ? error.message : "There was a problem placing your order.")
-    }
+  // --- 4. Loading and Empty State ---
+
+  if (loading) {
+    return (
+      <main className="d-flex flex-column align-items-center justify-content-center vh-100 bg-light text-center">
+        <div
+          className="spinner-border text-primary"
+          style={{ width: "4rem", height: "4rem" }}
+          role="status"
+        />
+        <p className="mt-3 fs-5 text-muted">Loading your cart...</p>
+      </main>
+    )
   }
 
-  const subtotal = profile.cart.totalPrice ?? 0
-  const shippingCost = shippingQuote?.cost ?? 0
-  const grandTotal = subtotal + shippingCost
+  if (cartItems.length === 0) {
+    return (
+      <main className="container text-center mt-5">
+        <h1 className="fw-light mb-4">Your cart is empty</h1>
+        <p className="text-muted fs-5">
+          You haven't added any items yet.
+        </p>
+        <button className="btn btn-primary mt-3">Continue shopping</button>
+      </main>
+    )
+  }
+
+  // --- 5. Main Cart JSX Structure ---
 
   return (
-    <div className="px-1">
-      <div className="text-center mb-4">
-        <h1 className="fw-bold">Shopping Cart</h1>
+    <div className="container my-5" style={{ maxWidth: 1000 }}>
+      <div className="d-flex justify-content-between align-items-baseline mb-4">
+        <h1 className="fw-light">Your cart</h1>
+        <a href="#" className="text-decoration-none">
+          Continue shopping
+        </a>
       </div>
 
-      <div className="table-responsive mb-4">
-        <table className="table table-hover align-middle text-center">
-          <thead className="table-light">
-          <tr>
-            <th colSpan={2}>Product</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Total</th>
-            <th />
-          </tr>
-          </thead>
-          <tbody>
-          {profile.cart.items.map(item => (
-            <CartPageRow key={item.cartItemId} cardItem={item} />
-          ))}
-          </tbody>
-          <tfoot>
-          <tr>
-            <td colSpan={6}>
-              <a href="/" className="btn btn-outline-secondary w-100 w-md-auto">
-                Continue Shopping
-              </a>
-            </td>
-          </tr>
-          </tfoot>
-        </table>
+      <div className="row border-bottom pb-2 mb-3 text-uppercase fw-bold text-muted d-none d-md-flex">
+        <div className="col-6">Product</div>
+        <div className="col-2 text-center">Quantity</div>
+        <div className="col-4 text-end">Total</div>
       </div>
 
-      <div className="row gy-4">
-        <div className="col-12 col-md-6">
-          <div className="border rounded p-4 shadow-sm h-100">
-            <h5 className="fw-bold mb-3">Cart Summary</h5>
-            <div className="d-flex justify-content-between border-bottom pb-2">
-              <span>Subtotal</span>
-              <span>${subtotal.toFixed(2)}</span>
-            </div>
-            <div className="d-flex justify-content-between border-bottom py-2">
-              <span>Shipping ({shippingQuote?.method})</span>
-              <span>${shippingCost.toFixed(2)}</span>
-            </div>
-            <div className="d-flex justify-content-between border-bottom py-2 fw-bold">
-              <span>Grand Total</span>
-              <span>${grandTotal.toFixed(2)}</span>
-            </div>
-            {shippingQuote?.notes && (
-              <small className="text-muted">Note: {shippingQuote.notes.join(", ")}</small>
-            )}
+      {/* Cart Item List */}
+      {cartItems.map(item => {
+        const { product, quantity, cartItemId } = item
+        const itemTotal = product.price * quantity
 
-            <div className="form-check my-3">
-              <input
-                type="checkbox"
-                className="me-2"
-                id="terms"
-                required
-                checked={termsAccepted}
-                onChange={e => setTermsAccepted(e.target.checked)}
+        return (
+          <div
+            key={cartItemId}
+            className="row align-items-start py-3 border-bottom px-1 cart-item-row"
+          >
+            {/* Product Details (Image, Name, Variant) */}
+            <div className="col-md-6 col-12 d-flex gap-3">
+              <img
+                src={product.imageUrls?.[0] || "/placeholder.jpg"}
+                alt={product.name}
+                className="img-thumbnail"
+                style={{ width: 100, height: 100, objectFit: "cover" }}
               />
-              <label className="form-check-label" htmlFor="terms">
-                I agree with the terms and conditions
-              </label>
+              <div className="d-flex flex-column">
+                <p className="mb-1 fw-bold fs-6">{product.name}</p>
+                <small className="text-muted mb-0">{product.size}</small>
+                {product.oldPrice && (
+                  <small className="text-secondary text-decoration-line-through">
+                    ${product.oldPrice.toFixed(2)}
+                  </small>
+                )}
+                <small className="text-danger mt-1 d-md-none">
+                  ${product.price.toFixed(2)} / ea
+                </small>
+              </div>
             </div>
 
-            <PayPalCheckout amount={grandTotal.toFixed(2)} />
+            {/* Quantity Controls */}
+            <div className="col-md-2 col-6 d-flex justify-content-md-center justify-content-start align-items-center mt-3 mt-md-0">
+              <div className="input-group" style={{ width: 110 }}>
+                <button
+                  className="btn btn-outline-secondary btn-sm"
+                  type="button"
+                  onClick={() => handleQuantityChange(cartItemId, -1)}
+                  disabled={quantity <= 1} // Disallow dropping below 1
+                >
+                  -
+                </button>
+                <input
+                  type="text"
+                  className="form-control form-control-sm text-center"
+                  value={quantity}
+                  readOnly
+                  style={{ backgroundColor: "white" }}
+                />
+                <button
+                  className="btn btn-outline-secondary btn-sm"
+                  type="button"
+                  onClick={() => handleQuantityChange(cartItemId, 1)}
+                  disabled={quantity >= 99} // Max stock check
+                >
+                  +
+                </button>
+              </div>
+            </div>
 
-            <button
-              type="submit"
-              onClick={handleCheckout}
-              className="btn btn-primary w-100 mt-3"
-              disabled={!termsAccepted}
-            >
-              Proceed To Checkout
-            </button>
+            {/* Item Total and Remove Button */}
+            <div className="col-md-4 col-6 text-end d-flex flex-column align-items-end mt-3 mt-md-0">
+              <span className="fw-bold fs-5 mb-1">${itemTotal.toFixed(2)}</span>
+              <button
+                className="btn btn-link text-danger p-0"
+                onClick={() => handleRemoveItem(cartItemId)}
+                aria-label="Remove item"
+              >
+                <i className="fa fa-trash me-1" />
+                Remove
+              </button>
+            </div>
           </div>
+        )
+      })}
+
+      {/* Cart Summary and Checkout */}
+      <div className="row mt-4 justify-content-end">
+        <div className="col-md-4 col-12 text-end">
+          <div className="d-flex justify-content-between align-items-center mb-1">
+            <span className="fw-bold me-3 text-muted">Total items</span>
+            <span className="fw-bold">{totalItems}</span>
+          </div>
+
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <span className="me-3 fw-bold fs-5">Estimated total</span>
+            <span className="fw-bold fs-5">${productSubtotal.toFixed(2)} USD</span>
+          </div>
+
+          <p className="text-muted small mb-3">
+            Taxes, discounts and shipping calculated at checkout.
+          </p>
+
+          <button className="btn btn-primary btn-lg w-100 mb-2 py-3 check-out-button" style={{ backgroundColor: "#827167", borderColor: "#827167" }}>
+            Check out
+          </button>
+          <button className="btn btn-warning btn-lg w-100 py-3 paypal-button" style={{ backgroundColor: "#FFC439", borderColor: "#FFC439" }}>
+            PayPal
+          </button>
         </div>
       </div>
     </div>
