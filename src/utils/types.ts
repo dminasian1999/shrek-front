@@ -29,27 +29,14 @@ export interface ProductT {
   quantity: number
   price: number
   category: string
+  weight : number,
+  size: string,
   color: string
   material: string
   desc: string
   dateCreated?: Date
 }
 
-
-export interface ReceiptT {
-  id: string
-  name: string
-  imageUrl: string
-  quantity: number
-  sell: number
-  buy: number
-  income: number
-  seller: string
-  category: string
-  type: string
-  desc: string
-  dateCreated: Date
-}
 
 export interface Adjustment {
   num: number
@@ -102,17 +89,19 @@ export interface UserProfile {
   roles: string[]
   address?: AddressT
   cart: Cart,
-  paymentMethod?:PaymentMethodT,
+  paymentMethod?:paymentMethodT,
   wishList?: string[]
-  orders?: Order[]
+  orders: OrderT[]
 }
 
-export interface PaymentMethodT {
-  type: string
-  provider: string
-  accountNumberMasked: string
-  expiryDate: string
+export type paymentMethodT = {
+  cardname: string
+  cardtype: string
+  cardno: string
+  cvv: string
+  exdate: string
 }
+
 export interface UserRegister {
   login: string
   firstName: string
@@ -139,30 +128,54 @@ export interface AddressT {
   country: string
   phone: string
 }
-
-export interface Order {
-  orderId: string
-  userId: string
-  status: "pending" | "paid" | "shipped" | "delivered" | "cancelled"
-  orderItems: [OrderItem]
-  totalAmount: 0
-  shippingAddress: AddressT
-  paymentMethod: "card" | "paypal" | "bank" | "cash"
-  paymentStatus: "unpaid" | "paid" | "failed"
-  createdAt: Date
-}
-
-export interface OrderItem {
+export interface ReceiptT {
   id: string
-  orderId: string
-  productId: string
-  quantity: 0
-  priceAtPurchase: 0
+  name: string
+  imageUrl: string
+  quantity: number
+  sell: number
+  buy: number
+  income: number
+  seller: string
+  category: string
+  type: string
+  desc: string
+  dateCreated: Date
 }
+
+
+
+export interface OrderItemT {
+  productId?: string
+  quantity: number
+  unitPrice: number
+}
+export interface OrderT {
+  orderId?: string
+  userId: string
+  status?: string
+  orderItems: OrderItemT[]
+  shippingAddress: AddressT
+  paymentMethod: string
+  dateCreated?:  Date  // ISO string preferred when sending
+}
+
+// export interface OrderT {
+//   orderId: string
+//   userId: string
+//   status?: string
+//   orderItems: OrderItemT[]
+//   totalAmount: number
+//   shippingAddress: AddressT
+//   paymentMethod: string
+//   dateCreated: Date
+// }
+
 
 export interface Cart {
   userId: string
   items: CartItem[]
+  shippingPrice: number
   totalPrice: number
 }
 

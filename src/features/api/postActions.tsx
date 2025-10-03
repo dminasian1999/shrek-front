@@ -1,10 +1,10 @@
-import { baseUrlBlog } from "../../utils/constants.ts"
+import { baseUrl } from "../../utils/constants.ts"
 import { ProductT, UserProfile } from "../../utils/types.ts"
 
 export const uploadImage1 = async (file: File, token: string) => {
   const fd = new FormData()
   fd.append("file", file)
-  const res = await fetch(`${baseUrlBlog}/post/file/upload`, {
+  const res = await fetch(`${baseUrl}/post/file/upload`, {
     method: "POST",
     headers: { Authorization: token },
     body: fd
@@ -16,7 +16,7 @@ export const uploadImage1 = async (file: File, token: string) => {
 export const uploadImage = async (file: File, token: string): Promise<string> => {
   const fd = new FormData()
   fd.append("file", file)
-  const res = await fetch(`${baseUrlBlog}/post/file/upload`, {
+  const res = await fetch(`${baseUrl}/post/file/upload`, {
     method: "POST",
     headers: { Authorization: token },
     body: fd
@@ -31,7 +31,7 @@ export const uploadImage = async (file: File, token: string): Promise<string> =>
 }
 
 export const postProduct = async (product: ProductT, user: UserProfile, token: string) => {
-  const res = await fetch(`${baseUrlBlog}/post/${user.login}`, {
+  const res = await fetch(`${baseUrl}/post/${user.login}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -59,7 +59,7 @@ export const postProduct = async (product: ProductT, user: UserProfile, token: s
 //
 //
 export const getPostById = async (postId: string) => {
-  const response = await fetch(`${baseUrlBlog}/post/${postId}`)
+  const response = await fetch(`${baseUrl}/post/${postId}`)
   if (!response.ok) throw new Error(`Failed: ${response.statusText}`)
   const res: ProductT = await response.json()
   return res
@@ -68,7 +68,7 @@ export const getPostById = async (postId: string) => {
 
 
 export const getPostByIds = async (ids: string[], token: string) => {
-  const response = await fetch(`${baseUrlBlog}/posts/wishList`, { // ✅ removed stray `}`
+  const response = await fetch(`${baseUrl}/posts/wishList`, { // ✅ removed stray `}`
     method: "POST",
     headers: {
       "Authorization": token,
@@ -123,7 +123,7 @@ export const getPostByIds = async (ids: string[], token: string) => {
 //
 //
 export const deletePost = async (id: string, token: string) => {
-  const response = await fetch(`${baseUrlBlog}/post/${id}`, {
+  const response = await fetch(`${baseUrl}/post/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -138,7 +138,7 @@ export const deletePost = async (id: string, token: string) => {
   return res
 }
 export const searchPosts = async (criteria: string,  sort: string,asc: boolean,) => {
-    const response = await fetch(`${baseUrlBlog}  /posts/criteria/${criteria}/sort/${sort}/asc/${asc}`)
+    const response = await fetch(`${baseUrl}  /posts/criteria/${criteria}/sort/${sort}/asc/${asc}`)
     if (!response.ok) throw new Error(`Failed: ${response.statusText}`);
   return  await response.json();
 };

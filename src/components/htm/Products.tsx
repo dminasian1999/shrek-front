@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAppSelector } from "../../app/hooks.ts";
 import { ProductT } from "../../utils/types.ts";
-import { baseUrlBlog } from "../../utils/constants.ts";
+import { baseUrl } from "../../utils/constants.ts";
 import { deletePost } from "../../features/api/postActions.tsx";
 import { useNavigate } from "react-router-dom";
 
@@ -16,7 +16,7 @@ const Products = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch(`${baseUrlBlog}/posts`);
+        const res = await fetch(`${baseUrl}/posts`);
         if (!res.ok) throw new Error(`Fetch error: ${res.status}`);
         const data: ProductT[] = await res.json();
         setProducts(data);

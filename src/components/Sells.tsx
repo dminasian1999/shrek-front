@@ -38,7 +38,7 @@ const Sells = () => {
                                         <span className="badge rounded-pill bg-primary px-4 py-2 fs-6 d-flex align-items-center gap-2 shadow-sm">
                       <i className="fa fa-shekel" />
                       <span>Total Cost</span>
-                      <span className="fw-bold">₪{totalCost.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                      <span className="fw-bold">${totalCost.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                     </span>
                                     </div>
                                 </div>

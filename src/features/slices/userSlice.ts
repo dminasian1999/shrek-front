@@ -3,11 +3,16 @@ import { UserProfile } from "../../utils/types"
 import {
   addCartList,
   addWishlist,
+  checkOut,
+  estimateShipping,
   fetchUser,
-  registerUser, removeCartList,
+  registerUser,
+  removeCartList,
   removeWishlist,
-  updateAddress, updateCartList,
-  updateUser
+  updateAddress,
+  updateCartList,
+  updatePaymentInfo,
+  updateUser,
 } from "../api/accountActions.ts"
 
 const userSlice = createSlice({
@@ -67,7 +72,7 @@ const userSlice = createSlice({
         state.errorMessage = "" // Clear any previous errors
       })
       .addCase(updateAddress.fulfilled, (state, action) => {
-        state.profile  = action.payload
+        state.profile = action.payload
         state.loading = false
       })
       .addCase(updateAddress.rejected, (state, action) => {
@@ -79,7 +84,7 @@ const userSlice = createSlice({
         state.errorMessage = "" // Clear any previous errors
       })
       .addCase(addWishlist.fulfilled, (state, action) => {
-        state.profile  = action.payload
+        state.profile = action.payload
         state.loading = false
       })
       .addCase(addWishlist.rejected, (state, action) => {
@@ -91,7 +96,7 @@ const userSlice = createSlice({
         state.errorMessage = "" // Clear any previous errors
       })
       .addCase(removeWishlist.fulfilled, (state, action) => {
-        state.profile  = action.payload
+        state.profile = action.payload
         state.loading = false
       })
       .addCase(removeWishlist.rejected, (state, action) => {
@@ -103,7 +108,7 @@ const userSlice = createSlice({
         state.errorMessage = "" // Clear any previous errors
       })
       .addCase(addCartList.fulfilled, (state, action) => {
-        state.profile  = action.payload
+        state.profile = action.payload
         state.loading = false
       })
       .addCase(addCartList.rejected, (state, action) => {
@@ -115,7 +120,7 @@ const userSlice = createSlice({
         state.errorMessage = "" // Clear any previous errors
       })
       .addCase(removeCartList.fulfilled, (state, action) => {
-        state.profile  = action.payload
+        state.profile = action.payload
         state.loading = false
       })
       .addCase(removeCartList.rejected, (state, action) => {
@@ -127,12 +132,51 @@ const userSlice = createSlice({
         state.errorMessage = "" // Clear any previous errors
       })
       .addCase(updateCartList.fulfilled, (state, action) => {
-        state.profile  = action.payload
+        state.profile = action.payload
         state.loading = false
       })
       .addCase(updateCartList.rejected, (state, action) => {
         state.loading = false
         state.errorMessage = action.error.message || "updateCartList failed!"
+      })
+      .addCase(updatePaymentInfo.fulfilled, (state, action) => {
+        state.profile = action.payload
+        state.loading = false
+      })
+      .addCase(updatePaymentInfo.pending, state => {
+        state.loading = true
+      })
+      .addCase(updatePaymentInfo.rejected, (state, action) => {
+        state.loading = false
+        state.errorMessage = action.error.message || "Update failed!"
+      })
+      .addCase(checkOut.pending, state => {
+        state.loading = true
+        state.errorMessage = null
+      })
+      .addCase(checkOut.fulfilled, (state, action) => {
+        // You might want to update profile or orders in the state if needed
+        // For example, if backend returns updated user profile with orders:
+        state.profile.orders = [...state.profile.orders, action.payload]
+        state.loading = false
+      })
+      .addCase(checkOut.rejected, (state, action) => {
+        state.loading = false
+        state.errorMessage = action.error.message || "Order creation failed!"
+      })
+      .addCase(estimateShipping.pending, state => {
+        state.loading = true
+        state.errorMessage = null
+      })
+      .addCase(estimateShipping.fulfilled, (state, action) => {
+        // You might want to update profile or orders in the state if needed
+        // For example, if backend returns updated user profile with orders:
+        state.profile.cart.shippingPrice =  action.payload
+        state.loading = false
+      })
+      .addCase(estimateShipping.rejected, (state, action) => {
+        state.loading = false
+        state.errorMessage = action.error.message || "Order creation failed!"
       })
   },
 })

@@ -4,7 +4,7 @@ import { ProductsContext } from "../../utils/context.ts"
 
 const Types = () => {
   const {language} = useContext(ProductsContext)
-const cat =categories(language)
+const cat =categories
 
   return (
     <div className="p-5 d-flex flex-wrap justify-content-center align-items-center gap-5">

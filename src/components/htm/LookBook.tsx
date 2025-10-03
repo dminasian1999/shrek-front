@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
-import { categories, shop1categories } from "../../utils/constants.ts"
 import { ProductsContext } from "../../utils/context.ts"
+import { categories } from "../../utils/constants.ts"
 
 const LookBook = () => {
   const { language } = useContext(ProductsContext)
@@ -8,7 +8,7 @@ const LookBook = () => {
   return (
     <div className={""}>
       <div className="row row-cols-1 row-cols-md-2 ">
-        {shop1categories.map(c => (
+        {categories.map(c => (
           <div className="col m-0 p-0">
             <div
               className="card text-bg-dark m-0 p-0 border-0"

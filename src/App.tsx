@@ -1,10 +1,13 @@
 import { useAppSelector } from "./app/hooks.ts"
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import "./css/style.css";
 
 import "./App.css"
 import TopHeader from "./components/htm/TopHeader.tsx"
 import Header from "./components/htm/Header.tsx"
 import Main from "./components/Main.tsx"
-import { baseUrlBlog } from "./utils/constants.ts"
+import { baseUrl } from "./utils/constants.ts"
 import { ProductT, ReceiptT } from "./utils/types.ts"
 import { useEffect, useState } from "react"
 import { ProductsContext } from "./utils/context.ts"
@@ -40,7 +43,7 @@ const App = () => {
   // }
   const fetchReceipts = async () => {
     try {
-      const res = await fetch(`${baseUrlBlog}/posts/receipts`, {
+      const res = await fetch(`${baseUrl}/posts/receipts`, {
         method: "get",
         headers: { Authorization: token },
       })
@@ -54,12 +57,13 @@ const App = () => {
       setLoading(false)
     }
   }
-
-
-  useEffect(() => {
-    window.scroll(0, 0)
-  }, [location.pathname])
+  //
+  // useEffect(() => {
+  //   window.scroll(0, 0)
+  // }, [location.pathname])
   return (
+    <div className="container-fluid row m-0 p-0">
+
     <ProductsContext.Provider
       value={{
         products,
@@ -70,31 +74,14 @@ const App = () => {
         setLanguage,
       }}
     >
-      <div className="container-fluid p-0 ">
           <TopHeader />
           <Header />
           <Main />
-          <section
-            style={{
-              padding: "2rem",
-              backgroundColor: "#f9f9f9",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <h3 style={{ textAlign: "center", marginBottom: "1rem" }}>Оплатить PayPal</h3>
-          </section>
           <Footer />
-          <span
-            id="site-scroll"
-            className="fixed bottom-4 right-4 bg-black text-white p-2 rounded-full"
-          >
-          <i className="text-xl">↑</i>
-        </span>
           {/*<QuickViewPopup />*/}
-        </div>
+
     </ProductsContext.Provider>
+</div>
   )
 }
 

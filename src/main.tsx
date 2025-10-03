@@ -1,54 +1,47 @@
-import {createRoot} from "react-dom/client"
-import {Provider} from "react-redux"
-import {store} from "./app/store"
-import '@fortawesome/fontawesome-free/css/all.css'
-import "./css/all-fontawesome.min.css"
-import "react-multi-carousel/lib/styles.css"
-import "./css/plugins.css"
+import React, { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { Provider } from "react-redux";
+import { store } from "./app/store";
+// import '@fortawesome/fontawesome-free/css/all.css';
+// import "./css/all-fontawesome.min.css";
+// import "react-multi-carousel/lib/styles.css";
+// import "./css/plugins.css";
+// import "./css/checkout.css";
+// import "./index.css";
 
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'
-import "./css/style.css"
-// import "./css/responsive.css"
+import { BrowserRouter } from "react-router-dom";
+import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 
+import 'tailwindcss/index.css'
 
+// import 'tailwindcss/theme.css'
+// import 'tailwindcss/preflight.css'
+import App from "./App.tsx";
+import App2 from "./App2.tsx"
+import App1 from "./App1.tsx"
 
+const container = document.getElementById("root");
 
+const theme = createTheme({
+  // your theme config here, or leave empty for defaults
+});
 
+if (!container) {
+  throw new Error("Root element with ID 'root' was not found in the document.");
+}
 
+const root = createRoot(container);
 
-import "./index.css"
-import App from "./App.tsx"
-
-import { BrowserRouter } from "react-router-dom"
-import { IntlProvider } from "react-intl"
-
-const container = document.getElementById("root")
-
-
-
-if (container) {
-  const root = createRoot(container)
-
-  root.render(
-    // <StrictMode>
-
+root.render(
+  <StrictMode>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <BrowserRouter>
         <Provider store={store}>
-          {/*<body className="template-index home2-default">*/}
-          {/*<div id="pre-loader">*/}
-          {/*  <img src="assets/images/loader.gif" alt="Loading..." />*/}
-          {/*</div>*/}
-          <App />
-          {/*</body>*/}
-
+          {/*<App />*/}
+          <App2 />
         </Provider>
       </BrowserRouter>
-
-    // </StrictMode>
-  )
-} else {
-  throw new Error(
-    "Root element with ID 'root' was not found in the document. Ensure there is a corresponding HTML element with the ID 'root' in your HTML file.",
-  )
-}
+    </ThemeProvider>
+  </StrictMode>
+);

@@ -1,5 +1,5 @@
 import React, { useContext } from "react"
-import { categories, logoImg, navItems } from "../../utils/constants.ts"
+import {  logoImg, navItems } from "../../utils/constants.ts"
 import { Link, useNavigate } from "react-router-dom"
 import { useAppSelector } from "../../app/hooks.ts"
 import { ProductsContext } from "../../utils/context.ts"
@@ -8,9 +8,10 @@ const Header = () => {
     const nav= useNavigate()
   const  cart = useAppSelector(state => state.user.profile.cart)
   const {language} = useContext(ProductsContext)
-
+const user = useAppSelector(state => state.user.profile)
+const token = useAppSelector(state => state.token)
   return (
-    <nav className="navbar navbar-expand-lg  p-0">
+    <nav className="navbar navbar-expand-lg  ">
       <div className="container ">
         <button
           className="navbar-toggler btn--link site-header__menu js-mobile-nav-toggle mobile-nav--open"
@@ -55,17 +56,23 @@ const Header = () => {
               {navItems.map(item => (
                 <li className="nav-item">
                   <a href={`/${item.route}`} className="nav-link">
-
-                    <h4 className={'fw-bolder me-5'}>{item.title}</h4>
+                    <h4 className={"fw-bolder me-5"}>{item.title}</h4>
                   </a>
                 </li>
               ))}
+              {token && user.roles.includes("ADMINISTRATOR") && (
+                <li className="nav-item">
+                  <a href={`/all-orders`} className="nav-link">
+                    <h4 className={"fw-bolder me-5"}>All Orders</h4>
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
         </div>
         <div className="right-block mt-3">
           <div className="site-cart">
-            {cart &&
+            {cart && (
               <Link to="/cart" className="site-header__cart" title="Cart">
                 <i className="icon anm anm-bag-l"></i>
                 <span
@@ -76,15 +83,19 @@ const Header = () => {
                   {cart.items.length}
                 </span>
               </Link>
-            }
+            )}
           </div>
-          {cart &&
+          {cart && (
             <div className="site-header__search">
-              <button onClick={()=>nav('/wishList')} type="button" className="search-trigger">
+              <button
+                onClick={() => nav("/wishList")}
+                type="button"
+                className="search-trigger"
+              >
                 <i className="icon anm anm-heart-r"></i>
               </button>
             </div>
-          }
+          )}
         </div>
       </div>
     </nav>

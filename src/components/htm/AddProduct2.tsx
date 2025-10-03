@@ -188,8 +188,8 @@
 //                       <th>Type</th>
 //                       <th>Desc</th>
 //                       <th>Qty</th>
-//                       <th>Buy (₪)</th>
-//                       <th>Sell (₪)</th>
+//                       <th>Buy ($)</th>
+//                       <th>Sell ($)</th>
 //                       <th className="text-danger">Profit %</th>
 //                       <th className="text-danger">Amount</th>
 //                     </tr>
@@ -479,7 +479,7 @@
 //
 //                         <div className="mb-2 row">
 //                           <div className="col-6">
-//                             <label className="form-label">Buy (₪)</label>
+//                             <label className="form-label">Buy ($)</label>
 //                             <input
 //                               type="number"
 //                               className="form-control"
@@ -488,7 +488,7 @@
 //                             />
 //                           </div>
 //                           <div className="col-6">
-//                             <label className="form-label">Sell (₪)</label>
+//                             <label className="form-label">Sell ($)</label>
 //                             <input
 //                               type="number"
 //                               className="form-control"
@@ -509,7 +509,7 @@
 //                             />
 //                           </div>
 //                           <div className="col-6">
-//                             <label className="form-label">Amount (₪)</label>
+//                             <label className="form-label">Amount ($)</label>
 //                             <input
 //                               type="text"
 //                               className="form-control bg-transparent"
@@ -542,14 +542,14 @@
 //                 {rows.length > 0 && (
 //                   <div className="bg-light p-3 rounded text-end">
 //                     <div>
-//                       Total Cost: <strong>{`₪${totalCost.toFixed(2)}`}</strong>
+//                       Total Cost: <strong>{`$${totalCost.toFixed(2)}`}</strong>
 //                     </div>
 //                     <div>
-//                       Total Sell: <strong>{`₪${totalSells.toFixed(2)}`}</strong>
+//                       Total Sell: <strong>{`$${totalSells.toFixed(2)}`}</strong>
 //                     </div>
 //                     <div>
 //                       Income:{" "}
-//                       <strong className="text-primary">{`₪${totalIncome.toFixed(2)}`}</strong>
+//                       <strong className="text-primary">{`$${totalIncome.toFixed(2)}`}</strong>
 //                     </div>
 //                   </div>
 //                 )}

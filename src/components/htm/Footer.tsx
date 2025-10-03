@@ -5,10 +5,10 @@ import { ProductsContext } from "../../utils/context.ts"
 const Footer = () => {
   const { language } = useContext(ProductsContext)
   return (
-    <footer id="footer">
+    <footer className={"p-0"} id="footer">
       <div className="newsletter-section">
-        <div className="container ">
-          <div className="row ">
+        <div className=" ">
+          <div className="p-0">
             <div className="col-12 col-sm-12 col-md-12 col-lg-7  d-flex justify-content-start align-items-center">
               <div className="display-table">
                 <div className="display-table-cell footer-newsletter">
@@ -146,7 +146,8 @@ const Footer = () => {
                       : "Shop"}
                 </h4>
                 <ul>
-                  {categories(language).map(c => (
+                  {/*categories(language).map*/}
+                  {categories.map(c => (
                     <li>
                       <a href={`/category/${c.route}`}>{c.title}</a>
                     </li>
@@ -258,15 +259,15 @@ const Footer = () => {
                 <ul className="addressFooter">
                   <li>
                     <i className="icon anm anm-map-marker-al"></i>
-                    <p>{adminInfo(language).address}</p>
+                    <p>{adminInfo.address}</p>
                   </li>
                   <li className="phone">
                     <i className="icon anm anm-phone-s"></i>
-                    <p> {adminInfo(language).phone}</p>
+                    <p> {adminInfo.phone}</p>
                   </li>
                   <li className="email">
                     <i className="icon anm anm-envelope-l"></i>
-                    <p> {adminInfo(language).email}</p>
+                    <p> {adminInfo.email}</p>
                   </li>
                 </ul>
               </div>

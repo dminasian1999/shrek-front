@@ -494,13 +494,6 @@ kbd kbd {
     font-weight: 700
 }
 
-.container, .container-fluid {
-    padding-right: 15px;
-    padding-left: 15px;
-    margin-right: auto;
-    margin-left: auto;
-    width: 100%
-}
 
 .btn, .btn-link, .dropdown-item {
     font-weight: 400

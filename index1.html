@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Финансовая Платформа</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons for statuses -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+      /* Custom styles for the Pie Chart */
+      .pie-chart-container {
+          display: grid;
+          grid-template-areas: "pie";
+          place-items: center;
+      }
+
+      .pie-chart {
+          grid-area: pie;
+          width: 300px;
+          height: 300px;
+          border-radius: 50%;
+          position: relative;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      }
+
+      .slice {
+          --start-angle: 0deg;
+          --end-angle: 0deg;
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%);
+          border-radius: 50%;
+          cursor: pointer;
+          transition: transform 0.3s ease, opacity 0.3s ease;
+      }
+
+      .slice:hover {
+          transform: scale(1.05);
+          z-index: 10;
+      }
+
+      .slice-content {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 70%;
+          height: 70%;
+          background: #111827; /* bg-gray-900 */
+          border-radius: 50%;
+          z-index: 20;
+      }
+
+      /* The title is positioned near the slice center */
+      .slice-label {
+          position: absolute;
+          font-size: 0.875rem; /* text-sm */
+          font-weight: 600; /* font-semibold */
+          color: #d1d5db; /* text-gray-300 */
+          text-align: center;
+          width: 100px;
+          transition: color 0.3s ease;
+      }
+
+      /* Responsive adjustments */
+      @media (min-width: 768px) {
+          .pie-chart {
+              width: 450px;
+              height: 450px;
+          }
+      }
+
+      /* Table header tooltip styling */
+      .tooltip-container {
+          position: relative;
+          display: inline-block;
+      }
+      .tooltip-text {
+          visibility: hidden;
+          width: 250px;
+          background-color: #374151; /* bg-gray-700 */
+          color: #ffffff;
+          text-align: center;
+          border-radius: 6px;
+          padding: 5px 0;
+          position: absolute;
+          z-index: 50;
+          bottom: 125%; /* Position above the tooltip container */
+          left: 50%;
+          margin-left: -125px;
+          opacity: 0;
+          transition: opacity 0.3s;
+      }
+
+      .tooltip-container:hover .tooltip-text {
+          visibility: visible;
+          opacity: 1;
+      }
+
+  </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col font-inter">
+
+<!-- Main App Container -->
+<div id="app" class="flex flex-col flex-grow">
+  <!-- Loading Screen -->
+  <div id="loading-spinner" class="fixed inset-0 bg-gray-900/90 z-50 flex items-center justify-center">
+    <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-indigo-500"></div>
+    <p class="ml-4 text-xl">Загрузка данных...</p>
+  </div>
+</div>
+
+<!-- Firebase SDKs -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { getAuth, signInAnonymously, signInWithCustomToken, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, where, addDoc, getDocs, runTransaction, arrayUnion, arrayRemove, serverTimestamp, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+  // IMPORTANT: Global variables provided by the Canvas environment
+  const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+  const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+  const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+  if (Object.keys(firebaseConfig).length === 0) {
+    console.error("Firebase config is missing. The app will run in read-only mode for public data.");
+  }
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+  setLogLevel('debug'); // Enable detailed Firebase logging
+
+  // --- GLOBAL APPLICATION STATE ---
+  let state = {
+    currentUser: null,
+    userId: null,
+    isAuthenticated: false,
+    isAuthReady: false,
+    currentPage: 'Главная',
+    userProfile: {
+      status: 'читатель', // читатель, премиум, автор, эмитент
+      premiumEndDate: null,
+      favorites: [],
+      avatarUrl: 'https://placehold.co/100x100/374151/ffffff?text=AV',
+      email: 'Гость',
+    },
+    data: {
+      multipliers: [],
+      historicalData: [],
+      posts: [],
+    },
+    modal: {
+      isVisible: false,
+      title: '',
+      content: '',
+    },
+    sort: {
+      column: 'name',
+      direction: 'asc',
+    }
+  };
+
+  // --- AUTHENTICATION AND INITIAL SETUP ---
+
+  /**
+   * Authenticates the user using the initial token or signs in anonymously.
+   */
+  async function authenticateUser() {
+    try {
+      if (initialAuthToken) {
+        await signInWithCustomToken(auth, initialAuthToken);
+        console.log("Signed in with custom token.");
+      } else {
+        await signInAnonymously(auth);
+        console.log("Signed in anonymously.");
+      }
+    } catch (error) {
+      console.error("Authentication failed:", error);
+    }
+  }
+
+  // 1. Set up the Auth State Listener
+  onAuthStateChanged(auth, async (user) => {
+    state.currentUser = user;
+    state.userId = user ? user.uid : crypto.randomUUID();
+    state.isAuthenticated = !!user;
+    state.isAuthReady = true;
+
+    if (user) {
+      // Fetch or create user profile
+      await fetchUserProfile(user.uid);
+    } else {
+      // Public view for anonymous user
+      state.userProfile = { status: 'читатель', premiumEndDate: null, favorites: [], avatarUrl: 'https://placehold.co/100x100/374151/ffffff?text=Гость', email: 'Гость' };
+    }
+
+    // Start listening to public data once auth is ready
+    setupDataListeners();
+    // Start the application rendering
+    renderApp();
+    hideLoadingSpinner();
+  });
+
+  /**
+   * Fetches or initializes the user profile from Firestore.
+   * @param {string} uid The Firebase User ID.
+   */
+  async function fetchUserProfile(uid) {
+    const userDocRef = doc(db, 'artifacts', appId, 'users', uid, 'profile', 'userDoc');
+
+    try {
+      const docSnap = await getDoc(userDocRef);
+      if (docSnap.exists()) {
+        state.userProfile = {
+          ...state.userProfile,
+          ...docSnap.data(),
+          // Ensure premiumEndDate is a Date object for calculation
+          premiumEndDate: docSnap.data().premiumEndDate ? new Date(docSnap.data().premiumEndDate.toDate()) : null,
+          email: state.currentUser.email || 'Нет Email',
+        };
+      } else {
+        // Create a new default profile
+        state.userProfile = {
+          status: 'читатель',
+          premiumEndDate: null,
+          favorites: [],
+          avatarUrl: `https://placehold.co/100x100/374151/ffffff?text=${state.currentUser.email ? state.currentUser.email[0].toUpperCase() : 'U'}`,
+          email: state.currentUser.email || 'Нет Email',
+          userId: uid
+        };
+        await setDoc(userDocRef, {
+          ...state.userProfile,
+          premiumEndDate: null, // Store as null initially
+          timestamp: serverTimestamp()
+        });
+      }
+      updateStatusBasedOnPremium();
+    } catch (e) {
+      console.error("Error fetching user profile: ", e);
+    }
+  }
+
+  /**
+   * Sets up real-time listeners for public data.
+   */
+  function setupDataListeners() {
+    if (!state.isAuthReady) return;
+
+    // Multipliers (Page 2)
+    onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'multipliers'), (snapshot) => {
+      state.data.multipliers = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderPage('Мультипликаторы');
+    });
+
+    // Historical Data (Page 3) - Fetch only titles initially
+    onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'historicalData'), (snapshot) => {
+      state.data.historicalData = snapshot.docs.map(d => ({ id: d.id, ...d.data(), isExpanded: false }));
+      renderPage('Исторические данные');
+    });
+
+    // Posts (Page 4)
+    onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'posts'), (snapshot) => {
+      state.data.posts = snapshot.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => b.timestamp - a.timestamp);
+      renderPage('Посты');
+    });
+
+    // Portfolio (Page 6) - Mock data for now, would typically be in Firestore too
+    state.data.portfolio = [
+      { company: 'Tech Corp', percent: 45, color: '#3b82f6' },
+      { company: 'Energy Co', percent: 25, color: '#f59e0b' },
+      { company: 'Health Inc', percent: 15, color: '#10b981' },
+      { company: 'Finance Grp', percent: 10, color: '#ef4444' },
+      { company: 'Other', percent: 5, color: '#6b7280' },
+    ];
+
+    // Run initial data population if collections are empty (for first run)
+    populateInitialDataIfEmpty();
+  }
+
+  /**
+   * Populates dummy data for the first time if collections are empty.
+   */
+  async function populateInitialDataIfEmpty() {
+    const multiRef = collection(db, 'artifacts', appId, 'public', 'data', 'multipliers');
+    const historyRef = collection(db, 'artifacts', appId, 'public', 'data', 'historicalData');
+
+    // Check Multipliers
+    if ((await getDocs(query(multiRef))).empty) {
+      await Promise.all([
+        addDoc(multiRef, { name: 'Company A', P_E: 15.2, ROE: 0.18, description: 'Description A', sector: 'Tech' }),
+        addDoc(multiRef, { name: 'Company B', P_E: 8.5, ROE: 0.09, description: 'Description B', sector: 'Energy' }),
+        addDoc(multiRef, { name: 'Company C', P_E: 22.9, ROE: 0.25, description: 'Description C', sector: 'Health' }),
+        addDoc(multiRef, { name: 'Company D', P_E: 10.1, ROE: 0.12, description: 'Description D', sector: 'Finance' }),
+      ]);
+    }
+
+    // Check Historical Data
+    if ((await getDocs(query(historyRef))).empty) {
+      for (let i = 1; i <= 10; i++) { // only 10 for simplicity, not 80
+        await addDoc(historyRef, {
+          title: `Исторический Обзор ${i}`,
+          detailedText: `Подробный анализ рынка и макроэкономических показателей за период X. Эти данные критически важны для долгосрочного планирования.`,
+          graphUrl: `https://placehold.co/600x250/2563eb/ffffff?text=График+Обзора+${i}`,
+          timestamp: serverTimestamp()
+        });
+      }
+    }
+  }
+
+  // --- UTILITY FUNCTIONS ---
+
+  /**
+   * Helper to check if the user has a premium-level status.
+   * @returns {boolean}
+   */
+  function isPremiumUser() {
+    const status = state.userProfile.status;
+    return status === 'премиум' || status === 'автор' || status === 'эмитент';
+  }
+
+  /**
+   * Updates the user's status if premium subscription has expired.
+   */
+  function updateStatusBasedOnPremium() {
+    const profile = state.userProfile;
+    if (profile.premiumEndDate) {
+      const now = new Date();
+      if (now > profile.premiumEndDate && (profile.status === 'премиум')) {
+        profile.status = 'читатель';
+        profile.premiumEndDate = null;
+        const userDocRef = doc(db, 'artifacts', appId, 'users', state.userId, 'profile', 'userDoc');
+        updateDoc(userDocRef, { status: 'читатель', premiumEndDate: null }).catch(e => console.error('Failed to downgrade status:', e));
+      }
+    }
+  }
+
+  /**
+   * Navigates to a new page and triggers re-render.
+   * @param {string} pageName
+   */
+  function navigate(pageName) {
+    state.currentPage = pageName;
+    renderApp();
+    // Scroll to top
+    document.getElementById('content-area')?.scrollTo(0, 0);
+  }
+
+  /**
+   * Toggles the loading spinner visibility.
+   */
+  function hideLoadingSpinner() {
+    document.getElementById('loading-spinner').classList.add('hidden');
+  }
+
+  // --- AUTH FORMS AND ACTIONS ---
+
+  /**
+   * Handles user sign up with email and password.
+   * @param {Event} e
+   */
+  async function handleSignUp(e) {
+    e.preventDefault();
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      // Auth listener will handle the profile creation/fetch
+      closeModal();
+    } catch (error) {
+      document.getElementById('auth-error').textContent = `Ошибка регистрации: ${error.message}`;
+      console.error('Sign up error:', error);
+    }
+  }
+
+  /**
+   * Handles user sign in with email and password.
+   * @param {Event} e
+   */
+  async function handleSignIn(e) {
+    e.preventDefault();
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      closeModal();
+    } catch (error) {
+      document.getElementById('auth-error').textContent = `Ошибка входа: ${error.message}`;
+      console.error('Sign in error:', error);
+    }
+  }
+
+  /**
+   * Renders the Sign In/Sign Up form in a modal.
+   */
+  function showAuthModal() {
+    const formHtml = `
+                <form id="sign-in-form" onsubmit="event.preventDefault(); window.handleSignIn(event);" class="space-y-4">
+                    <h3 class="text-xl font-bold text-gray-100">Вход</h3>
+                    <p class="text-sm text-gray-400">ID пользователя (UID): ${state.userId}</p>
+                    <div id="auth-error" class="text-red-400 text-sm h-6"></div>
+                    <input type="email" name="email" placeholder="Email" required class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 focus:ring-indigo-500 focus:border-indigo-500 text-white">
+                    <input type="password" name="password" placeholder="Пароль" required class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 focus:ring-indigo-500 focus:border-indigo-500 text-white">
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Войти</button>
+                    <p class="text-center text-gray-400">Нет аккаунта? <button type="button" onclick="window.showSignUpModal()" class="text-indigo-400 hover:text-indigo-300 font-medium">Зарегистрироваться</button></p>
+                </form>
+            `;
+    showModal('Авторизация', formHtml);
+  }
+
+  /**
+   * Renders the Sign Up form in a modal.
+   */
+  function showSignUpModal() {
+    const formHtml = `
+                <form id="sign-up-form" onsubmit="event.preventDefault(); window.handleSignUp(event);" class="space-y-4">
+                    <h3 class="text-xl font-bold text-gray-100">Регистрация</h3>
+                    <div id="auth-error" class="text-red-400 text-sm h-6"></div>
+                    <input type="email" name="email" placeholder="Email" required class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 focus:ring-indigo-500 focus:border-indigo-500 text-white">
+                    <input type="password" name="password" placeholder="Пароль (мин. 6 символов)" required class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 focus:ring-indigo-500 focus:border-indigo-500 text-white">
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Зарегистрироваться</button>
+                    <p class="text-center text-gray-400">Уже есть аккаунт? <button type="button" onclick="window.showAuthModal()" class="text-indigo-400 hover:text-indigo-300 font-medium">Войти</button></p>
+                </form>
+            `;
+    showModal('Регистрация', formHtml);
+  }
+
+  // Expose functions to global scope for inline event handlers
+  window.navigate = navigate;
+  window.handleSignUp = handleSignUp;
+  window.handleSignIn = handleSignIn;
+  window.showAuthModal = showAuthModal;
+  window.showSignUpModal = showSignUpModal;
+  window.isPremiumUser = isPremiumUser;
+  window.signOutUser = () => signOut(auth).then(() => navigate('Главная'));
+
+  // --- UI COMPONENTS ---
+
+  /**
+   * Renders the main navigation bar.
+   */
+  function renderNavigation() {
+    const pages = [
+      'Главная', 'Мультипликаторы', 'Исторические данные', 'Посты',
+      'Справедливые цены компаний', 'Текущий портфель', 'Магазин', 'Профиль'
+    ];
+    const isAuth = state.isAuthenticated;
+    const isPremium = isPremiumUser();
+    const isAdmin = state.userProfile.status === 'автор' || state.userProfile.status === 'эмитент';
+
+    const navItems = pages.map(page => {
+      let classes = 'px-3 py-2 rounded-md font-medium text-sm transition duration-150 ease-in-out';
+      if (state.currentPage === page) {
+        classes += ' bg-indigo-700 text-white';
+      } else {
+        classes += ' text-gray-300 hover:bg-gray-700 hover:text-white';
+      }
+      return `<a href="#" onclick="window.navigate('${page}')" class="${classes}">${page}</a>`;
+    }).join('');
+
+    return `
+                <nav class="bg-gray-800 shadow-lg sticky top-0 z-40">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="flex items-center justify-between h-16">
+                            <div class="flex items-center">
+                                <span class="text-xl font-bold text-indigo-400">FinStat</span>
+                            </div>
+                            <div class="hidden md:block">
+                                <div class="ml-10 flex items-baseline space-x-4">
+                                    ${navItems}
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                ${isAdmin ? `<a href="#" onclick="window.showAdminPanel()" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 text-sm rounded-lg">Админка</a>` : ''}
+                                ${isAuth ?
+      `<button onclick="window.signOutUser()" class="text-gray-300 hover:text-white bg-gray-700 px-3 py-1 rounded-md text-sm">Выход</button>` :
+      `<button onclick="window.showAuthModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-md text-sm">Вход / Регистрация</button>`
+    }
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            `;
+  }
+
+  /**
+   * Renders a placeholder/lock screen for premium pages.
+   * @returns {string} HTML string
+   */
+  function renderPremiumLock() {
+    return `
+                <div class="p-8 text-center bg-gray-800 rounded-xl shadow-2xl max-w-lg mx-auto my-12">
+                    <div class="text-yellow-400 mb-4">${lucide.create('Gem', { class: 'w-12 h-12 mx-auto' }).outerHTML}</div>
+                    <h2 class="text-3xl font-bold text-white mb-4">Премиум-доступ необходим</h2>
+                    <p class="text-gray-400 mb-6">Этот раздел содержит эксклюзивные аналитические данные и доступен только для пользователей со статусом **Премиум**, **Автор** или **Эмитент**.</p>
+                    <p class="text-indigo-400 mb-8">Тестовая информация: Потенциальный Рост: +15%. Текущая Цена: 100 у.е. Справедливая Цена: 115 у.е.</p>
+                    <button onclick="window.navigate('Магазин')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-lg transform hover:scale-105">
+                        Перейти в Магазин для покупки подписки
+                    </button>
+                </div>
+            `;
+  }
+
+  // --- MODAL COMPONENT ---
+
+  function showModal(title, content) {
+    state.modal.title = title;
+    state.modal.content = content;
+    state.modal.isVisible = true;
+    renderApp();
+  }
+
+  function closeModal() {
+    state.modal.isVisible = false;
+    renderApp();
+  }
+
+  function renderModal() {
+    if (!state.modal.isVisible) return '';
+
+    return `
+                <div class="fixed inset-0 bg-gray-900 bg-opacity-75 z-50 flex items-center justify-center p-4" onclick="if(event.target.classList.contains('fixed')) window.closeModal()">
+                    <div class="bg-gray-800 rounded-xl shadow-2xl w-full max-w-md p-6 relative">
+                        <button onclick="window.closeModal()" class="absolute top-3 right-3 text-gray-400 hover:text-white transition duration-200">
+                            ${lucide.create('X', { class: 'w-6 h-6' }).outerHTML}
+                        </button>
+                        <h2 class="text-2xl font-bold text-white border-b border-gray-700 pb-3 mb-4">${state.modal.title}</h2>
+                        <div>
+                            ${state.modal.content}
+                        </div>
+                    </div>
+                </div>
+            `;
+  }
+  window.closeModal = closeModal;
+  window.showModal = showModal;
+
+  // --- PAGE RENDERING FUNCTIONS ---
+
+  /**
+   * Renders Page 1: Главная
+   */
+  function renderPageMain() {
+    const pages = [
+      { name: 'Мультипликаторы', color: '#3b82f6', icon: 'ListOrdered' },
+      { name: 'Исторические данные', color: '#10b981', icon: 'AreaChart' },
+      { name: 'Посты', color: '#f59e0b', icon: 'Feather' },
+      { name: 'Справедливые цены компаний', color: '#ef4444', icon: 'Scale' },
+      { name: 'Текущий портфель', color: '#8b5cf6', icon: 'PieChart' },
+      { name: 'Магазин', color: '#ec4899', icon: 'ShoppingCart' },
+      { name: 'Профиль', color: '#6b7280', icon: 'User' }
+    ];
+
+    // Pie Chart SVG implementation for slices
+    const total = pages.length;
+    const angleStep = 360 / total;
+
+    const slices = pages.map((page, index) => {
+      const startAngle = angleStep * index;
+      const endAngle = angleStep * (index + 1);
+
+      // Calculate position for text label (polar coordinates)
+      const midAngleRad = (startAngle + endAngle) / 2 * (Math.PI / 180);
+      const radius = 180; // Distance from center
+      const x = 50 + radius * Math.sin(midAngleRad) / 300 * 100; // 50 is center, 300 is chart size
+      const y = 50 - radius * Math.cos(midAngleRad) / 300 * 100;
+
+      // Simple conic-gradient approach for visual slices (CSS)
+      return `
+                    <div class="slice absolute" style="background-color: ${page.color}; transform: rotate(${startAngle}deg); clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 50%, 50% 50%);">
+                        <div class="slice-label" style="top: ${y}%; left: ${x}%; transform: translate(-50%, -50%);"
+                            onclick="event.stopPropagation(); window.navigate('${page.name}')"
+                        >
+                            <div class="mb-1 mx-auto">${lucide.create(page.icon, { class: 'w-6 h-6' }).outerHTML}</div>
+                            ${page.name}
+                        </div>
+                    </div>
+                `;
+    }).join('');
+
+
+    return `
+                <div class="max-w-7xl mx-auto px-4 py-8 flex-grow">
+                    <h1 class="text-4xl font-extrabold text-white text-center mb-4">Аналитическая Платформа FinStat</h1>
+                    <p class="text-lg text-gray-400 text-center max-w-3xl mx-auto mb-12">
+                        FinStat — это ваш инструмент для глубокого анализа финансовых рынков, сочетающий исторические данные, ключевые мультипликаторы и экспертные посты. Изучите возможности ниже:
+                    </p>
+
+                    <div class="pie-chart-container mb-16">
+                        <div class="pie-chart" style="background: conic-gradient(
+                            #3b82f6 0% ${angleStep}deg,
+                            #10b981 ${angleStep}deg ${angleStep * 2}deg,
+                            #f59e0b ${angleStep * 2}deg ${angleStep * 3}deg,
+                            #ef4444 ${angleStep * 3}deg ${angleStep * 4}deg,
+                            #8b5cf6 ${angleStep * 4}deg ${angleStep * 5}deg,
+                            #ec4899 ${angleStep * 5}deg ${angleStep * 6}deg,
+                            #6b7280 ${angleStep * 6}deg 360deg
+                        );">
+                            <!-- The slices are visually represented by the conic-gradient,
+                                but clickable areas are achieved with a simplified overlay structure -->
+                             <div class="slice-content flex items-center justify-center">
+                                <span class="text-gray-400 font-bold text-center">Перейти к разделам</span>
+                            </div>
+
+                            <!-- Overlaid elements for labels and click events -->
+                            ${pages.map((page, index) => {
+      const angle = angleStep * (index + 0.5) * (Math.PI / 180);
+      const x = 150 + Math.sin(angle) * 120;
+      const y = 150 - Math.cos(angle) * 120;
+      return `
+                                    <button class="absolute text-center p-2 rounded-full transform -translate-x-1/2 -translate-y-1/2 transition duration-200 hover:scale-110"
+                                            style="top: ${y}px; left: ${x}px; background-color: ${page.color};"
+                                            onclick="window.navigate('${page.name}')">
+                                        ${lucide.create(page.icon, { class: 'w-5 h-5 text-white' }).outerHTML}
+                                        <span class="absolute whitespace-nowrap text-xs mt-1 text-gray-300 font-semibold" style="left: 50%; transform: translateX(-50%);">${page.name.split(' ')[0]}</span>
+                                    </button>
+                                `;
+    }).join('')}
+                        </div>
+                    </div>
+
+                    <div class="mt-16 pt-8 border-t border-gray-700 text-center">
+                        <p class="text-sm text-gray-500">
+                            Дисклеймер: Все представленные данные носят исключительно информационный характер и не являются инвестиционной рекомендацией.
+                        </p>
+                        <div class="mt-2 space-x-4">
+                            <a href="#" class="text-indigo-400 hover:text-indigo-300 text-sm">Условия использования</a>
+                            <a href="#" class="text-indigo-400 hover:text-indigo-300 text-sm">Политика конфиденциальности</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+  }
+
+  /**
+   * Renders Page 2: Мультипликаторы
+   */
+  function renderPageMultipliers() {
+    const { multipliers } = state.data;
+    let sortedData = [...multipliers];
+
+    // Apply sorting logic
+    sortedData.sort((a, b) => {
+      const aVal = a[state.sort.column];
+      const bVal = b[state.sort.column];
+
+      let comparison = 0;
+      if (aVal > bVal) comparison = 1;
+      else if (aVal < bVal) comparison = -1;
+
+      return state.sort.direction === 'asc' ? comparison : comparison * -1;
+    });
+
+    // Column definitions with tooltips
+    const columns = [
+      { key: 'name', title: 'Компания', tooltip: 'Название компании или актива.' },
+      { key: 'P_E', title: 'P/E (X)', tooltip: 'Коэффициент цена/прибыль. Показывает, за сколько лет окупятся инвестиции в компанию.' },
+      { key: 'ROE', title: 'ROE (%)', tooltip: 'Рентабельность собственного капитала. Отражает эффективность использования капитала.' },
+      { key: 'sector', title: 'Сектор', tooltip: 'Отраслевая принадлежность компании.' },
+    ];
+
+    /**
+     * Handles column sorting.
+     * @param {string} columnKey
+     */
+    window.handleSort = (columnKey) => {
+      let newDirection = 'asc';
+      if (state.sort.column === columnKey) {
+        newDirection = state.sort.direction === 'asc' ? 'desc' : 'asc';
+      }
+      state.sort.column = columnKey;
+      state.sort.direction = newDirection;
+      renderApp();
+    };
+
+    /**
+     * Renders a multiplier's description in a modal.
+     * @param {object} multiplier
+     */
+    window.showMultiplierDetails = (multiplier) => {
+      const content = `
+                    <p class="text-gray-300 mb-4">${multiplier.description}</p>
+                    <p class="text-sm text-indigo-400">P/E: ${multiplier.P_E}, ROE: ${(multiplier.ROE * 100).toFixed(2)}%</p>
+                    <p class="text-xs text-gray-500 mt-2">ID: ${multiplier.id}</p>
+                `;
+      showModal(`Подробности: ${multiplier.name}`, content);
+    };
+
+    return `
+                <div class="max-w-7xl mx-auto px-4 py-8">
+                    <h1 class="text-3xl font-bold text-white mb-6">Мультипликаторы компаний</h1>
+                    <div class="overflow-x-auto bg-gray-800 rounded-xl shadow-2xl">
+                        <table class="min-w-full divide-y divide-gray-700">
+                            <thead class="bg-gray-700">
+                                <tr>
+                                    ${columns.map(col => `
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider cursor-pointer tooltip-container"
+                                            onclick="window.handleSort('${col.key}')">
+                                            <div class="flex items-center space-x-1">
+                                                <span>${col.title}</span>
+                                                ${state.sort.column === col.key
+      ? lucide.create(state.sort.direction === 'asc' ? 'ArrowUp' : 'ArrowDown', { class: 'w-4 h-4' }).outerHTML
+      : lucide.create('ArrowUpDown', { class: 'w-4 h-4 text-gray-500' }).outerHTML
+    }
+                                                <span class="tooltip-text">${col.tooltip}</span>
+                                            </div>
+                                        </th>
+                                    `).join('')}
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-700">
+                                ${sortedData.map(item => `
+                                    <tr class="hover:bg-gray-700 transition duration-150 ease-in-out cursor-pointer"
+                                        onclick="window.showMultiplierDetails({
+                                            id: '${item.id}',
+                                            name: '${item.name}',
+                                            description: \`${item.description}\`,
+                                            P_E: ${item.P_E},
+                                            ROE: ${item.ROE}
+                                        })">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-400">${item.name}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${item.P_E.toFixed(1)}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${(item.ROE * 100).toFixed(2)}%</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${item.sector || 'N/A'}</td>
+                                    </tr>
+                                `).join('')}
+                                ${sortedData.length === 0 ? `<tr><td colspan="4" class="text-center py-8 text-gray-500">Нет данных для отображения.</td></tr>` : ''}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+  }
+
+  /**
+   * Renders Page 3: Исторические данные
+   */
+  function renderPageHistoricalData() {
+    const { historicalData } = state.data;
+
+    window.toggleHistoricalItem = (id) => {
+      const item = historicalData.find(d => d.id === id);
+      if (item) {
+        item.isExpanded = !item.isExpanded;
+        renderApp(); // Re-render to show/hide content
+      }
+    };
+
+    return `
+                <div class="max-w-5xl mx-auto px-4 py-8">
+                    <h1 class="text-3xl font-bold text-white mb-6">Исторические Данные (Архив Обзоров)</h1>
+                    <div class="space-y-4">
+                        ${historicalData.map(item => `
+                            <div class="bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+                                <div class="p-5 flex justify-between items-center cursor-pointer hover:bg-gray-700 transition duration-150"
+                                    onclick="window.toggleHistoricalItem('${item.id}')">
+                                    <h2 class="text-xl font-semibold text-white">${item.title}</h2>
+                                    <button class="text-indigo-400 hover:text-indigo-300">
+                                        ${lucide.create(item.isExpanded ? 'ChevronUp' : 'ChevronDown', { class: 'w-6 h-6' }).outerHTML}
+                                    </button>
+                                </div>
+                                ${item.isExpanded ? `
+                                    <div class="p-5 border-t border-gray-700 bg-gray-900">
+                                        <p class="text-gray-300 mb-4">${item.detailedText}</p>
+                                        <img src="${item.graphUrl}" alt="График для ${item.title}" class="w-full h-auto rounded-lg shadow-md mt-4">
+                                        <p class="text-xs text-gray-500 mt-2">ID документа: ${item.id}</p>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `).join('')}
+                        ${historicalData.length === 0 ? `<p class="text-center py-8 text-gray-500">Нет исторических документов для отображения.</p>` : ''}
+                    </div>
+                </div>
+            `;
+  }
+
+  /**
+   * Renders Page 4: Посты
+   */
+  function renderPagePosts() {
+    const { posts } = state.data;
+    const isPremium = isPremiumUser();
+    const isAuthor = state.userProfile.status === 'автор';
+    const { favorites } = state.userProfile;
+
+    /**
+     * Toggles post expansion in a modal.
+     * @param {object} post
+     */
+    window.showPostDetails = (post) => {
+      const isLocked = post.status === 'premium' && !isPremium;
+
+      let contentHtml = '';
+      if (isLocked) {
+        contentHtml = `
+                        <div class="p-4 text-center bg-gray-900 rounded-lg">
+                            <h3 class="text-xl text-yellow-400 font-bold mb-2">Премиум Контент Заблокирован</h3>
+                            <p class="text-gray-400 mb-4">Полный текст этого поста доступен только по подписке.</p>
+                            <button onclick="window.navigate('Магазин'); window.closeModal();" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg">
+                                Купить Подписку
+                            </button>
+                        </div>
+                    `;
+      } else {
+        contentHtml = `
+                        <div class="text-gray-300 mb-6 whitespace-pre-line">${post.contentFull}</div>
+                        <h4 class="text-lg font-semibold text-white border-t border-gray-700 pt-4 mt-4">Комментарии</h4>
+                        <div id="comments-section-${post.id}" class="mt-4 space-y-3">
+                            <!-- Comments will be loaded here -->
+                            <p class="text-sm text-gray-500">Загрузка комментариев...</p>
+                        </div>
+                        ${isPremium ? `
+                            <form onsubmit="event.preventDefault(); window.addComment(event, '${post.id}');" class="mt-6 space-y-3">
+                                <textarea name="commentText" rows="2" placeholder="Ваш комментарий (доступно премиум/автор/эмитент)..." required
+                                    class="w-full px-3 py-2 rounded-lg bg-gray-700 border border-gray-600 focus:ring-indigo-500 focus:border-indigo-500 text-white"></textarea>
+                                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg text-sm">Отправить Комментарий</button>
+                            </form>
+                        ` : '<p class="text-sm text-red-400 mt-4">Комментарии доступны только премиум-пользователям.</p>'}
+                    `;
+        // Load comments after modal opens
+        setTimeout(() => window.loadComments(post.id), 100);
+      }
+
+      showModal(post.title, contentHtml);
+    };
+
+    window.loadComments = (postId) => {
+      const commentsRef = collection(db, 'artifacts', appId, 'public', 'data', 'comments');
+      const q = query(commentsRef, where('postId', '==', postId));
+
+      onSnapshot(q, (snapshot) => {
+        const comments = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        const commentsHtml = comments.length > 0 ? comments.map(c => `
+                        <div class="p-3 bg-gray-700 rounded-lg">
+                            <p class="text-xs font-semibold text-indigo-400">${c.userId.substring(0, 8)}...</p>
+                            <p class="text-gray-200 text-sm">${c.text}</p>
+                            <p class="text-xs text-gray-500">${c.timestamp ? new Date(c.timestamp.toDate()).toLocaleString() : 'Неизвестное время'}</p>
+                        </div>
+                    `).join('') : '<p class="text-sm text-gray-500">Пока нет комментариев. Будьте первым!</p>';
+        document.getElementById(`comments-section-${postId}`).innerHTML = commentsHtml;
+      });
+    };
+
+    window.addComment = async (e, postId) => {
+      e.preventDefault();
+      if (!isPremium) return; // Client-side check
+
+      const text = e.target.commentText.value;
+      const commentsRef = collection(db, 'artifacts', appId, 'public', 'data', 'comments');
+
+      try {
+        await addDoc(commentsRef, {
+          postId: postId,
+          userId: state.userId,
+          text: text,
+          timestamp: serverTimestamp()
+        });
+        e.target.reset();
+      } catch (error) {
+        console.error("Error adding comment: ", error);
+      }
+    };
+
+    window.toggleFavorite = async (postId) => {
+      if (!state.isAuthenticated) {
+        showAuthModal();
+        return;
+      }
+
+      const userDocRef = doc(db, 'artifacts', appId, 'users', state.userId, 'profile', 'userDoc');
+      const isCurrentlyFavorite = favorites.includes(postId);
+
+      try {
+        const updateData = isCurrentlyFavorite
+          ? { favorites: arrayRemove(postId) }
+          : { favorites: arrayUnion(postId) };
+
+        await updateDoc(userDocRef, updateData);
+        // Update local state immediately for fast UI feedback
+        if (isCurrentlyFavorite) {
+          state.userProfile.favorites = state.userProfile.favorites.filter(id => id !== postId);
+        } else {
+          state.userProfile.favorites.push(postId);
+        }
+        renderApp(); // Re-render the page to update icons
+      } catch (error) {
+        console.error("Error toggling favorite: ", error);
+      }
+    };
+
+    return `
+                <div class="max-w-4xl mx-auto px-4 py-8">
+                    <h1 class="text-3xl font-bold text-white mb-6">Лента Постов</h1>
+                    ${isAuthor ? `<button onclick="window.showAdminPostCreator()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg mb-6">Создать Новый Пост</button>` : ''}
+                    <div class="space-y-6">
+                        ${posts.map(post => {
+      const isLocked = post.status === 'premium' && !isPremium;
+      const isFavorite = favorites.includes(post.id);
+
+      return `
+                                <div class="bg-gray-800 rounded-xl shadow-lg p-6 flex justify-between items-start">
+                                    <div class="flex-grow">
+                                        <div class="flex items-center space-x-2 mb-2">
+                                            <h2 class="text-xl font-semibold text-white">${post.title}</h2>
+                                            ${post.status === 'premium' ?
+        `<span class="text-xs font-medium px-2 py-0.5 rounded-full bg-yellow-900 text-yellow-300 flex items-center">${lucide.create('Gem', { class: 'w-3 h-3 mr-1' }).outerHTML} Премиум</span>` :
+        `<span class="text-xs font-medium px-2 py-0.5 rounded-full bg-green-900 text-green-300">Открытый</span>`
+      }
+                                        </div>
+                                        <p class="text-gray-400 mb-4">
+                                            ${post.contentPreview}
+                                            ${isLocked ? '... <span class="text-red-400">[Полный текст скрыт]</span>' : ''}
+                                        </p>
+                                        <button onclick="window.showPostDetails({
+                                            id: '${post.id}',
+                                            title: \`${post.title}\`,
+                                            contentPreview: \`${post.contentPreview}\`,
+                                            contentFull: \`${post.contentFull}\`,
+                                            status: '${post.status}'
+                                        })" class="text-indigo-400 hover:text-indigo-300 font-medium flex items-center space-x-1">
+                                            <span>${isLocked ? 'Посмотреть превью' : 'Читать далее'}</span>
+                                            ${lucide.create('ArrowRight', { class: 'w-4 h-4' }).outerHTML}
+                                        </button>
+                                    </div>
+                                    <button onclick="window.toggleFavorite('${post.id}')"
+                                            class="ml-4 p-2 rounded-full transition duration-150 ${isFavorite ? 'text-red-400 bg-red-900/50' : 'text-gray-500 hover:text-red-400 hover:bg-gray-700'}">
+                                        ${lucide.create(isFavorite ? 'Heart' : 'Heart', { class: 'w-6 h-6 fill-current' }).outerHTML}
+                                    </button>
+                                </div>
+                            `;
+    }).join('')}
+                        ${posts.length === 0 ? `<p class="text-center py-8 text-gray-500">Пока нет опубликованных постов.</p>` : ''}
+                    </div>
+                </div>
+            `;
+  }
+
+  /**
+   * Renders Page 5: Справедливые цены компаний
+   */
+  function renderPageFairPrices() {
+    if (!isPremiumUser()) {
+      return renderPremiumLock();
+    }
+
+    // Mock implementation for external data fetch
+    if (!state.data.fairPrices) {
+      state.data.fairPrices = [
+        { company: 'Company A', actualPrice: 100, targetPrice: 115, lastUpdated: new Date() },
+        { company: 'Company B', actualPrice: 50, targetPrice: 45, lastUpdated: new Date() },
+        { company: 'Company C', actualPrice: 200, targetPrice: 230, lastUpdated: new Date() },
+      ];
+    }
+
+    // Mock function to simulate hourly update of the 'actualPrice' column
+    function simulateExternalUpdate() {
+      const now = new Date();
+      state.data.fairPrices = state.data.fairPrices.map(item => ({
+        ...item,
+        actualPrice: item.actualPrice * (1 + (Math.random() * 0.02 - 0.01)), // +/- 1% change
+        lastUpdated: now
+      }));
+      // Real implementation would save this back to Firestore
+      renderApp();
+    }
+
+    // Set up a periodic check (or immediately for demo)
+    if (!window.fairPriceInterval) {
+      // For a real app, this should be handled server-side. For a demo, we trigger once.
+      setTimeout(simulateExternalUpdate, 1000);
+      window.fairPriceInterval = true; // Prevents multiple intervals in a real app
+    }
+
+
+    return `
+                <div class="max-w-7xl mx-auto px-4 py-8">
+                    <h1 class="text-3xl font-bold text-white mb-6 flex justify-between items-center">
+                        Справедливые Цены Компаний (Премиум)
+                        <span class="text-sm text-gray-400 font-normal">Обновление: ${state.data.fairPrices[0]?.lastUpdated.toLocaleTimeString() || 'N/A'}</span>
+                    </h1>
+                    <div class="overflow-x-auto bg-gray-800 rounded-xl shadow-2xl">
+                        <table class="min-w-full divide-y divide-gray-700">
+                            <thead class="bg-gray-700">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Компания</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Текущая Цена (Внешние Данные)</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Справедливая Цена (Вручную)</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Потенциал</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-700">
+                                ${state.data.fairPrices.map(item => {
+      const potential = ((item.targetPrice - item.actualPrice) / item.actualPrice) * 100;
+      const potentialColor = potential >= 0 ? 'text-green-400' : 'text-red-400';
+
+      return `
+                                        <tr class="hover:bg-gray-700 transition duration-150 ease-in-out">
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-400">${item.company}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${item.actualPrice.toFixed(2)} у.е.</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${item.targetPrice.toFixed(2)} у.е.</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-bold ${potentialColor}">${potential.toFixed(2)}%</td>
+                                        </tr>
+                                    `;
+    }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-500">Примечание: Колонка "Текущая Цена" имитирует автоматическое обновление из внешнего источника.</p>
+                </div>
+            `;
+  }
+
+  /**
+   * Renders Page 6: Текущий портфель
+   */
+  function renderPagePortfolio() {
+    if (!isPremiumUser()) {
+      return renderPremiumLock();
+    }
+
+    const { portfolio } = state.data;
+    const size = 300; // SVG size
+    let cumulativePercent = 0;
+
+    // Generate Pie Chart SVG path segments
+    const paths = portfolio.map(item => {
+      const startAngle = cumulativePercent * 3.6; // Convert percent to degrees
+      cumulativePercent += item.percent;
+      const endAngle = cumulativePercent * 3.6;
+
+      // SVG coordinates calculation (simplified for D3-less rendering)
+      const startX = size / 2 + size / 2 * Math.sin(startAngle * Math.PI / 180);
+      const startY = size / 2 - size / 2 * Math.cos(startAngle * Math.PI / 180);
+      const endX = size / 2 + size / 2 * Math.sin(endAngle * Math.PI / 180);
+      const endY = size / 2 - size / 2 * Math.cos(endAngle * Math.PI / 180);
+
+      const largeArcFlag = item.percent > 50 ? 1 : 0;
+
+      const path = `M ${size / 2},${size / 2} L ${startX},${startY} A ${size / 2},${size / 2} 0 ${largeArcFlag} 1 ${endX},${endY} Z`;
+
+      return `<path d="${path}" fill="${item.color}" class="transition duration-300 hover:opacity-80" />`;
+    }).join('');
+
+    return `
+                <div class="max-w-7xl mx-auto px-4 py-8">
+                    <h1 class="text-3xl font-bold text-white mb-8">Текущий Портфель (Премиум)</h1>
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <!-- Chart Area -->
+                        <div class="lg:w-1/2 bg-gray-800 rounded-xl shadow-2xl p-6 flex justify-center items-center">
+                            <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" class="transform -rotate-90">
+                                ${paths}
+                                <circle cx="${size/2}" cy="${size/2}" r="50" fill="#111827"/>
+                            </svg>
+                        </div>
+
+                        <!-- Table and Legend Area -->
+                        <div class="lg:w-1/2 bg-gray-800 rounded-xl shadow-2xl p-6">
+                            <h2 class="text-xl font-semibold text-white mb-4">Состав Портфеля</h2>
+                            <div class="space-y-2">
+                                ${portfolio.map(item => `
+                                    <div class="flex justify-between items-center p-3 rounded-lg hover:bg-gray-700 transition duration-150">
+                                        <div class="flex items-center space-x-3">
+                                            <span class="w-3 h-3 rounded-full" style="background-color: ${item.color};"></span>
+                                            <span class="text-gray-200 font-medium">${item.company}</span>
+                                        </div>
+                                        <span class="font-bold" style="color: ${item.color};">${item.percent}%</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+  }
+
+  /**
+   * Renders Page 7: Магазин
+   */
+  function renderPageShop() {
+    const plans = [
+      { months: 1, price: 9.99, description: 'Полный доступ на 30 дней. Идеально для тестирования.' },
+      { months: 3, price: 24.99, description: 'Скидка 16%! Оптимальный выбор для среднесрочного анализа.' },
+      { months: 6, price: 44.99, description: 'Скидка 25%! Глубокое погружение в рынок.' },
+      { months: 12, price: 79.99, description: 'Скидка 33%! Лучшая цена для постоянного мониторинга.' }
+    ];
+
+    window.purchasePlan = (plan) => {
+      if (!state.isAuthenticated) {
+        showAuthModal();
+        return;
+      }
+
+      // --- PAYMENT SERVICE INTEGRATION PLACEHOLDER ---
+      const paymentPlaceholderHtml = `
+                    <div class="text-center p-6">
+                        <h3 class="text-2xl font-bold text-white mb-4">Имитация Платежа</h3>
+                        <p class="text-gray-400 mb-6">Вы выбрали подписку на **${plan.months}** мес. за **$${plan.price}**.</p>
+                        <p class="text-sm text-yellow-400 mb-6">
+                            В реальном приложении здесь произошла бы интеграция с платежным шлюзом (например, Stripe, PayPal)
+                            для обработки оплаты и получения подтверждения.
+                        </p>
+                        <button onclick="window.confirmPurchase(${plan.months})" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 transform hover:scale-105">
+                            Подтвердить и Оплатить (Имитация)
+                        </button>
+                    </div>
+                `;
+      showModal('Оформление Подписки', paymentPlaceholderHtml);
+    };
+
+    window.confirmPurchase = async (months) => {
+      closeModal(); // Close the placeholder payment modal
+
+      if (!state.userId) return;
+
+      const userDocRef = doc(db, 'artifacts', appId, 'users', state.userId, 'profile', 'userDoc');
+
+      try {
+        let newEndDate = state.userProfile.premiumEndDate || new Date();
+        if (newEndDate < new Date()) {
+          newEndDate = new Date(); // Start from today if expired
+        }
+
+        // Add months to the current end date
+        newEndDate.setMonth(newEndDate.getMonth() + months);
+
+        const updateData = {
+          status: 'премиум',
+          premiumEndDate: newEndDate.toISOString() // Store as ISO string
+        };
+
+        await updateDoc(userDocRef, updateData);
+
+        // Update local state and trigger re-render
+        state.userProfile.status = 'премиум';
+        state.userProfile.premiumEndDate = newEndDate;
+        renderApp();
+
+        showModal('Успех!', `<p class="text-lg text-green-400 text-center">Ваша подписка успешно активирована! Статус обновлен до **Премиум** до ${newEndDate.toLocaleDateString()}.</p>`);
+
+      } catch (error) {
+        console.error("Error confirming purchase: ", error);
+        showModal('Ошибка', `<p class="text-lg text-red-400 text-center">Произошла ошибка при обновлении статуса.</p>`);
+      }
+    };
+
+
+    return `
+                <div class="max-w-5xl mx-auto px-4 py-8">
+                    <h1 class="text-3xl font-bold text-white mb-6">Магазин Подписок</h1>
+                    <p class="text-gray-400 mb-10 text-center">Получите доступ к эксклюзивным данным: Справедливые Цены Компаний, Текущий Портфель и Премиум Посты.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        ${plans.map(plan => `
+                            <div class="bg-gray-800 rounded-xl shadow-2xl p-6 flex flex-col items-center border border-indigo-700/50 hover:border-indigo-500 transition duration-200">
+                                <h2 class="text-2xl font-bold text-indigo-400 mb-2">${plan.months} Месяц${plan.months > 1 ? 'а' : ''}</h2>
+                                <p class="text-5xl font-extrabold text-white mb-4">$${plan.price}</p>
+                                <p class="text-sm text-gray-400 text-center mb-6 flex-grow">${plan.description}</p>
+                                <button onclick="window.purchasePlan(${JSON.stringify(plan).replace(/"/g, "'")})"
+                                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200">
+                                    Купить
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+  }
+
+  /**
+   * Renders Page 8: Профиль
+   */
+  function renderPageProfile() {
+    if (!state.isAuthenticated) {
+      return `
+                    <div class="p-8 text-center bg-gray-800 rounded-xl shadow-2xl max-w-lg mx-auto my-12">
+                        <h2 class="text-3xl font-bold text-white mb-4">Войдите в систему</h2>
+                        <p class="text-gray-400 mb-6">Для просмотра личного профиля необходимо авторизоваться.</p>
+                        <button onclick="window.showAuthModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
+                            Вход / Регистрация
+                        </button>
+                    </div>
+                `;
+    }
+
+    const { userProfile } = state;
+    const { favorites } = userProfile;
+    const isPremium = isPremiumUser();
+    const favoriteLimit = isPremium ? 15 : 5;
+
+    let iconHtml, color;
+    switch(userProfile.status) {
+      case 'премиум': iconHtml = lucide.create('Gem', { class: 'w-4 h-4 text-yellow-300 fill-yellow-300' }).outerHTML; color = 'bg-yellow-600'; break;
+      case 'автор': iconHtml = lucide.create('Feather', { class: 'w-4 h-4 text-pink-300 fill-pink-300' }).outerHTML; color = 'bg-pink-600'; break;
+      case 'эмитент': iconHtml = lucide.create('CheckCircle', { class: 'w-4 h-4 text-green-300 fill-green-300' }).outerHTML; color = 'bg-green-600'; break;
+      default: iconHtml = lucide.create('Search', { class: 'w-4 h-4 text-blue-300' }).outerHTML; color = 'bg-blue-600'; break;
+    }
+
+    const daysLeft = userProfile.premiumEndDate
+      ? Math.ceil((userProfile.premiumEndDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+      : 0;
+
+    const premiumDisplay = userProfile.status === 'премиум' ? `
+                <div class="text-sm text-gray-300">
+                    <span class="font-semibold">Дней до конца Премиума:</span>
+                    <span class="text-green-400 font-bold">${daysLeft}</span>
+                </div>
+            ` : (isPremium ? `<p class="text-sm text-green-400 font-semibold">Постоянный Премиум-доступ</p>` : `<p class="text-sm text-red-400">Премиум не активен</p>`);
+
+    const favoritePosts = state.data.posts
+      .filter(p => favorites.includes(p.id))
+      .slice(0, favoriteLimit);
+
+    return `
+                <div class="max-w-3xl mx-auto px-4 py-8">
+                    <h1 class="text-3xl font-bold text-white mb-8">Профиль Пользователя</h1>
+
+                    <div class="bg-gray-800 rounded-xl shadow-2xl p-8 mb-8">
+                        <div class="flex items-center space-x-6">
+                            <div class="relative w-20 h-20">
+                                <img src="${userProfile.avatarUrl}" alt="Аватар" class="w-full h-full object-cover rounded-full border-4 border-indigo-500">
+                                <div class="absolute bottom-0 right-0 p-1 rounded-full ${color} border-2 border-gray-800">
+                                    ${iconHtml}
+                                </div>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-white mb-1">${userProfile.email}</h2>
+                                <p class="text-indigo-400 font-medium">${userProfile.status.toUpperCase()}</p>
+                                <p class="text-xs text-gray-500">ID: ${state.userId}</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-6 border-t border-gray-700 space-y-3">
+                            ${premiumDisplay}
+                            <p class="text-sm text-gray-300"><span class="font-semibold">Макс. Избранных:</span> ${favoriteLimit}</p>
+                            <button onclick="window.showAvatarUpload()" class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center space-x-1">
+                                ${lucide.create('Image', { class: 'w-4 h-4' }).outerHTML} <span>Изменить Аватар (Имитация)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-800 rounded-xl shadow-2xl p-6">
+                        <h2 class="text-xl font-bold text-white mb-4">Избранные Посты (${favorites.length}/${favoriteLimit})</h2>
+                        <div class="space-y-3">
+                            ${favoritePosts.map(post => `
+                                <div class="p-3 bg-gray-700 rounded-lg flex justify-between items-center hover:bg-gray-600 transition duration-150">
+                                    <span class="text-gray-200 text-sm truncate">${post.title}</span>
+                                    <button onclick="window.navigate('Посты')" class="text-xs text-indigo-400 hover:text-indigo-300 ml-4">Перейти</button>
+                                </div>
+                            `).join('')}
+                            ${favorites.length === 0 ? `<p class="text-gray-500 text-center py-4">У вас пока нет избранных постов.</p>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+  }
+
+  // --- ADMIN PANEL FUNCTIONS ---
+
+  /**
+   * Renders the Admin panel in a modal (for 'автор' and 'эмитент' roles).
+   */
+  function showAdminPanel() {
+    const isAdmin = state.userProfile.status === 'автор' || state.userProfile.status === 'эмитент';
+    if (!isAdmin) return;
+
+    const adminContent = `
+                <div class="space-y-6">
+                    <button onclick="window.showAdminPostCreator()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center space-x-2">
+                        ${lucide.create('Feather', { class: 'w-5 h-5' }).outerHTML} <span>Создать / Редактировать Пост</span>
+                    </button>
+                    <button onclick="window.showAdminUserManagement()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center space-x-2">
+                         ${lucide.create('Users', { class: 'w-5 h-5' }).outerHTML} <span>Управление Пользователями</span>
+                    </button>
+                    <p class="text-sm text-gray-500 text-center">Только для статусов: Автор / Эмитент</p>
+                </div>
+            `;
+    showModal('Панель Администратора', adminContent);
+  }
+
+  /**
+   * Renders the Post creation form (for 'автор').
+   */
+  function showAdminPostCreator() {
+    if (state.userProfile.status !== 'автор') return;
+
+    const formHtml = `
+                <form onsubmit="event.preventDefault(); window.handlePostSubmit(event);" class="space-y-4">
+                    <h3 class="text-xl font-bold text-white">Создание Нового Поста</h3>
+                    <input type="text" name="postTitle" placeholder="Заголовок" required class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white">
+                    <textarea name="contentPreview" rows="3" placeholder="Краткое описание (первые строки)" required class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white"></textarea>
+                    <textarea name="contentFull" rows="8" placeholder="Полный текст поста" required class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white"></textarea>
+                    <select name="postStatus" class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white">
+                        <option value="open">Открытый (доступен всем)</option>
+                        <option value="premium">Премиум (доступен по подписке)</option>
+                    </select>
+                    <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg">Опубликовать Пост</button>
+                </form>
+            `;
+    showModal('Создать Пост', formHtml);
+  }
+
+  window.handlePostSubmit = async (e) => {
+    e.preventDefault();
+    const post = {
+      title: e.target.postTitle.value,
+      contentPreview: e.target.contentPreview.value,
+      contentFull: e.target.contentFull.value,
+      status: e.target.postStatus.value,
+      authorId: state.userId,
+      timestamp: serverTimestamp()
+    };
+
+    try {
+      const postsRef = collection(db, 'artifacts', appId, 'public', 'data', 'posts');
+      await addDoc(postsRef, post);
+      showModal('Успех', `<p class="text-center text-green-400">Пост "**${post.title}**" успешно опубликован!</p>`);
+    } catch (error) {
+      showModal('Ошибка', `<p class="text-center text-red-400">Ошибка публикации поста: ${error.message}</p>`);
+    }
+  };
+
+  /**
+   * Renders User Management (Simple placeholder).
+   */
+  function showAdminUserManagement() {
+    // NOTE: In a real app, this would fetch a list of all users.
+    // For a single-file implementation, we'll use a placeholder/manual search.
+    const manageHtml = `
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-white">Управление Пользователями (Имитация)</h3>
+                    <p class="text-gray-400">Введите ID пользователя (UID) для изменения его статуса. Вы можете найти его на странице 'Профиль' пользователя.</p>
+                    <form onsubmit="event.preventDefault(); window.handleUserStatusUpdate(event);" class="space-y-3">
+                        <input type="text" name="targetUid" placeholder="ID Пользователя (UID)" required class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white">
+                        <select name="newStatus" class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white">
+                            <option value="читатель">Читатель</option>
+                            <option value="премиум">Премиум</option>
+                            <option value="автор">Автор (Админ-доступ)</option>
+                            <option value="эмитент">Эмитент (Админ-доступ)</option>
+                        </select>
+                        <button type="submit" class="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg">Обновить Статус</button>
+                    </form>
+                </div>
+            `;
+    showModal('Управление Пользователями', manageHtml);
+  }
+
+  window.handleUserStatusUpdate = async (e) => {
+    e.preventDefault();
+    const targetUid = e.target.targetUid.value.trim();
+    const newStatus = e.target.newStatus.value;
+
+    if (!targetUid || !newStatus) return;
+
+    const userDocRef = doc(db, 'artifacts', appId, 'users', targetUid, 'profile', 'userDoc');
+
+    try {
+      await updateDoc(userDocRef, {
+        status: newStatus,
+        // If manually assigned, remove premium end date logic unless it's 'премиум'
+        premiumEndDate: newStatus !== 'премиум' ? null : (state.userProfile.premiumEndDate ? state.userProfile.premiumEndDate.toISOString() : null)
+      });
+      showModal('Успех', `<p class="text-center text-green-400">Статус пользователя **${targetUid.substring(0, 8)}...** обновлен до **${newStatus}**.</p>`);
+    } catch (error) {
+      showModal('Ошибка', `<p class="text-center text-red-400">Ошибка: Пользователь не найден или нет прав доступа.</p>`);
+      console.error("Error updating user status: ", error);
+    }
+  };
+
+  window.showAdminPanel = showAdminPanel;
+  window.showAdminPostCreator = showAdminPostCreator;
+  window.showAdminUserManagement = showAdminUserManagement;
+
+  // --- MAIN RENDER FUNCTION ---
+
+  /**
+   * Main function to render the entire application structure.
+   */
+  function renderApp() {
+    if (!state.isAuthReady) return;
+
+    const appDiv = document.getElementById('app');
+    let pageContent = '';
+
+    switch(state.currentPage) {
+      case 'Главная': pageContent = renderPageMain(); break;
+      case 'Мультипликаторы': pageContent = renderPageMultipliers(); break;
+      case 'Исторические данные': pageContent = renderPageHistoricalData(); break;
+      case 'Посты': pageContent = renderPagePosts(); break;
+      case 'Справедливые цены компаний': pageContent = renderPageFairPrices(); break;
+      case 'Текущий портфель': pageContent = renderPagePortfolio(); break;
+      case 'Магазин': pageContent = renderPageShop(); break;
+      case 'Профиль': pageContent = renderPageProfile(); break;
+      default: pageContent = renderPageMain(); break;
+    }
+
+    appDiv.innerHTML = `
+                ${renderNavigation()}
+                <main id="content-area" class="flex-grow overflow-y-auto">
+                    ${pageContent}
+                </main>
+                ${renderModal()}
+            `;
+  }
+
+  // 2. Start Authentication
+  authenticateUser();
+
+</script>
+</body>
+</html>

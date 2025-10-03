@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useContext } from "react"
-import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
-import { updateAddress } from "../../features/api/accountActions.ts"
-import { AddressT } from "../../utils/types.ts"
-import { ProductsContext } from "../../utils/context.ts"
+import React, { useState, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
+import { updateAddress } from "../../features/api/accountActions.ts";
+import { AddressT } from "../../utils/types.ts";
+import { countries } from "../../utils/constants.ts";
 
 const Address = () => {
-  const dispatch = useAppDispatch()
-  const address = useAppSelector((state) => state.user.profile.address)
-  const { language } = useContext(ProductsContext)
+  const dispatch = useAppDispatch();
+  const address = useAppSelector((state) => state.user.profile?.address);
 
   const [formData, setFormData] = useState<AddressT>({
     fullName: "",
@@ -17,8 +16,8 @@ const Address = () => {
     zipCode: "",
     country: "",
     phone: "",
-  })
-  const [edit, setEdit] = useState(false)
+  });
+  const [edit, setEdit] = useState(false);
 
   useEffect(() => {
     if (address) {
@@ -30,74 +29,70 @@ const Address = () => {
         zipCode: address.zipCode || "",
         country: address.country || "",
         phone: address.phone || "",
-      })
+      });
+    } else {
+      setFormData({
+        fullName: "",
+        street: "",
+        city: "",
+        state: "",
+        zipCode: "",
+        country: "",
+        phone: "",
+      });
     }
-  }, [address])
+  }, [address]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
-  }
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleCancel = () => {
     if (address) {
-      setFormData({ ...address })
+      setFormData({
+        fullName: address.fullName || "",
+        street: address.street || "",
+        city: address.city || "",
+        state: address.state || "",
+        zipCode: address.zipCode || "",
+        country: address.country || "",
+        phone: address.phone || "",
+      });
+    } else {
+      setFormData({
+        fullName: "",
+        street: "",
+        city: "",
+        state: "",
+        zipCode: "",
+        country: "",
+        phone: "",
+      });
     }
-    setEdit(false)
-  }
+    setEdit(false);
+  };
 
   const handleSave = () => {
-    dispatch(updateAddress(formData))
-    setEdit(false)
-  }
+    dispatch(updateAddress(formData));
+    setEdit(false);
+  };
 
-  const labels: Record<keyof AddressT, string> = {
-    fullName:
-      language === "Armenian"
-        ? "Ամբողջական անուն"
-        : language === "Russian"
-          ? "Полное имя"
-          : "Full Name",
-    street:
-      language === "Armenian"
-        ? "Փողոց"
-        : language === "Russian"
-          ? "Улица"
-          : "Street Address",
-    city:
-      language === "Armenian"
-        ? "Քաղաք"
-        : language === "Russian"
-          ? "Город"
-          : "City",
-    state:
-      language === "Armenian"
-        ? "Մարզ / Շրջան"
-        : language === "Russian"
-          ? "Область / Регион"
-          : "State / Region",
-    zipCode:
-      language === "Armenian"
-        ? "Փոստային ինդեքս"
-        : language === "Russian"
-          ? "Почтовый индекс"
-          : "Postal Code",
-    country:
-      language === "Armenian"
-        ? "Երկիր"
-        : language === "Russian"
-          ? "Страна"
-          : "Country",
-    phone:
-      language === "Armenian"
-        ? "Հեռախոսահամար"
-        : language === "Russian"
-          ? "Номер телефона"
-          : "Phone Number",
-  }
+  const labels = {
+    fullName: "Full Name",
+    street: "Street Address",
+    city: "City",
+    state: "State / Region",
+    zipCode: "Postal Code",
+    country: "Country",
+    phone: "Phone Number",
+  } as const;
+
+  const renderPlain = (val?: string) => (
+    <p className="form-control-plaintext mb-0">{val || "-"}</p>
+  );
 
   return (
     <div className="accordion" id="accordionAddress">
@@ -111,52 +106,177 @@ const Address = () => {
             aria-expanded="false"
             aria-controls="collapseAddress"
           >
-            {language === "Armenian"
-              ? "Հասցե"
-              : language === "Russian"
-                ? "Адрес"
-                : "Billing Address"}
+            Billing Address
           </button>
         </h2>
+
         <div
           id="collapseAddress"
           className="accordion-collapse collapse"
           aria-labelledby="headingAddress"
         >
           <div className="accordion-body">
-            <form>
+            <form onSubmit={(e) => e.preventDefault()}>
               <fieldset>
-                <h5 className="mb-3">
-                  {language === "Armenian"
-                    ? "Վճարման տվյալներ"
-                    : language === "Russian"
-                      ? "Платежные данные"
-                      : "Billing Details"}
-                </h5>
+                <h5 className="mb-3">Billing Details</h5>
 
                 <div className="row">
-                  {Object.entries(labels).map(([name, label]) => (
-                    <div
-                      key={name}
-                      className="form-group col-sm-6 col-12 mb-3"
-                    >
-                      <label htmlFor={`input-${name}`}>{label}</label>
-                      {edit ? (
-                        <input
-                          id={`input-${name}`}
-                          name={name}
-                          type="text"
-                          className="form-control"
-                          value={formData[name as keyof AddressT]}
-                          onChange={handleChange}
-                        />
-                      ) : (
-                        <p className="form-control-plaintext">
-                          {formData[name as keyof AddressT] || "-"}
-                        </p>
-                      )}
-                    </div>
-                  ))}
+                  {/* Full Name */}
+                  <div className="form-group col-12 col-sm-6 mb-3">
+                    <label htmlFor="input-fullName" className="form-label">
+                      {labels.fullName}
+                    </label>
+                    {edit ? (
+                      <input
+                        id="input-fullName"
+                        name="fullName"
+                        type="text"
+                        className="form-control"
+                        value={formData.fullName}
+                        onChange={handleChange}
+                        required
+                        autoComplete="name"
+                      />
+                    ) : (
+                      renderPlain(formData.fullName)
+                    )}
+                  </div>
+
+                  {/* Street */}
+                  <div className="form-group col-12 col-sm-6 mb-3">
+                    <label htmlFor="input-street" className="form-label">
+                      {labels.street}
+                    </label>
+                    {edit ? (
+                      <input
+                        id="input-street"
+                        name="street"
+                        type="text"
+                        className="form-control"
+                        value={formData.street}
+                        onChange={handleChange}
+                        required
+                        autoComplete="street-address"
+                      />
+                    ) : (
+                      renderPlain(formData.street)
+                    )}
+                  </div>
+
+                  {/* City */}
+                  <div className="form-group col-12 col-sm-6 mb-3">
+                    <label htmlFor="input-city" className="form-label">
+                      {labels.city}
+                    </label>
+                    {edit ? (
+                      <input
+                        id="input-city"
+                        name="city"
+                        type="text"
+                        className="form-control"
+                        value={formData.city}
+                        onChange={handleChange}
+                        required
+                        autoComplete="address-level2"
+                      />
+                    ) : (
+                      renderPlain(formData.city)
+                    )}
+                  </div>
+
+                  {/* State */}
+                  <div className="form-group col-12 col-sm-6 mb-3">
+                    <label htmlFor="input-state" className="form-label">
+                      {labels.state}
+                    </label>
+                    {edit ? (
+                      <input
+                        id="input-state"
+                        name="state"
+                        type="text"
+                        className="form-control"
+                        value={formData.state}
+                        onChange={handleChange}
+                        autoComplete="address-level1"
+                      />
+                    ) : (
+                      renderPlain(formData.state)
+                    )}
+                  </div>
+
+                  {/* Zip Code */}
+                  <div className="form-group col-12 col-sm-6 mb-3">
+                    <label htmlFor="input-zipCode" className="form-label">
+                      {labels.zipCode}
+                    </label>
+                    {edit ? (
+                      <input
+                        id="input-zipCode"
+                        name="zipCode"
+                        type="text"
+                        className="form-control"
+                        value={formData.zipCode}
+                        onChange={handleChange}
+                        required
+                        placeholder="e.g. 94105"
+                        autoComplete="postal-code"
+                        inputMode="numeric"
+                        pattern="\d*"
+                      />
+                    ) : (
+                      renderPlain(formData.zipCode)
+                    )}
+                  </div>
+
+                  {/* Country */}
+                  <div className="form-group col-12 col-sm-6 mb-3">
+                    <label htmlFor="input-country" className="form-label">
+                      {labels.country}
+                    </label>
+                    {edit ? (
+                      <select
+                        id="input-country"
+                        name="country"
+                        className="form-select"
+                        value={formData.country}
+                        onChange={handleChange}
+                        required
+                        autoComplete="country-name"
+                      >
+                        <option value="">Select country</option>
+                        {countries.map((c) => (
+                          <option key={c} value={c}>
+                            {c}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      renderPlain(formData.country)
+                    )}
+                  </div>
+
+                  {/* Phone */}
+                  <div className="form-group col-12 col-sm-6 mb-3">
+                    <label htmlFor="input-phone" className="form-label">
+                      {labels.phone}
+                    </label>
+                    {edit ? (
+                      <input
+                        id="input-phone"
+                        name="phone"
+                        type="tel"
+                        className="form-control"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        required
+                        placeholder="e.g. +1 415 555 1234"
+                        autoComplete="tel"
+                        inputMode="tel"
+                      />
+                    ) : (
+                      renderPlain(formData.phone)
+                    )}
+                  </div>
                 </div>
               </fieldset>
 
@@ -168,22 +288,14 @@ const Address = () => {
                       className="btn btn-outline-secondary"
                       onClick={handleCancel}
                     >
-                      {language === "Armenian"
-                        ? "Չեղարկել"
-                        : language === "Russian"
-                          ? "Отмена"
-                          : "Cancel"}
+                      Cancel
                     </button>
                     <button
                       type="button"
                       className="btn btn-primary"
                       onClick={handleSave}
                     >
-                      {language === "Armenian"
-                        ? "Պահպանել"
-                        : language === "Russian"
-                          ? "Сохранить"
-                          : "Save"}
+                      Save
                     </button>
                   </>
                 ) : (
@@ -192,11 +304,7 @@ const Address = () => {
                     className="btn btn-primary"
                     onClick={() => setEdit(true)}
                   >
-                    {language === "Armenian"
-                      ? "Խմբագրել"
-                      : language === "Russian"
-                        ? "Редактировать"
-                        : "Edit"}
+                    Edit
                   </button>
                 )}
               </div>
@@ -205,7 +313,7 @@ const Address = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Address
+export default Address;

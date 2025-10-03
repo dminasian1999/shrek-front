@@ -3,7 +3,7 @@ import { ProductsContext } from "../../utils/context.ts"
 import { useParams } from "react-router-dom"
 import { ProductT } from "../../utils/types.ts"
 import ProductItem from "./ProductItem.tsx"
-import { baseUrlBlog } from "../../utils/constants.ts"
+import { baseUrl } from "../../utils/constants.ts"
 
 const ProductList = () => {
 
@@ -19,7 +19,7 @@ const ProductList = () => {
   // Scroll to top on category change
   useEffect(() => {
     const searchPosts = async (criteria: string,  sort: string,asc: boolean,) => {
-      const response = await fetch(`${baseUrlBlog}  /posts/criteria/${criteria}/sort/${sort}/asc/${asc}`)
+      const response = await fetch(`${baseUrl}  /posts/criteria/${criteria}/sort/${sort}/asc/${asc}`)
       if (!response.ok) throw new Error(`Failed: ${response.statusText}`);
       return  await response.json();
     }

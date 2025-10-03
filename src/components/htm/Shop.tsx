@@ -1,5 +1,11 @@
 import React, { useContext, useEffect, useState } from "react"
-import { banner3Img, baseUrlBlog, collections } from "../../utils/constants.ts"
+import {
+  allColors,
+  allMaterials,
+  banner3Img,
+  baseUrl,
+  collections,
+} from "../../utils/constants.ts"
 import { ProductsContext } from "../../utils/context.ts"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { ProductT, QueryT } from "../../utils/types.ts"
@@ -13,7 +19,7 @@ const Shop = () => {
 
   const { category } = useParams()
   const [sort, setSort] = useState("dateCreated")
-  const [asc, setAsc] = useState(true)
+  const [asc, setAsc] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
@@ -43,7 +49,7 @@ const Shop = () => {
   const fetchProducts = async (query: QueryT) => {
     try {
       setLoading(true)
-      const response = await fetch(`${baseUrlBlog}/posts/search`, {
+      const response = await fetch(`${baseUrl}/posts/search`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -127,7 +133,10 @@ const Shop = () => {
             transition={{ duration: 0.4 }}
           >
             {/* Categories Accordion */}
-            <div className="accordion mb-4 shadow-sm rounded" id="categoryAccordion">
+            <div
+              className="accordion mb-4 shadow-sm rounded"
+              id="categoryAccordion"
+            >
               <div className="accordion-item border-0">
                 <h2 className="accordion-header" id="headingCategories">
                   <button
@@ -173,7 +182,10 @@ const Shop = () => {
             </div>
 
             {/* Price Filter Accordion */}
-            <div className="accordion mb-4 shadow-sm rounded" id="priceAccordion">
+            <div
+              className="accordion mb-4 shadow-sm rounded"
+              id="priceAccordion"
+            >
               <div className="accordion-item border-0">
                 <h2 className="accordion-header" id="headingPrice">
                   <button
@@ -216,7 +228,9 @@ const Shop = () => {
                             placeholder="Min"
                             value={minPrice ?? ""}
                             onChange={e =>
-                              setMinPrice(e.target.value ? +e.target.value : undefined)
+                              setMinPrice(
+                                e.target.value ? +e.target.value : undefined,
+                              )
                             }
                             min={0}
                           />
@@ -227,12 +241,17 @@ const Shop = () => {
                             placeholder="Max"
                             value={maxPrice ?? ""}
                             onChange={e =>
-                              setMaxPrice(e.target.value ? +e.target.value : undefined)
+                              setMaxPrice(
+                                e.target.value ? +e.target.value : undefined,
+                              )
                             }
                             min={0}
                           />
                         </div>
-                        <button className="btn btn-dark btn-sm w-100 mt-3" type="submit">
+                        <button
+                          className="btn btn-dark btn-sm w-100 mt-3"
+                          type="submit"
+                        >
                           Apply Filter
                         </button>
                       </form>
@@ -241,9 +260,11 @@ const Shop = () => {
                 </div>
               </div>
             </div>
-
             {/* Material Filter */}
-            <div className="accordion mb-4 shadow-sm rounded" id="materialAccordion">
+            <div
+              className="accordion mb-4 shadow-sm rounded"
+              id="materialAccordion"
+            >
               <div className="accordion-item border-0">
                 <h2 className="accordion-header" id="headingMaterial">
                   <button
@@ -279,14 +300,22 @@ const Shop = () => {
                           refetchWithQuery()
                         }}
                       >
-                        <input
-                          type="text"
-                          className="form-control form-control-sm"
-                          placeholder="Material"
+                        <select
+                          className="form-select form-select-sm"
                           value={material}
                           onChange={e => setMaterial(e.target.value)}
-                        />
-                        <button className="btn btn-dark btn-sm w-100 mt-3" type="submit">
+                        >
+                          <option value="">All Materials</option>
+                          {allMaterials.map((mat, idx) => (
+                            <option key={idx} value={mat}>
+                              {mat}
+                            </option>
+                          ))}
+                        </select>
+                        <button
+                          className="btn btn-dark btn-sm w-100 mt-3"
+                          type="submit"
+                        >
                           Apply Filter
                         </button>
                       </form>
@@ -297,7 +326,10 @@ const Shop = () => {
             </div>
 
             {/* Color Filter */}
-            <div className="accordion mb-4 shadow-sm rounded" id="colorAccordion">
+            <div
+              className="accordion mb-4 shadow-sm rounded"
+              id="colorAccordion"
+            >
               <div className="accordion-item border-0">
                 <h2 className="accordion-header" id="headingColor">
                   <button
@@ -333,14 +365,22 @@ const Shop = () => {
                           refetchWithQuery()
                         }}
                       >
-                        <input
-                          type="text"
-                          className="form-control form-control-sm"
-                          placeholder="Color"
+                        <select
+                          className="form-select form-select-sm"
                           value={color}
                           onChange={e => setColor(e.target.value)}
-                        />
-                        <button className="btn btn-dark btn-sm w-100 mt-3" type="submit">
+                        >
+                          <option value="">All Colors</option>
+                          {allColors.map((col, idx) => (
+                            <option key={idx} value={col.value}>
+                              {col.name}
+                            </option>
+                          ))}
+                        </select>
+                        <button
+                          className="btn btn-dark btn-sm w-100 mt-3"
+                          type="submit"
+                        >
                           Apply Filter
                         </button>
                       </form>
@@ -351,75 +391,81 @@ const Shop = () => {
             </div>
 
             {/* Date Range Filter */}
-            <div className="accordion mb-4 shadow-sm rounded" id="dateAccordion">
-              <div className="accordion-item border-0">
-                <h2 className="accordion-header" id="headingDate">
-                  <button
-                    className="accordion-button fw-bold bg-light"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#collapseDate"
-                    aria-expanded="true"
-                    aria-controls="collapseDate"
-                  >
-                    <i className="bi bi-calendar-event me-2"></i>Filter by Date
-                  </button>
-                </h2>
-                <div
-                  id="collapseDate"
-                  className="accordion-collapse collapse show"
-                  aria-labelledby="headingDate"
-                  data-bs-parent="#categoryAccordion"
-                >
-                  <div className="accordion-body p-0">
-                    <motion.div
-                      className="mb-4 p-3 border rounded shadow-sm bg-light"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2 }}
-                    >
-                      <h6 className="fw-semibold mb-3">
-                        <i className="bi bi-calendar-range me-2"></i>Date Range
-                      </h6>
-                      <form
-                        onSubmit={e => {
-                          e.preventDefault()
-                          refetchWithQuery()
-                        }}
-                      >
-                        <div className="mb-2">
-                          <label htmlFor="dateFrom" className="form-label">
-                            From
-                          </label>
-                          <input
-                            type="date"
-                            id="dateFrom"
-                            className="form-control form-control-sm"
-                            value={dateFrom}
-                            onChange={e => setDateFrom(e.target.value)}
-                          />
-                        </div>
-                        <div>
-                          <label htmlFor="dateTo" className="form-label">
-                            To
-                          </label>
-                          <input
-                            type="date"
-                            id="dateTo"
-                            className="form-control form-control-sm"
-                            value={dateTo}
-                            onChange={e => setDateTo(e.target.value)}
-                          />
-                        </div>
-                        <button className="btn btn-dark btn-sm w-100 mt-3" type="submit">
-                          Apply Filter
-                        </button>
-                      </form>
-                    </motion.div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {/*<div*/}
+            {/*  className="accordion mb-4 shadow-sm rounded"*/}
+            {/*  id="dateAccordion"*/}
+            {/*>*/}
+            {/*  <div className="accordion-item border-0">*/}
+            {/*    <h2 className="accordion-header" id="headingDate">*/}
+            {/*      <button*/}
+            {/*        className="accordion-button fw-bold bg-light"*/}
+            {/*        type="button"*/}
+            {/*        data-bs-toggle="collapse"*/}
+            {/*        data-bs-target="#collapseDate"*/}
+            {/*        aria-expanded="true"*/}
+            {/*        aria-controls="collapseDate"*/}
+            {/*      >*/}
+            {/*        <i className="bi bi-calendar-event me-2"></i>Filter by Date*/}
+            {/*      </button>*/}
+            {/*    </h2>*/}
+            {/*    <div*/}
+            {/*      id="collapseDate"*/}
+            {/*      className="accordion-collapse collapse show"*/}
+            {/*      aria-labelledby="headingDate"*/}
+            {/*      data-bs-parent="#categoryAccordion"*/}
+            {/*    >*/}
+            {/*      <div className="accordion-body p-0">*/}
+            {/*        <motion.div*/}
+            {/*          className="mb-4 p-3 border rounded shadow-sm bg-light"*/}
+            {/*          initial={{ opacity: 0, y: 10 }}*/}
+            {/*          animate={{ opacity: 1, y: 0 }}*/}
+            {/*          transition={{ delay: 0.2 }}*/}
+            {/*        >*/}
+            {/*          <h6 className="fw-semibold mb-3">*/}
+            {/*            <i className="bi bi-calendar-range me-2"></i>Date Range*/}
+            {/*          </h6>*/}
+            {/*          <form*/}
+            {/*            onSubmit={e => {*/}
+            {/*              e.preventDefault()*/}
+            {/*              refetchWithQuery()*/}
+            {/*            }}*/}
+            {/*          >*/}
+            {/*            <div className="mb-2">*/}
+            {/*              <label htmlFor="dateFrom" className="form-label">*/}
+            {/*                From*/}
+            {/*              </label>*/}
+            {/*              <input*/}
+            {/*                type="date"*/}
+            {/*                id="dateFrom"*/}
+            {/*                className="form-control form-control-sm"*/}
+            {/*                value={dateFrom}*/}
+            {/*                onChange={e => setDateFrom(e.target.value)}*/}
+            {/*              />*/}
+            {/*            </div>*/}
+            {/*            <div>*/}
+            {/*              <label htmlFor="dateTo" className="form-label">*/}
+            {/*                To*/}
+            {/*              </label>*/}
+            {/*              <input*/}
+            {/*                type="date"*/}
+            {/*                id="dateTo"*/}
+            {/*                className="form-control form-control-sm"*/}
+            {/*                value={dateTo}*/}
+            {/*                onChange={e => setDateTo(e.target.value)}*/}
+            {/*              />*/}
+            {/*            </div>*/}
+            {/*            <button*/}
+            {/*              className="btn btn-dark btn-sm w-100 mt-3"*/}
+            {/*              type="submit"*/}
+            {/*            >*/}
+            {/*              Apply Filter*/}
+            {/*            </button>*/}
+            {/*          </form>*/}
+            {/*        </motion.div>*/}
+            {/*      </div>*/}
+            {/*    </div>*/}
+            {/*  </div>*/}
+            {/*</div>*/}
           </motion.div>
 
           <div className="col-sm-12 col-md-9 col-lg-9 main-col">
@@ -475,7 +521,9 @@ const Shop = () => {
                   className="grid-products grid--view-items"
                   initial="hidden"
                   animate="visible"
-                  variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
+                  variants={{
+                    visible: { transition: { staggerChildren: 0.05 } },
+                  }}
                 >
                   <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
                     {paginatedProducts.map(p => (
@@ -486,7 +534,10 @@ const Shop = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4 }}
                       >
-                        <a className="card rounded border shadow h-100" href={`/product/${p.id}`}>
+                        <a
+                          className="card rounded border shadow h-100"
+                          href={`/product/${p.id}`}
+                        >
                           <img
                             src={p.imageUrls[0]}
                             className="card-img-top h-100 w-100 object-fit-cover"
@@ -502,17 +553,18 @@ const Shop = () => {
                               >
                                 <i className="icon anm anm-heart-l"></i>
                               </a>
-                              {token && user.roles.includes("ADMINISTRATOR") && (
-                                <div className="edit-btn">
-                                  <Link
-                                    className="edit add-to-compare"
-                                    to={`/product/edit/${p.id}`}
-                                    title="Edit"
-                                  >
-                                    <i className="icon anm anm-edit-l"></i>
-                                  </Link>
-                                </div>
-                              )}
+                              {token &&
+                                user.roles.includes("ADMINISTRATOR") && (
+                                  <div className="edit-btn">
+                                    <Link
+                                      className="edit add-to-compare"
+                                      to={`/product/edit/${p.id}`}
+                                      title="Edit"
+                                    >
+                                      <i className="icon anm anm-edit-l"></i>
+                                    </Link>
+                                  </div>
+                                )}
                             </div>
                           </div>
 
@@ -520,8 +572,13 @@ const Shop = () => {
                             <h5 className="card-title">{p.name}</h5>
                             <p className="card-text ">
                               <p className={"text-truncate"}>{p.desc}</p>
-                              <s className="old-price">${(p.price + p.price / 3).toFixed(2)}</s>
-                              <span className="price text-danger"> ${p.price}</span>
+                              {/*<s className="old-price">*/}
+                              {/*  ${(p.price + p.price / 3).toFixed(2)}*/}
+                              {/*</s>*/}
+                              <span className="price text-danger">
+                                {" "}
+                                ${p.price}
+                              </span>
                             </p>
                           </div>
                           <div className="card-footer fw-light small">

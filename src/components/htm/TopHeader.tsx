@@ -34,7 +34,7 @@ const TopHeader = () => {
               </ul>
             </div>
             <p className="phone-no">
-              <i className="anm anm-phone-s"></i>{adminInfo(language).phone}
+              <i className="anm anm-phone-s"></i>{adminInfo.phone}
             </p>
           </div>
 

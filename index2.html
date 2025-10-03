@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Современные лицевые панели для пожарных щитов — Премиум-класс</title>
+  <!-- Подключение Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Конфигурация Tailwind для использования пользовательского шрифта и цветов -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'primary': '#0070F3', // Яркий синий для акцентов
+            'secondary': '#1E293B', // Темно-синий для текста
+            'background': '#F9FAFB', // Светлый фон
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <!-- Стилизация для интерактивности и адаптивности -->
+  <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+      html { scroll-behavior: smooth; }
+      /* Стилизация для галереи, чтобы обеспечить корректную сетку */
+      .gallery-item {
+          aspect-ratio: 1 / 1;
+          object-fit: cover;
+          transition: transform 0.3s ease;
+      }
+      .gallery-item:hover {
+          transform: scale(1.02);
+      }
+      /* Стилизация для кнопки прокрутки (если нужна) */
+      .cta-button {
+          transition: background-color 0.3s, transform 0.2s;
+      }
+      .cta-button:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 6px -1px rgba(0, 112, 243, 0.4), 0 2px 4px -2px rgba(0, 112, 243, 0.4);
+      }
+  </style>
+</head>
+<body class="font-sans bg-white text-secondary">
+
+<!-- 1. Шапка с логотипом, ярким оффером и кнопкой -->
+<header id="header" class="bg-white sticky top-0 z-50 shadow-md">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+    <a href="#header" class="text-2xl font-bold text-primary tracking-tight">FIRE-ART</a>
+    <nav class="hidden md:flex space-x-6 text-sm font-medium">
+      <a href="#problem" class="hover:text-primary transition duration-150">Проблема</a>
+      <a href="#benefits" class="hover:text-primary transition duration-150">Решение/Плюсы</a>
+      <a href="#product" class="hover:text-primary transition duration-150">Панели</a>
+      <a href="#gallery" class="hover:text-primary transition duration-150">Галерея</a>
+      <a href="#price" class="hover:text-primary transition duration-150">Цены/Расчет</a>
+      <a href="#contacts" class="hover:text-primary transition duration-150">Контакты</a>
+    </nav>
+    <a href="#price" class="py-2 px-6 bg-primary text-white font-semibold rounded-lg shadow-lg hover:bg-blue-600 cta-button text-sm md:text-base">
+      Заказать сейчас
+    </a>
+  </div>
+</header>
+
+<main>
+  <!-- Секция главного оффера (СИЛЬНЫЙ ОФФЕР) -->
+  <section class="relative bg-background pt-16 pb-20 sm:pt-24 sm:pb-32 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-secondary leading-tight mb-6">
+        Проблема 'пожарных щитов' решена: <span class="text-primary">Единственное</span> эстетичное решение
+      </h1>
+      <p class="text-xl sm:text-2xl text-gray-600 max-w-3xl mx-auto mb-10">
+        Уникальная разработка, устраняющая визуальное загрязнение в подъездах. Премиальный дизайн, 100% соответствие нормам НПБ и КМ-1.
+      </p>
+      <a href="#price" class="inline-block py-3 px-10 text-lg bg-primary text-white font-bold rounded-xl shadow-2xl shadow-primary/50 hover:bg-blue-600 cta-button">
+        Рассчитать стоимость онлайн →
+      </a>
+    </div>
+  </section>
+
+  <!-- НОВЫЙ БЛОК: Проблема (Problem) -->
+  <section id="problem" class="py-16 sm:py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center text-red-600 mb-16">
+        Ваша проблема: Неприглядные пожарные шкафы
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <!-- Проблема 1 -->
+        <div class="bg-gray-50 p-8 rounded-xl border border-red-200 text-center">
+          <div class="text-4xl text-red-500 mb-4">🏚️</div>
+          <h3 class="text-xl font-semibold mb-3">Визуальное загрязнение</h3>
+          <p class="text-gray-600">Ржавые, старые, помятые металлические шкафы — они мгновенно снижают стоимость и статус жилья.</p>
+        </div>
+        <!-- Проблема 2 -->
+        <div class="bg-gray-50 p-8 rounded-xl border border-red-200 text-center">
+          <div class="text-4xl text-red-500 mb-4">⚠️</div>
+          <h3 class="text-xl font-semibold mb-3">Сложности с ремонтом</h3>
+          <p class="text-gray-600">При ремонте подъезда их невозможно скрыть или гармонично вписать в современный дизайн.</p>
+        </div>
+        <!-- Проблема 3 -->
+        <div class="bg-gray-50 p-8 rounded-xl border border-red-200 text-center">
+          <div class="text-4xl text-red-500 mb-4">⚖️</div>
+          <h3 class="text-xl font-semibold mb-3">Отсутствие альтернатив</h3>
+          <p class="text-gray-600">До недавнего времени не существовало негорючих, сертифицированных и при этом эстетичных решений, кроме наших панелей.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Блок с преимуществами продукта (ТЕПЕРЬ ЭТО РЕШЕНИЕ) -->
+  <section id="benefits" class="py-16 sm:py-24 bg-background">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12">Наше решение: Преимущества FIRE-ART</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <!-- Преимущество 1 -->
+        <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 text-center hover:shadow-xl transition duration-300">
+          <div class="text-4xl text-primary mb-4">🎨</div>
+          <h3 class="text-xl font-semibold mb-3">Современный дизайн</h3>
+          <p class="text-gray-600">Широкий выбор цветов и текстур, идеально вписывающихся в любой интерьер подъезда.</p>
+        </div>
+        <!-- Преимущество 2 -->
+        <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 text-center hover:shadow-xl transition duration-300">
+          <div class="text-4xl text-primary mb-4">🛡️</div>
+          <h3 class="text-xl font-semibold mb-3">Пожарная безопасность</h3>
+          <p class="text-gray-600">Материалы соответствуют всем нормам НПБ и имеют необходимые сертификаты (класс **КМ-1**).</p>
+        </div>
+        <!-- Преимущество 3 -->
+        <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 text-center hover:shadow-xl transition duration-300">
+          <div class="text-4xl text-primary mb-4">🛠️</div>
+          <h3 class="text-xl font-semibold mb-3">Простой монтаж</h3>
+          <p class="text-gray-600">Быстрая установка без повреждения стен и необходимости сложного инструмента.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Описание панелей (материалы, размеры, совместимость) -->
+  <section id="product" class="py-16 sm:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12">Технические характеристики панелей</h2>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+          <h3 class="text-2xl font-semibold mb-4 text-primary">Материалы и отделка</h3>
+          <ul class="space-y-4 text-lg text-gray-700">
+            <li class="flex items-start">
+              <span class="mr-3 text-primary font-bold">●</span>
+              Основа: Сверхпрочный композитный материал 4 мм.
+            </li>
+            <li class="flex items-start">
+              <span class="mr-3 text-primary font-bold">●</span>
+              Покрытие: УФ-печать высокого разрешения с защитным ламинированием (матовое или глянцевое).
+            </li>
+            <li class="flex items-start">
+              <span class="mr-3 text-primary font-bold">●</span>
+              Класс пожарной опасности: КМ-1 (негорючий материал).
+            </li>
+          </ul>
+          <h3 class="text-2xl font-semibold mt-8 mb-4 text-primary">Размеры и совместимость</h3>
+          <ul class="space-y-4 text-lg text-gray-700">
+            <li class="flex items-start">
+              <span class="mr-3 text-primary font-bold">●</span>
+              Стандартные размеры: 600х800 мм, 700х900 мм, 800х1200 мм.
+            </li>
+            <li class="flex items-start">
+              <span class="mr-3 text-primary font-bold">●</span>
+              Индивидуальные размеры: Изготовление по вашим замерам (допуск до 1 мм).
+            </li>
+            <li class="flex items-start">
+              <span class="mr-3 text-primary font-bold">●</span>
+              Совместимость: Со всеми типами пожарных шкафов (ШПК-310, ШПК-315, ШП-О и др.).
+            </li>
+          </ul>
+        </div>
+        <div class="h-96 rounded-xl shadow-2xl bg-gray-300 flex items-center justify-center">
+                        <span class="text-gray-600 text-xl font-semibold">
+
+                        </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Галерея с примерами установок -->
+  <section id="gallery" class="py-16 sm:py-24 bg-background">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12">Галерея установленных панелей</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+        <!-- Пример 1 -->
+        <div class="rounded-xl overflow-hidden shadow-lg bg-gray-200 gallery-item flex items-center justify-center">
+          <span class="text-gray-600">Пример 1</span>
+        </div>
+        <!-- Пример 2 -->
+        <div class="rounded-xl overflow-hidden shadow-lg bg-gray-200 gallery-item flex items-center justify-center">
+          <span class="text-gray-600">Пример 2</span>
+        </div>
+        <!-- Пример 3 -->
+        <div class="rounded-xl overflow-hidden shadow-lg bg-gray-200 gallery-item flex items-center justify-center">
+          <span class="text-gray-600">Пример 3</span>
+        </div>
+        <!-- Пример 4 -->
+        <div class="rounded-xl overflow-hidden shadow-lg bg-gray-200 gallery-item flex items-center justify-center">
+          <span class="text-gray-600">Пример 4</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Отзывы клиентов -->
+  <section id="testimonials" class="py-16 sm:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12">Что говорят наши клиенты</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Отзыв 1 -->
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+          <p class="italic text-gray-700 mb-4">"Это преобразило наш подъезд! От старого ржавого шкафа не осталось и следа. Монтаж занял всего 15 минут."</p>
+          <p class="font-semibold text-primary">— Анна С., Председатель ТСЖ "Чистый Дом"</p>
+        </div>
+        <!-- Отзыв 2 -->
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+          <p class="italic text-gray-700 mb-4">"Искали негорючее решение, которое выглядело бы стильно. Панели 'FIRE-ART' подошли идеально. Прозрачный расчет и быстрая доставка."</p>
+          <p class="font-semibold text-primary">— Максим Л., Застройщик "Новый Горизонт"</p>
+        </div>
+        <!-- Отзыв 3 -->
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+          <p class="italic text-gray-700 mb-4">"Очень довольны качеством печати и материалом. Рекомендуем всем, кто хочет поднять класс отделки в общих зонах."</p>
+          <p class="font-semibold text-primary">— Елена К., Управляющая компания "Комфорт"</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Прайс с возможностью расчёта заказа онлайн -->
+  <section id="price" class="py-16 sm:py-24 bg-background">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12">Рассчитайте стоимость вашего заказа</h2>
+
+      <div class="bg-white p-8 md:p-10 rounded-xl shadow-2xl border border-gray-100">
+        <form id="calculator-form">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div>
+              <label for="quantity" class="block text-sm font-medium text-gray-700 mb-2">Количество панелей, шт.</label>
+              <input type="number" id="quantity" value="10" min="1" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition duration-150">
+            </div>
+            <div>
+              <label for="size" class="block text-sm font-medium text-gray-700 mb-2">Размер панели</label>
+              <select id="size" class="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-primary focus:border-primary transition duration-150">
+                <option value="600x800">Стандарт 600x800 мм</option>
+                <option value="700x900">Увеличенный 700x900 мм (+15%)</option>
+                <option value="custom">Индивидуальный размер (Запрос)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Прайс-лист (только для информации) -->
+          <div class="bg-gray-50 p-4 rounded-lg mb-8">
+            <h4 class="text-lg font-semibold mb-2">Базовый прайс (за шт.):</h4>
+            <ul class="text-sm text-gray-600 list-disc list-inside">
+              <li>Стандартный размер (600x800): <span class="font-bold">3 500 ₽</span></li>
+              <li>Увеличенный размер (700x900): <span class="font-bold">4 025 ₽</span> (+$15%)</li>
+              <li>Индивидуальный размер: <span class="font-bold">по запросу</span></li>
+            </ul>
+          </div>
+
+          <!-- Результат расчета -->
+          <div class="text-center p-6 bg-primary/10 border-l-4 border-primary rounded-lg">
+            <h3 class="text-xl font-medium text-gray-800 mb-2">Предварительная стоимость заказа:</h3>
+            <p class="text-4xl font-extrabold text-primary" id="total-price">35 000 ₽</p>
+            <p class="text-sm text-gray-600 mt-2">Цена указана без учета доставки и монтажа. Окончательная смета будет предоставлена после согласования дизайна.</p>
+          </div>
+        </form>
+      </div>
+
+      <div class="text-center mt-8">
+        <a href="#contacts" class="inline-block py-3 px-10 text-lg bg-green-500 text-white font-bold rounded-xl shadow-2xl shadow-green-500/50 hover:bg-green-600 cta-button">
+          Оставить заявку на точный расчет
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Контакты с формой заявки, телефонами и соцсетями -->
+  <section id="contacts" class="py-16 sm:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12">Свяжитесь с нами</h2>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <!-- Контактная форма -->
+        <div class="bg-white p-8 rounded-xl shadow-xl">
+          <h3 class="text-2xl font-semibold mb-6">Оставьте заявку</h3>
+          <form id="contact-form" onsubmit="handleFormSubmit(event)">
+            <div class="mb-4">
+              <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Ваше имя</label>
+              <input type="text" id="name" name="name" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+            </div>
+            <div class="mb-4">
+              <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Телефон</label>
+              <input type="tel" id="phone" name="phone" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary" placeholder="+7 (___) ___-__-__">
+            </div>
+            <div class="mb-6">
+              <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Комментарий (необязательно)</label>
+              <textarea id="message" name="message" rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"></textarea>
+            </div>
+            <button type="submit" class="w-full py-3 bg-primary text-white font-bold rounded-lg hover:bg-blue-600 transition duration-150">Отправить заявку</button>
+            <div id="form-message" class="mt-4 text-center hidden p-3 rounded-lg"></div>
+          </form>
+        </div>
+
+        <!-- Контактная информация и соцсети -->
+        <div class="lg:pt-8">
+          <h3 class="text-2xl font-semibold mb-6">Наши контакты</h3>
+          <div class="space-y-6 text-lg text-gray-700">
+            <div class="flex items-center">
+              <span class="text-primary mr-3 text-2xl">📞</span>
+              <div>
+                <span class="font-medium block">Телефон для заказов:</span>
+                <a href="tel:+74951234567" class="text-secondary hover:text-primary transition duration-150">+7 (495) 123-45-67</a>
+              </div>
+            </div>
+            <div class="flex items-center">
+              <span class="text-primary mr-3 text-2xl">📧</span>
+              <div>
+                <span class="font-medium block">Почта для сотрудничества:</span>
+                <a href="mailto:info@fire-art.ru" class="text-secondary hover:text-primary transition duration-150">info@fire-art.ru</a>
+              </div>
+            </div>
+            <div class="flex items-center">
+              <span class="text-primary mr-3 text-2xl">📍</span>
+              <div>
+                <span class="font-medium block">Адрес офиса:</span>
+                г. Москва, ул. Примерная, д. 10, офис 404
+              </div>
+            </div>
+          </div>
+
+          <h3 class="text-2xl font-semibold mt-10 mb-4">Мы в соцсетях</h3>
+          <div class="flex space-x-4 text-3xl">
+            <!-- Использование эмодзи или inline SVG для иконок -->
+            <a href="#" target="_blank" class="text-primary hover:opacity-75 transition duration-150" aria-label="ВКонтакте">VK</a>
+            <a href="#" target="_blank" class="text-primary hover:opacity-75 transition duration-150" aria-label="Telegram">TG</a>
+            <a href="#" target="_blank" class="text-primary hover:opacity-75 transition duration-150" aria-label="Instagram">IG</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- 8. Футер с юридической информацией и сертификатами -->
+<footer class="bg-secondary text-gray-300 py-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 border-b border-gray-700 pb-8 mb-8">
+      <div>
+        <h4 class="text-xl font-bold text-white mb-4">FIRE-ART</h4>
+        <p class="text-sm">Лицевые панели для пожарных шкафов. Эстетика и нормы НПБ.</p>
+      </div>
+      <div>
+        <h4 class="text-lg font-semibold text-white mb-4">Юридическая информация</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-primary transition duration-150">Политика конфиденциальности</a></li>
+          <li><a href="#" class="hover:text-primary transition duration-150">Условия оферты</a></li>
+          <li>ОГРН: 1234567890</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-lg font-semibold text-white mb-4">Сертификаты</h4>
+        <div class="flex space-x-2">
+          <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center text-xs text-secondary font-bold border-2 border-primary">
+            НПБ
+          </div>
+          <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center text-xs text-secondary font-bold border-2 border-primary">
+            КМ-1
+          </div>
+          <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center text-xs text-secondary font-bold border-2 border-primary">
+            ГОСТ
+          </div>
+        </div>
+        <p class="text-sm mt-2">Все сертификаты предоставляются по запросу.</p>
+      </div>
+    </div>
+    <div class="text-center text-sm text-gray-500">
+      &copy; 2024 FIRE-ART. Все права защищены.
+    </div>
+  </div>
+</footer>
+
+<!-- JavaScript для калькулятора и формы -->
+<script>
+  // Коэффициенты и базовые цены
+  const BASE_PRICE = 3500; // Цена за 1 шт. стандартного размера
+  const SIZE_MULTIPLIERS = {
+    '600x800': 1.0,
+    '700x900': 1.15, // +15%
+    'custom': 0, // По запросу, расчет не производится
+  };
+
+  const quantityInput = document.getElementById('quantity');
+  const sizeSelect = document.getElementById('size');
+  const totalPriceElement = document.getElementById('total-price');
+
+  /**
+   * Обновляет расчет стоимости на основе текущих значений формы.
+   */
+  function updatePrice() {
+    const quantity = parseInt(quantityInput.value) || 0;
+    const sizeKey = sizeSelect.value;
+    const multiplier = SIZE_MULTIPLIERS[sizeKey];
+
+    let calculatedPrice = 0;
+    let priceText = '';
+
+    if (sizeKey === 'custom') {
+      priceText = 'По запросу';
+    } else {
+      calculatedPrice = quantity * BASE_PRICE * multiplier;
+      // Форматирование цены в рубли
+      priceText = new Intl.NumberFormat('ru-RU', {
+        style: 'currency',
+        currency: 'RUB',
+        minimumFractionDigits: 0
+      }).format(calculatedPrice);
+    }
+
+    totalPriceElement.textContent = priceText;
+  }
+
+  /**
+   * Обработчик отправки контактной формы (имитация).
+   * @param {Event} event - Объект события формы.
+   */
+  function handleFormSubmit(event) {
+    event.preventDefault();
+
+    const form = document.getElementById('contact-form');
+    const formMessage = document.getElementById('form-message');
+
+    // Имитация отправки данных
+    const formData = {
+      name: form.elements['name'].value,
+      phone: form.elements['phone'].value,
+      message: form.elements['message'].value
+    };
+
+    console.log('Данные заявки:', formData);
+
+    // Показываем сообщение об успешной отправке
+    formMessage.classList.remove('hidden', 'bg-red-100', 'text-red-700');
+    formMessage.classList.add('bg-green-100', 'text-green-700');
+    formMessage.textContent = 'Спасибо! Ваша заявка принята. Мы свяжемся с вами в ближайшее время.';
+
+    // Очистка формы
+    form.reset();
+
+    // Скрыть сообщение через 5 секунд
+    setTimeout(() => {
+      formMessage.classList.add('hidden');
+    }, 5000);
+  }
+
+  // Привязка событий к полям калькулятора
+  quantityInput.addEventListener('input', updatePrice);
+  sizeSelect.addEventListener('change', updatePrice);
+
+  // Инициализация расчета при загрузке страницы
+  window.onload = updatePrice;
+</script>
+</body>
+</html>

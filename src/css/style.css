@@ -439,22 +439,8 @@ th {
 /*======================================================================
   5. Container
 ========================================================================*/
-.container {
-    max-width: 1300px;
-    padding-left: 30px;
-    padding-right: 30px;
-}
 
-.container-fluid {
-    padding: 0 55px;
-}
 
-.container-fluid:before,
-.container-fluid:after {
-    content: '';
-    clear: both;
-    display: block;
-}
 
 .grid {
     *zoom: 1;
@@ -2275,14 +2261,6 @@ a.quick-view {
 .collection-grid-item {
     position: relative;
     width: 100%;
-}
-
-.collection-box .container-fluid {
-    padding: 0;
-}
-
-.collection-box-style1 .container-fluid {
-    padding: 0 55px;
 }
 
 .collection-box .collection-grid-item__link {
