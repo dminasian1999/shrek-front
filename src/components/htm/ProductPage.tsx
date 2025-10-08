@@ -321,7 +321,9 @@ const ProductPage = () => {
 
 
             <div className="mb-3">
-              <span className="badge bg-info text-white">{product.category}</span>
+              <span className="badge bg-info
+
+">{product.category}</span>
               <span className="badge bg-info text-white">{product.subCategory}</span>
             </div>
 
