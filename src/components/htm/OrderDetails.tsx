@@ -93,6 +93,12 @@ const OrderDetails = () => {
                     <li className="text-muted">
                       <strong>To:</strong>{" "}
                       <span style={{ color: "#8f8061" }}>
+                        {order.userId}
+                      </span>
+                    </li>
+                    <li className="text-muted">
+                      <strong>Name:</strong>{" "}
+                      <span style={{ color: "#8f8061" }}>
                         {order.shippingAddress.fullName}
                       </span>
                     </li>

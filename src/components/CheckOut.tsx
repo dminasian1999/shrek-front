@@ -199,7 +199,7 @@ const CheckOut = () => {
 
       {/* Address + Payment */}
       <div className="col-md-7 col-lg-8">
-        <form className="needs-validation" noValidate onSubmit={handleSubmit}>
+        <form className="needs-validation"  onSubmit={handleSubmit}>
           <h5 className="mb-3">Billing & Shipping Details</h5>
 
           {/*<div className="row">*/}
@@ -348,6 +348,7 @@ const CheckOut = () => {
               Proceed To Checkout
             </button>
           </div>
+
         </form>
       </div>
     </div>

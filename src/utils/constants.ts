@@ -385,7 +385,7 @@ export const adminInfo = {
 
 // ====== Defaults & Timers ======
 export const defaultPic = "";
-export const periodMinute = 10000 * 60 ; // 10 hours
+export const periodMinute = 10000 * 60  *30; // 10 hours
 
 // ====== Materials ======
 export const allMaterials = [
