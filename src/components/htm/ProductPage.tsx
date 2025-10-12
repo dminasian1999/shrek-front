@@ -364,7 +364,7 @@ const ProductPage = () => {
 
               <div className="mb-3">
               <span className="text-success fs-4 fw-semibold">
-                ${displayPrice.toFixed(2)}
+                ${displayPrice!.toFixed(2)}
               </span>
               </div>
 
