@@ -215,14 +215,14 @@ export default function AllOrders2() {
                 <button
                   className="accordion-button d-flex justify-content-between align-items-center"
                   type="button"
-                  aria-expanded={openAccordions[order.orderId]}
+                  aria-expanded={openAccordions[order.orderId!]}
                   onClick={() => toggleAccordion(order.orderId!)}
                 >
                   <div>
                     <div className="fw-semibold">
                       Order # <Link to={`/order/${order.orderId}`} className="ms-2 text-decoration-underline">{order.orderId}</Link>
                     </div>
-                    <small className="text-muted">{order.dateCreated ? new Date(order.dateCreated as string).toLocaleDateString() : "-"}</small>
+                    <small className="text-muted">{order.dateCreated ? new Date(order.dateCreated ).toLocaleDateString() : "-"}</small>
                   </div>
                   <div className="d-flex align-items-center gap-3">
                     <StatusBadge status={order.status} />

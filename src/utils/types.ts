@@ -152,7 +152,6 @@ export interface ReceiptT {
 
 
 export interface OrderItemT {
-  state: string
   productId?: string
   quantity: number
   unitPrice: number

@@ -14,9 +14,8 @@ const AllOrders: React.FC = () => {
   let pushFn: (t: { message: string; type?: "success" | "danger" | "info" }) => void = (t) =>
     console.warn("toast fallback:", t);
   try {
-    // call hook at top-level (allowed). If provider throws, we'll catch below.
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const toastCtx = useToasts();
+    // @ts-ignore
     pushFn = toastCtx.push;
   } catch (err) {
     console.warn("useToasts not available. Toasts will be no-ops until ToastProvider is mounted.", err);

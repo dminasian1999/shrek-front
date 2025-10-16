@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 
 
-const ImageGallery: React.FC<any> = memo(({ imageUrls, selectedImage, setSelectedImage, currentIndex, setCurrentIndex, openZoom }) => (
+const ImageGallery: React.FC<any> = memo(({ imageUrls, selectedImage, setSelectedImage,  setCurrentIndex, openZoom }) => (
   <div>
     <div className="rounded shadow-sm mb-3 overflow-hidden position-relative" onClick={openZoom} style={{ cursor: 'zoom-in' }}>
       <img src={selectedImage ?? ''} alt="product" className="img-fluid w-100" style={{ objectFit: 'cover', height: 400 }} />

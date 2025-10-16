@@ -27,6 +27,7 @@ import OrdersAndReturns from "./htm/OrdersAndReturns.tsx"
 import TermsAndConditions from "./htm/TermsAndConditions.tsx"
 import PrivacyPolicy from "./htm/PrivacyPolicy.tsx"
 import AllOrders2 from "./htm/AllOrders2.tsx"
+import AllOrders from "./htm/AllOrders.tsx"
 
 const Main = () => {
   const token = useAppSelector(state => state.token)
@@ -49,7 +50,6 @@ const Main = () => {
         <Route path="/product/:id" element={<ProductPage />} />
 
         <Route path="/product/edit/:id" element={<EditProduct />} />
-        <Route path="/checkout" element={<CheckOut />} />
         <Route path="/about" element={<About />} />
         <Route path="/account" element={<Account />} />
         <Route path={"/login"} element={token ? <Navigate to={"/"} /> : <Login />}/>
@@ -61,7 +61,7 @@ const Main = () => {
         <Route path="/contact" element={<Contact/>} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/all-orders" element={<AllOrders2 />} />
+        <Route path="/all-orders" element={<AllOrders />} />
         <Route path="/support-center" element={<SupportCenter />} />
         <Route path="/orders-and-returns" element={<OrdersAndReturns />} />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
