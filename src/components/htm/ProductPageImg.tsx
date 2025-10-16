@@ -14,7 +14,6 @@ const ProductPageImg: React.FC<ProductPageImgProps> = ({
                                                          product,
                                                          selectedImage,
                                                          setSelectedImage,
-                                                         currentIndex,
                                                          setCurrentIndex,
                                                          setIsZoomOpen,
                                                        }) => {
