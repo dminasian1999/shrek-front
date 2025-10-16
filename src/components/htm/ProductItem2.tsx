@@ -11,8 +11,7 @@ const ProductItem = ({ p }: { p: ProductT }) => {
 
   return (
     // <div className="col-6 col-sm-6 col-md-4 col-lg-3 item">
-    <div className="card p-0 m-0 clearfix"    >
-
+    <div className="card p-0 m-0 clearfix">
       {/*<div className="product-image">*/}
       <div className="">
         <div
@@ -38,7 +37,7 @@ const ProductItem = ({ p }: { p: ProductT }) => {
         </div>
       </div>
 
-      <div className="product-image " style={{ height: "250px", }}>
+      <div className="product-image " style={{ height: "250px" }}>
         <a href={`/product/${p.id}`}>
           <img
             className="primary blur-up lazyload h-100 w-100  object-fit-cover"
@@ -70,6 +69,7 @@ const ProductItem = ({ p }: { p: ProductT }) => {
                   cartItemId: p.id!,
                   product: p,
                   quantity: 1,
+                  selectedSize: "",
                 }),
               )
             }
@@ -101,21 +101,22 @@ const ProductItem = ({ p }: { p: ProductT }) => {
               className="wishlist add-to-wishlist"
               href="#"
               title="Add to Wishlist"
-
             >
               <i className="icon anm anm-heart-l"></i>
             </a>
           </div>
 
-          {token && user.roles.includes("ADMINISTRATOR") && <div className="edit-btn">
-            <Link
-              className="edit add-to-compare"
-              to={`/product/edit/${p.id}`}
-              title="Add to Compare"
-            >
-              <i className="icon anm anm-edit-l"></i>
-            </Link>
-          </div>}
+          {token && user.roles.includes("ADMINISTRATOR") && (
+            <div className="edit-btn">
+              <Link
+                className="edit add-to-compare"
+                to={`/product/edit/${p.id}`}
+                title="Add to Compare"
+              >
+                <i className="icon anm anm-edit-l"></i>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
 
@@ -124,7 +125,9 @@ const ProductItem = ({ p }: { p: ProductT }) => {
           <a href="#">{p.name}</a>
         </div>
         <div className="product-price">
-          <span className="old-price">${(p.price + p.price / 3).toFixed(2)}</span>
+          <span className="old-price">
+            ${(p.price + p.price / 3).toFixed(2)}
+          </span>
 
           {/*<span className="old-price">$500.00</span>*/}
           <span className="price">${p.price}</span>

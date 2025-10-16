@@ -117,7 +117,7 @@ const Products = () => {
                     <td>
                       <span className="badge bg-secondary">{prod.category}</span>
                     </td>
-                    <td>{prod.quantity}</td>
+                    <td>{prod.sizeQuantities[0]?.quantity}</td>
                     <td>$ {prod.price.toFixed(2)}</td>
                     <td>
                         <button

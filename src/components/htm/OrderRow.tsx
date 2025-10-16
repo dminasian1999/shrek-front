@@ -76,7 +76,7 @@ const OrderRow: React.FC<Props> = ({ item, isEditing, formData, onEdit, onCancel
       </td>
 
       <td>
-        <span className={`badge bg-${statusMap[item.state ?? "Paid"] ?? "secondary"}`}>{item.state ?? "Unknown"}</span>
+        {/*<span className={`badge bg-${statusMap[item. ?? "Paid"] ?? "secondary"}`}>{item.state ?? "Unknown"}</span>*/}
       </td>
 
       <td className="text-nowrap">
