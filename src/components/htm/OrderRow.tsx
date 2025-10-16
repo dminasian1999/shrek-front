@@ -1,17 +1,18 @@
-import React from "react";
-import { OrderItemT } from "../../utils/types.ts";
+import React, { useState } from "react";
+import type { OrderItemT } from "../../utils/types";
 
 const statusMap: Record<string, string> = {
   Paid: "success",
-  Pending: "warning",
+  Pending: "warning text-dark",
   Overdue: "danger",
 };
 
-interface OrderRowProps {
+interface Props {
   orderId: string;
-  orderStatus: string | undefined;
+  orderStatus?: string;
   item: OrderItemT;
   isEditing: boolean;
+  saving?: boolean;
   formData: OrderItemT | null;
   onEdit: () => void;
   onCancel: () => void;
@@ -19,89 +20,74 @@ interface OrderRowProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const OrderRow: React.FC<OrderRowProps> = ({
-                                             orderId,
-                                             orderStatus,
-                                             item,
-                                             isEditing,
-                                             formData,
-                                             onEdit,
-                                             onCancel,
-                                             onSave,
-                                             onChange,
-                                           }) => {
-  return (
-    <tr key={`${orderId}-${item.productId}`}>
-      {/* Product ID */}
-      <td className="fw-bold text-nowrap">#{item.productId}</td>
+const OrderRow: React.FC<Props> = ({ item, isEditing, formData, onEdit, onCancel, onSave, onChange, saving }) => {
+  const [localErr, setLocalErr] = useState<string | null>(null);
 
-      {/* Quantity */}
-      <td>
+  function handleSave() {
+    setLocalErr(null);
+    const payload = formData ?? item;
+    if ((payload.quantity ?? 0) < 1) {
+      setLocalErr("Quantity must be at least 1");
+      return;
+    }
+    if ((payload.unitPrice ?? 0) < 0) {
+      setLocalErr("Unit price must be >= 0");
+      return;
+    }
+    onSave(payload);
+  }
+
+  return (
+    <tr>
+      <td className="fw-semibold text-nowrap">#{item.productId}</td>
+
+      <td style={{ minWidth: 120 }}>
         {isEditing ? (
           <input
             type="number"
             name="quantity"
             min={1}
             className="form-control form-control-sm"
-            value={formData?.quantity || 1}
+            value={formData?.quantity ?? item.quantity}
             onChange={onChange}
+            disabled={saving}
+            aria-label="Quantity"
           />
         ) : (
           <span className="text-muted">{item.quantity}</span>
         )}
       </td>
 
-      {/* Unit Price */}
-      <td>
+      <td style={{ minWidth: 140 }}>
         {isEditing ? (
           <input
             type="number"
             name="unitPrice"
             step="0.01"
             className="form-control form-control-sm"
-            value={formData?.unitPrice || 0}
+            value={formData?.unitPrice ?? item.unitPrice}
             onChange={onChange}
+            disabled={saving}
+            aria-label="Unit price"
           />
         ) : (
-          <span>${item.unitPrice.toFixed(2)}</span>
+          <span>${(item.unitPrice ?? 0).toFixed(2)}</span>
         )}
       </td>
 
-      {/* Order Status */}
       <td>
-        <span
-          className={`badge rounded-pill bg-${
-            statusMap[orderStatus ?? "Paid"] ?? "secondary"
-          }`}
-        >
-          {orderStatus}
-        </span>
+        <span className={`badge bg-${statusMap[item.state ?? "Paid"] ?? "secondary"}`}>{item.state ?? "Unknown"}</span>
       </td>
 
-      {/* Action Buttons */}
       <td className="text-nowrap">
         {isEditing ? (
           <>
-            <button
-              className="btn btn-sm btn-outline-secondary me-2"
-              onClick={onCancel}
-            >
-              ✖ Cancel
-            </button>
-            <button
-              className="btn btn-sm btn-success"
-              onClick={() => formData && onSave(formData)}
-            >
-              💾 Save
-            </button>
+            <button className="btn btn-sm btn-outline-secondary me-2" onClick={onCancel} disabled={saving}>✖ Cancel</button>
+            <button className="btn btn-sm btn-success" onClick={handleSave} disabled={saving}>{saving ? "Saving..." : "💾 Save"}</button>
+            {localErr && <div className="text-danger small mt-1">{localErr}</div>}
           </>
         ) : (
-          <button
-            className="btn btn-sm btn-outline-primary"
-            onClick={onEdit}
-          >
-            ✏️ Edit
-          </button>
+          <button className="btn btn-sm btn-outline-primary" onClick={onEdit}>✏️ Edit</button>
         )}
       </td>
     </tr>

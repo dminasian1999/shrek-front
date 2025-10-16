@@ -1,6 +1,6 @@
 import React from "react"
 import MapLocation from "./MapLocation1.tsx"
-import { adminInfo } from "../../utils/constants.ts"
+import { adminInfo, links } from "../../utils/constants.ts"
 import MapLocation1 from "./MapLocation1.tsx"
 import MapLocation2 from "./MapLocation2.tsx"
 
@@ -98,25 +98,17 @@ const Contact = () => {
           </ul>
 
           <ul className="list--inline site-footer__social-icons social-icons d-flex flex-wrap gap-3">
-            {[
-              ["facebook", "Facebook"],
-              ["twitter", "Twitter"],
-              ["pinterest", "Pinterest"],
-              ["instagram", "Instagram"],
-              ["tumblr-alt", "Tumblr"],
-              ["youtube", "YouTube"],
-              ["vimeo-alt", "Vimeo"],
-            ].map(([icon, name]) => (
-              <li key={name}>
+            {links.map((item) => (
+              <li key={item.name}>
                 <a
-                  href="#"
+                  href={item.route}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="social-icons__link"
-                  title={name}
+                  title={item.name}
                 >
-                  <i className={`icon icon-${icon}`}></i>
-                  <span className="visually-hidden">{name}</span>
+                  <i className={`icon icon-${item.name}`}></i>
+                  <span className="visually-hidden">{item.route}</span>
                 </a>
               </li>
             ))}

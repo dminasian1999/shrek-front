@@ -348,11 +348,11 @@ export const removeCartList = createAsyncThunk<
 
 export const updateCartList = createAsyncThunk<
   any,
-  { productId: string; isAdd: boolean },
+  { cartItemId: string; isAdd: boolean },
   { state: RootState }
->("user/updateCartList", async ({ productId, isAdd }, { getState }) => {
+>("user/updateCartList", async ({ cartItemId, isAdd }, { getState }) => {
   const res = await fetch(
-    `${baseUrlUsers}/${getState().user.profile.login}/cartList/${productId}/update/${isAdd}`,
+    `${baseUrlUsers}/${getState().user.profile.login}/cartList/${cartItemId}/update/${isAdd}`,
     {
       method: "PUT",
       headers: { Authorization: getState().token },

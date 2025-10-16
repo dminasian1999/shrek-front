@@ -4,7 +4,7 @@ import { collections } from "../../utils/constants.ts"
 import React from "react"
 import { Link } from "react-router-dom"
 
-const WeeklyBestseller = () => {
+const CarouselCategories = () => {
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
@@ -64,4 +64,4 @@ const WeeklyBestseller = () => {
     </div>
   )
 }
-export default WeeklyBestseller
+export default CarouselCategories

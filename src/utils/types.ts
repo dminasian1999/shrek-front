@@ -26,16 +26,19 @@ export interface ProductT {
   id?: string
   name: string
   imageUrls: string[]
-  quantity: number
   price: number
   category: string
   subCategory: string
-  weight : number,
-  size: string,
+  weight: number,
   color: string
   material: string
   desc: string
   dateCreated?: Date
+  sizeQuantities: SizeQuantitiesT[]
+}
+export type SizeQuantitiesT = {
+  size: string;
+  quantity: number;
 }
 
 
@@ -61,10 +64,11 @@ export enum UpdateMode {
   editUser = "editUser",
   changePassword = "changePassword",
 }
+
 export interface cartItem {
   productID: string
 
-quantity: number
+  quantity: number
 }
 
 export interface QueryT {
@@ -82,6 +86,7 @@ export interface QueryT {
   dateFrom?: Date,
   dateTo?: Date,
 }
+
 export interface UserProfile {
 
   firstName: string
@@ -90,7 +95,7 @@ export interface UserProfile {
   roles: string[]
   address?: AddressT
   cart: Cart,
-  paymentMethod?:paymentMethodT,
+  paymentMethod?: paymentMethodT,
   wishList?: string[]
   orders: OrderT[]
 }
@@ -129,6 +134,7 @@ export interface AddressT {
   country: string
   phone: string
 }
+
 export interface ReceiptT {
   id: string
   name: string
@@ -145,12 +151,13 @@ export interface ReceiptT {
 }
 
 
-
 export interface OrderItemT {
+  state: string
   productId?: string
   quantity: number
   unitPrice: number
 }
+
 export interface OrderT {
   orderId?: string
   userId: string
@@ -158,7 +165,7 @@ export interface OrderT {
   orderItems: OrderItemT[]
   shippingAddress: AddressT
   paymentMethod: string
-  dateCreated?:  Date  // ISO string preferred when sending
+  dateCreated?: Date  // ISO string preferred when sending
 }
 
 // export interface OrderT {
@@ -172,6 +179,7 @@ export interface OrderT {
 //   dateCreated: Date
 // }
 
+export interface VariantT { size: string; price: number; sku: string; stock: number }
 
 export interface Cart {
   userId: string
@@ -182,8 +190,9 @@ export interface Cart {
 
 export interface CartItem {
   cartItemId: string;
-   product: ProductT;
-  quantity : number;
+  product: ProductT;
+  selectedSize: string;
+  quantity: number;
 }
 
 export interface ShipmentTracking {

@@ -174,9 +174,6 @@ button.ui-button-icons-only {
     padding-right: 2.1em
 }
 
-input.ui-button {
-    padding: .4em 1em
-}
 
 .ui-button-icon-only .ui-icon, .ui-button-text-icon-primary .ui-icon, .ui-button-text-icon-secondary .ui-icon, .ui-button-text-icons .ui-icon, .ui-button-icons-only .ui-icon {
     position: absolute;
@@ -206,10 +203,6 @@ input.ui-button {
     margin-right: -.3em
 }
 
-input.ui-button::-moz-focus-inner, button.ui-button::-moz-focus-inner {
-    border: 0;
-    padding: 0
-}
 
 .ui-datepicker {
     width: 17em;

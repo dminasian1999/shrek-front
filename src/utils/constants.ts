@@ -6,21 +6,22 @@ import banner4 from "../images/slideshow-banners/banner4.jpg";
 
 import logo from "../images/logo/logo.png";
 
-import bracelets from "../images/categories/bracelets.jpg";
-import ceramics from "../images/categories/ceramics.jpg";
+import christian_gifts from "../images/categories/christian-gifts.jpg";
+import holy_land_gifts from "../images/categories/holy-land-gifts.jpg";
 import earrings from "../images/categories/earrings.jpg";
-import hangings from "../images/categories/hangings.jpg";
-import jewelry from "../images/categories/jewelry.jpg";
+import dead_sea_cosmetics from "../images/categories/dead-sea-cosmetics.jpg";
+import jerusalem_jewelry from "../images/categories/jerusalem-jewelry.jpg";
 import keychains from "../images/categories/keychains.jpg";
 import magnets from "../images/categories/magnets.jpg";
-import mugs from "../images/categories/mugs.jpg";
+import clothing from "../images/categories/clothing.jpg";
 import necklaces from "../images/categories/necklaces.jpg";
 import pomegranates from "../images/categories/pomegranates.jpg";
-import plates from "../images/categories/plates.jpg";
-import religious from "../images/categories/religious.jpg";
-import rings from "../images/categories/rings.jpg";
-import souvenirs from "../images/categories/souvenirs.jpg";
-import tiles from "../images/categories/tiles.jpg";
+import armenian_ceramics from "../images/categories/armenian-ceramics.jpg";
+import judaica_and_messianic_gifts from "../images/categories/judaica-and-messianic-gifts.jpg";
+import olive_wood_gifts from "../images/categories/olive-wood-gifts.jpg";
+import holidays from "../images/categories/holidays.jpg";
+import anointing_oil_and_biblical_perfumes from "../images/categories/anointing-oil-and-biblical-perfumes.jpg";
+
 import vases from "../images/categories/vases.jpg";
 import bghero from "../images/bgHero.jpg";
 
@@ -147,7 +148,7 @@ export const collections = [
   {
     title: "Anointing Oil and Biblical Perfumes",
     route: "anointing-oil-and-biblical-perfumes",
-    image: tiles,
+    image: anointing_oil_and_biblical_perfumes,
     subCategory: [
       { title: "Anointing Oil", route: "anointing-oil" },
       { title: "Biblical Perfumes", route: "biblical-perfumes" },
@@ -156,7 +157,7 @@ export const collections = [
   {
     title: "Armenian Ceramics",
     route: "armenian-ceramics",
-    image: plates,
+    image: armenian_ceramics,
     subCategory: [
       { title: "Ash Tray", route: "ash-tray" },
       { title: "Olive Dish", route: "olive-dish" },
@@ -199,7 +200,7 @@ export const collections = [
   {
     title: "Christian Gifts",
     route: "christian-gifts",
-    image: bracelets,
+    image: christian_gifts,
     subCategory: [
       { title: "Children Gifts", route: "children-gifts" },
       { title: "Crosses", route: "crosses" },
@@ -220,7 +221,7 @@ export const collections = [
   {
     title: "Clothing",
     route: "clothing",
-    image: mugs,
+    image: clothing,
     subCategory: [
       { title: "Hats", route: "hats" },
       { title: "Israel Jerusalem Bags, Purses, and Wallets", route: "israel-jerusalem-bags-purses-wallets" },
@@ -234,7 +235,7 @@ export const collections = [
   {
     title: "Dead Sea Cosmetics",
     route: "dead-sea-cosmetics",
-    image: hangings,
+    image: dead_sea_cosmetics,
     subCategory: [
       { title: "Dead Sea Creams and Moisturizers", route: "dead-sea-creams-moisturizers" },
       { title: "Dead Sea Mineral Mud and Bath Salt", route: "dead-sea-mineral-mud-bath-salt" },
@@ -245,7 +246,7 @@ export const collections = [
   {
     title: "Holidays",
     route: "holidays",
-    image: souvenirs,
+    image: holidays,
     subCategory: [
       { title: "Christmas", route: "christmas" },
       { title: "Easter", route: "easter" },
@@ -260,7 +261,7 @@ export const collections = [
   {
     title: "Holy Land Gifts",
     route: "holy-land-gifts",
-    image: ceramics,
+    image: holy_land_gifts,
     subCategory: [
       { title: "Bags, Purses, and Wallets", route: "bags-purses-wallets" },
       { title: "Magnets", route: "magnets" },
@@ -297,7 +298,7 @@ export const collections = [
   {
     title: "Jerusalem Jewelry",
     route: "jerusalem-jewelry",
-    image: jewelry,
+    image: jerusalem_jewelry,
     subCategory: [
       { title: "Bracelets", route: "bracelets" },
       { title: "Charm Pendants", route: "charm-pendants" },
@@ -314,7 +315,7 @@ export const collections = [
   {
     title: "Judaica and Messianic Gifts",
     route: "judaica-and-messianic-gifts",
-    image: religious,
+    image: judaica_and_messianic_gifts,
     subCategory: [
       { title: "Mark of the Covenant", route: "mark-of-the-covenant" },
       { title: "Bracelets", route: "bracelets" },
@@ -350,7 +351,7 @@ export const collections = [
   {
     title: "Olive Wood Gifts",
     route: "olive-wood-gifts",
-    image: rings,
+    image: olive_wood_gifts,
     subCategory: [
       { title: "Olive Wood and Poly Resin Wall Plaques", route: "olive-wood-poly-resin-wall-plaques" },
       { title: "Olive Wood Bibles", route: "olive-wood-bibles" },
@@ -367,21 +368,69 @@ export const collections = [
 
 // export const baseUrlUsers = "http://localhost:8080/users";
 // export const baseUrl = "http://localhost:8080";
-export const baseUrlUsers = "https://shrek-back.onrender.com/users";
+
+// export const baseUrlUsers = "https://shrek-back.onrender.com/users";
 export const baseUrl = "https://shrek-back.onrender.com";
+export const baseUrlUsers = baseUrl+"/users";
+
 export const createToken = (login: string, password: string) =>
   `Basic ${window.btoa(`${login}:${password}`)}`;
+// Example of how constants.ts should look (you don't need to apply this block,
+// just ensure your constants.ts file has similar exports)
 
+export interface ProductVariantT {
+  size: string;
+  price: number;
+  sku: string;
+  stock: number;
+}
+
+
+// ... other exports like 'categories'
+// utils/constants.ts
+export const ringSizes = [
+  { size: "5", price: 168.64, sku: "armring-50", stock: 12 },
+  { size: "5.5", price: 168.64, sku: "armring-55", stock: 8 },
+  { size: "6", price: 168.64, sku: "armring-60", stock: 0 },
+  { size: "6.5", price: 168.64, sku: "armring-65", stock: 15 },
+  { size: "7", price: 168.64, sku: "armring-70", stock: 20 },
+  { size: "7.5", price: 168.64, sku: "armring-75", stock: 18 },
+  { size: "8", price: 168.64, sku: "armring-80", stock: 25 },
+  { size: "8.5", price: 168.64, sku: "armring-85", stock: 10 },
+  { size: "9", price: 168.64, sku: "armring-90", stock: 14 },
+  { size: "9.5", price: 168.64, sku: "armring-95", stock: 7 },
+  { size: "10", price: 168.64, sku: "armring-100", stock: 22 },
+  { size: "10.5", price: 168.64, sku: "armring-105", stock: 16 },
+  { size: "11", price: 168.64, sku: "armring-110", stock: 11 },
+  { size: "11.5", price: 168.64, sku: "armring-115", stock: 13 },
+  { size: "12", price: 168.64, sku: "armring-120", stock: 19 },
+  { size: "12.5", price: 168.64, sku: "armring-125", stock: 6 },
+  { size: "13", price: 168.64, sku: "armring-130", stock: 18 },
+  { size: "13.5", price: 168.64, sku: "armring-135", stock: 10 },
+  { size: "14", price: 168.64, sku: "armring-140", stock: 5 },
+];
+export  const clothesSizes = [
+  { value: "S", name: "Small (S)" },
+  { value: "M", name: "Medium (M)" },
+  { value: "L", name: "Large (L)" },
+  { value: "XL", name: "Extra Large (XL)" },
+  { value: "XXL", name: "Extra Extra Large (XXL)" },
+]
 // ====== Admin Info ======
 export const adminInfo = {
   username: "admin",
   firstName: "Jewelry",
   lastName: "Admin",
-  phone: "+9725858585",
+  phone: "+972-54-71-62-237",
   address: "Old City, Jerusalem, Israel",
   city: "Israel",
-  email: "sevan@gmail.com",
+  email: "gejekoushiangifts@gmail.com",
 };
+export const links = [
+  { name: "facebook", route: "https://www.facebook.com/people/Jerusalem-Gejekoushian-Gift-shop-and-Ceramics/100056815105799/?mibextid=wwXIfr&rdid=E2dtaYJ3F0etnwOZ&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F17ASdv2ipL%2F%3Fmibextid%3DwwXIfr" },
+  { name: "instagram", route: "https://www.instagram.com/gejekoushiangifts/?igsh=MTJ6MHExbHBiYmc5dw%3D%3D#" },
+  { name: "youtube", route: "https://www.youtube.com/@gejekoushiangifts" },
+];
 
 // ====== Defaults & Timers ======
 export const defaultPic = "";
@@ -398,8 +447,8 @@ export const allMaterials = [
 export const categories = [
   {
     title: "Ceramics",
-    imageUrl: "https://c7.alamy.com/comp/CXD46G/romanian-traditional-pottery-on-display-for-sale-CXD46G.jpg",
-    route: "ceramics",
+    imageUrl: armenian_ceramics,
+    route: "armenian-ceramics",
     types: [
       { title: "Tiles, name-tiles & coasters", route: "tiles", icon: "fa fa-th-large" },
       { title: "Biblical tiles", route: "biblical-tiles", icon: "fa fa-book" },
@@ -417,8 +466,8 @@ export const categories = [
   },
   {
     title: "Jewelry",
-    imageUrl: "https://e-com-front-nine.vercel.app/assets/jewelry-BLreq-ud.jpg",
-    route: "jewelry",
+    imageUrl: jerusalem_jewelry,
+    route: "jerusalem-jewelry",
     icon: "fa fa-gem",
     types: [
       { title: "Rings", route: "jewelry/rings", icon: "fa fa-ring" },
@@ -428,9 +477,9 @@ export const categories = [
     ],
   },
   {
-    title: "Religious",
-    imageUrl: "https://thumbs.dreamstime.com/b/interesting-collection-bronze-items-silvering-gilding-green-patina-weapons-doorknobs-bells-dishes-production-different-235851117.jpg",
-    route: "religious",
+    title: "Clothing",
+    imageUrl: clothing,
+    route: "clothing",
     types: [
       { title: "Crosses", route: "religious/crosses", icon: "fa fa-cross" },
       { title: "Icons", route: "religious/icons", icon: "fa fa-image" },
@@ -445,9 +494,10 @@ export const categories = [
     ],
   },
   {
-    title: "Souvenirs",
-    imageUrl: "https://cdn.sanity.io/images/hqzqrzyr/production-icelolly/5c799fe6328b06f295de4ecfe5daf032d2c3083e-4000x2667.jpg?rect=0,482,4000,1704&w=1080&h=460&q=70&fit=crop&auto=format&dpr=2",
-    route: "souvenirs",
+    title: "Holidays",
+    imageUrl: holidays,
+
+    route: "holidays",
     types: [
       { title: "Keychains", route: "souvenirs/keychains", icon: "fa fa-key" },
       { title: "Postcards & Magnets", route: "souvenirs/postcards-magnets", icon: "fa fa-paperclip" },

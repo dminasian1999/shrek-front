@@ -121,9 +121,6 @@ input:focus, textarea:focus, select:focus {
     border-color: #cdcfd3;
 }
 
-input, textarea {
-    padding: 10px 18px;
-}
 
 select {
     -webkit-appearance: none;
@@ -299,15 +296,6 @@ input, select, textarea {
     -webkit-border-radius: 0;
 }
 
-input, select {
-    height: 40px;
-    padding: 0 10px;
-}
-
-input[type="checkbox"], input[type="radio"] {
-    width: auto;
-    height: auto;
-}
 
 input[type="checkbox"]:focus, input[type="radio"]:focus {
     outline: 0;

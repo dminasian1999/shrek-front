@@ -83,11 +83,6 @@ const CartPage = () => {
         <h1 className="fw-bold">Shopping Cart</h1>
       </div>
 
-      <div className="alert alert-success text-center">
-        <i className="fa fa-truck me-2" />
-        <strong>Congratulations!</strong> You've got free shipping!
-      </div>
-
       <div className="table-responsive mb-4">
         <table className="table table-hover align-middle text-center">
           <thead className="table-light">

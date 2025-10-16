@@ -1,90 +1,154 @@
-.App {
-  text-align: center;
+/* ===== Orders & Invoice Compact Accents ===== */
 
+/* --- Accordion Items --- */
+.accordion-item {
+    border-radius: 0.6rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.accordion-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+.accordion-button {
+    background-color: #fdfdfd;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #dee2e6;
+}
+.accordion-button:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13,110,253,0.25);
+}
+.accordion-button:not(.collapsed) {
+    background: linear-gradient(90deg,#f8f9fa,#e9ecef);
 }
 
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* --- Table Rows & Cells --- */
+.table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #fbfbfb;
+}
+.table-striped > tbody > tr:hover {
+    background-color: #f1f3f5;
+    transition: background-color 0.15s ease;
+}
+.table th, .table td {
+    vertical-align: middle;
+}
+.table td input {
+    min-width: 60px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-float infinite 3s ease-in-out;
-  }
+/* --- Buttons --- */
+.btn-sm {
+    font-size: 0.78rem;
+    padding: 0.25rem 0.55rem;
+    border-radius: 0.35rem;
+    transition: all 0.15s ease;
+}
+.btn:hover {
+    transform: translateY(-1px);
+}
+.btn-outline-primary:hover { background-color: #e7f1ff; }
+.btn-outline-success:hover { background-color: #e6f4ea; }
+.btn-outline-warning:hover { background-color: #fff8e1; }
+.btn-warning { color: #856404; }
+
+/* --- Status Badges --- */
+.badge {
+    border-radius: 0.85rem;
+    padding: 0.35em 0.65em;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.badge:hover { transform: scale(1.05); }
+
+/* --- Card & Invoice --- */
+.card.shadow-sm {
+    border-radius: 0.75rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card.shadow-sm:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 22px rgba(0,0,0,0.14);
 }
 
-.App-header {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+/* --- Product Images --- */
+.bg-image img {
+    border-radius: 0.5rem;
+    transition: transform 0.2s ease;
+}
+.bg-image img:hover {
+    transform: scale(1.05);
+}
+.bg-light {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: #adb5bd;
 }
 
-.App-link {
-  color: rgb(30, 31, 34);
+/* --- Invoice Details --- */
+.text-muted {
+    font-size: 0.825rem;
+    color: #6c757d !important;
+}
+.text-black { color: #343a40 !important; }
+ul.list-unstyled li {
+    margin-bottom: 0.4rem;
+}
+hr { border-top: 1px solid #dee2e6; }
+
+/* --- Totals Highlight --- */
+p span { font-weight: 500; }
+p span.total-amount {
+    font-size: 1.3rem;
+    color: #495057;
+    font-weight: 700;
 }
 
-@keyframes App-logo-float {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(10px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
+/* --- Tiny Animations --- */
+.fade-in {
+    animation: fadeIn 0.4s ease forwards;
 }
-.main-color {
-  background-color: rgb(189, 216, 145);
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
-.carousel-item > .row > .col {
-  transition: transform 0.5s;
+/* --- Responsive tweaks --- */
+@media (max-width: 768px) {
+    .accordion-button { flex-direction: column; align-items: flex-start; }
+    .accordion-button div { margin-bottom: 0.3rem; }
+    .col-md-2, .col-md-3, .col-md-7 { margin-bottom: 0.5rem; }
 }
 
-.carousel-img-wrapper {
-  height: 400px;
-  overflow: hidden;
+/* --- Tooltips / icons --- */
+.fa { transition: transform 0.15s ease; }
+.fa:hover { transform: scale(1.1); }
+
+/* --- Shadows & subtle elevation --- */
+.shadow-sm-custom { box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important; }
+.shadow-md-custom { box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important; }
+
+/* --- Input focus --- */
+input:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25);
 }
 
-.carousel-img {
-  height: 100%;
-  object-fit: cover;
-}
+/* --- Small spacing tweaks --- */
+.mb-3, .my-3 { margin-bottom: 0.75rem !important; }
+.mb-4, .my-4 { margin-bottom: 1rem !important; }
+.mt-4 { margin-top: 1rem !important; }
+.mb-0 { margin-bottom: 0 !important; }
 
-.order-card {
-  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-  border-radius: 0.5rem;
+/* --- Animated chevrons for accordion --- */
+.accordion-button::after {
+    transition: transform 0.2s ease;
 }
-
-.order-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #f8f9fa;
-  padding: 1rem;
-  border-bottom: 1px solid #dee2e6;
-  border-top-left-radius: 0.5rem;
-  border-top-right-radius: 0.5rem;
-}
-
-.order-status {
-  font-size: 0.9rem;
-  font-weight: 500;
-  padding: 0.4rem 0.75rem;
-  border-radius: 20px;
-}
-
-.card-body .btn {
-  margin-right: 0.5rem;
-}
-
-.table-actions {
-  display: flex;
-  gap: 0.5rem;
+.accordion-button.collapsed::after {
+    transform: rotate(-90deg);
 }

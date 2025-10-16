@@ -29,6 +29,12 @@ import AllOrders from "./htm/AllOrders.tsx"
 import OrderDetails from "./htm/OrderDetails.tsx"
 import CartPage2 from "./htm/CartPage2.tsx"
 import Contact from "./htm/Contact.tsx"
+import SupportCenter from "./htm/SupportCenter.tsx"
+import OrdersAndReturns from "./htm/OrdersAndReturns.tsx"
+import TermsAndConditions from "./htm/TermsAndConditions.tsx"
+import PrivacyPolicy from "./htm/PrivacyPolicy.tsx"
+import ProductPage3 from "./htm/ProductPage3.tsx"
+import AllOrders2 from "./htm/AllOrders2.tsx"
 
 const Main = () => {
   const token = useAppSelector(state => state.token)
@@ -42,33 +48,32 @@ const Main = () => {
         ))}
         {/*<Route path="/products" element={<Products />} />*/}
         <Route path="/cart" element={<CartPage />} />
-        <Route path="/order/:orderId" element={<OrderDetails />} />
+        <Route path="/orders/:orderId" element={<OrderDetails />} />
 
         <Route path="/shop" element={<Shop />} />
         <Route path="/collections" element={<Collections />} />
         <Route path="/shop/:category" element={<Shop />} />
         <Route path="/category/:id/:type" element={<Shop />} />
-        <Route path="/product/:id" element={<ProductPage />} />
+        <Route path="/product/:id" element={<ProductPage3 />} />
 
         <Route path="/product/edit/:id" element={<EditProduct />} />
         <Route path="/checkout" element={<CheckOut />} />
         <Route path="/about" element={<About />} />
-        <Route path="/wishlist" element={<WishList />} />
         <Route path="/account" element={<Account />} />
         <Route path={"/login"} element={token ? <Navigate to={"/"} /> : <Login />}/>
         <Route path={"/register"} element={token ? <Navigate to={"/"} /> : <Register />}/>
         <Route path={"/forgot-password"} element={token ? <Navigate to={"/"} /> : <ForgotPassword />}/>
         <Route path={"/reset-password/:token"} element={token ? <Navigate to={"/"} /> : <ResetPassword />}/>
-        <Route path={"/sells"} element={token ? <Sells /> : <Guest />} />
         <Route path={"/new"} element={token ? <AddProduct /> : <Guest />} />
 
-        <Route path="/receipts" element={<ReceiptsList />} />
-        {/*<Route path="/contact-us" element={<ContactUs />} />*/}
         <Route path="/contact" element={<Contact/>} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/reports" element={<Reports />} />
-        <Route path="/all-orders" element={<AllOrders />} />
+        <Route path="/all-orders" element={<AllOrders2 />} />
+        <Route path="/support-center" element={<SupportCenter />} />
+        <Route path="/orders-and-returns" element={<OrdersAndReturns />} />
+        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       </Routes>
     </div>
   )

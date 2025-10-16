@@ -1,8 +1,6 @@
 import React from "react"
 import { bgHero } from "../../utils/constants.ts"
-import MapLocation from "./MapLocation1.tsx"
-import MapLocation1 from "./MapLocation1.tsx"
-import MapLocation2 from "./MapLocation2.tsx"
+import Contact from "./Contact.tsx"
 
 const About = () => {
   return (
@@ -25,7 +23,10 @@ const About = () => {
               <div className="rte-setting">
                 <p>
                   We are proud to have two shops in the Old City:
-                  <p className={'fw-bold'}> • Shop 1: Next to Zion Gate, No. 15</p>
+                  <p className={"fw-bold"}>
+                    {" "}
+                    • Shop 1: Next to Zion Gate, No. 15
+                  </p>
                   <p className="fw-bold">
                     • Shop 2: On Habad Street, No. 84, near the Jewish Quarter
                   </p>
@@ -74,110 +75,8 @@ const About = () => {
             <p></p>
           </div>
         </div>
-
         <div className="row">
-          <div className="col-12 col-sm-12 col-md-6 col-lg-6 mb-4">
-            <MapLocation1 />
-          </div>
-          <div className="col-12 col-sm-12 col-md-6 col-lg-6 mb-4">
-            <MapLocation2 />
-          </div>
-          <div className="col-12 col-sm-12 col-md-6 col-lg-6">
-            <h2 className="h2">Contact Us</h2>
-            <ul className="addressFooter">
-              <li>
-                <i className="icon anm anm-map-marker-al"></i>
-                <p>55 Gallaxy Enque, 2568 steet, 23568 NY</p>
-              </li>
-              <li className="phone">
-                <i className="icon anm anm-phone-s"></i>
-                <p>(440) 000 000 0000</p>
-              </li>
-              <li className="email">
-                <i className="icon anm anm-envelope-l"></i>
-                <p>sales@yousite.com</p>
-              </li>
-            </ul>
-            <hr />
-            <ul className="list--inline site-footer__social-icons social-icons">
-              <li>
-                <a
-                  className="social-icons__link"
-                  href="#"
-                  target="_blank"
-                  title="Belle Multipurpose Bootstrap 4 Template on Facebook"
-                >
-                  <i className="icon icon-facebook"></i>
-                </a>
-              </li>
-              <li>
-                <a
-                  className="social-icons__link"
-                  href="#"
-                  target="_blank"
-                  title="Belle Multipurpose Bootstrap 4 Template on Twitter"
-                >
-                  <i className="icon icon-twitter"></i>
-                  <span className="icon__fallback-text">Twitter</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  className="social-icons__link"
-                  href="#"
-                  target="_blank"
-                  title="Belle Multipurpose Bootstrap 4 Template on Pinterest"
-                >
-                  <i className="icon icon-pinterest"></i>{" "}
-                  <span className="icon__fallback-text">Pinterest</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  className="social-icons__link"
-                  href="#"
-                  target="_blank"
-                  title="Belle Multipurpose Bootstrap 4 Template on Instagram"
-                >
-                  <i className="icon icon-instagram"></i>{" "}
-                  <span className="icon__fallback-text">Instagram</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  className="social-icons__link"
-                  href="#"
-                  target="_blank"
-                  title="Belle Multipurpose Bootstrap 4 Template on Tumblr"
-                >
-                  <i className="icon icon-tumblr-alt"></i>
-                  <span className="icon__fallback-text">Tumblr</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  className="social-icons__link"
-                  href="#"
-                  target="_blank"
-                  title="Belle Multipurpose Bootstrap 4 Template on YouTube"
-                >
-                  <i className="icon icon-youtube"></i>
-                  <span className="icon__fallback-text">YouTube</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  className="social-icons__link"
-                  href="#"
-                  target="_blank"
-                  title="Belle Multipurpose Bootstrap 4 Template on Vimeo"
-                >
-                  <i className="icon icon-vimeo-alt"></i>
-                  <span className="icon__fallback-text">Vimeo</span>
-                </a>
-              </li>
-            </ul>
-          </div>
+          <Contact />
         </div>
       </div>
     </div>

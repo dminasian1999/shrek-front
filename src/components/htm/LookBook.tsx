@@ -20,7 +20,7 @@ const LookBook = () => {
                 alt="..."
               />
               <a
-                href={`/category/${c.route}`}
+                href={`/shop/${c.route}`}
                 className="card-img-overlay d-flex  justify-content-center align-items-center"
               >
                 <div className="btn fs-1">{c.title}</div>

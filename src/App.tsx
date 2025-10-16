@@ -10,6 +10,7 @@ import { useEffect, useState } from "react"
 import { ProductsContext } from "./utils/context.ts"
 import Footer from "./components/htm/Footer.tsx"
 import { useLocation } from "react-router-dom"
+import ToastProvider from "./components/ToastProvider.tsx"
 
 const App = () => {
   // const [selectedId, setSelectedId] = useState<string>(
@@ -60,7 +61,6 @@ const App = () => {
   // }, [location.pathname])
   return (
     <div className="container-fluid row m-0 p-0">
-
     <ProductsContext.Provider
       value={{
         products,
