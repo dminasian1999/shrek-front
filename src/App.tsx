@@ -6,11 +6,10 @@ import Header from "./components/htm/Header.tsx"
 import Main from "./components/Main.tsx"
 import { baseUrl } from "./utils/constants.ts"
 import { ProductT, ReceiptT } from "./utils/types.ts"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { ProductsContext } from "./utils/context.ts"
 import Footer from "./components/htm/Footer.tsx"
 import { useLocation } from "react-router-dom"
-import ToastProvider from "./components/ToastProvider.tsx"
 
 const App = () => {
   // const [selectedId, setSelectedId] = useState<string>(
@@ -61,24 +60,25 @@ const App = () => {
   // }, [location.pathname])
   return (
     <div className="container-fluid row m-0 p-0">
-    <ProductsContext.Provider
-      value={{
-        products,
-        setProducts,
-        receipts,
-        setReceipts,
-        language,
-        setLanguage,
-      }}
-    >
-          <TopHeader />
-          <Header />
-          <Main />
-          <Footer />
-          {/*<QuickViewPopup />*/}
 
-    </ProductsContext.Provider>
-</div>
+      <ProductsContext.Provider
+        value={{
+          products,
+          setProducts,
+          receipts,
+          setReceipts,
+          language,
+          setLanguage,
+        }}
+      >
+        <TopHeader />
+        <Header />
+        <Main />
+        <Footer />
+        {/*<QuickViewPopup />*/}
+
+      </ProductsContext.Provider>
+    </div>
   )
 }
 
