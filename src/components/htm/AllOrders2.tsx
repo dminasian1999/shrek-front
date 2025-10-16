@@ -215,7 +215,7 @@ export default function AllOrders2() {
                 <button
                   className="accordion-button d-flex justify-content-between align-items-center"
                   type="button"
-                  aria-expanded={!!openAccordions[order.orderId]}
+                  aria-expanded={openAccordions[order.orderId]}
                   onClick={() => toggleAccordion(order.orderId!)}
                 >
                   <div>

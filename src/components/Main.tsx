@@ -3,13 +3,9 @@ import { useAppSelector } from "../app/hooks.ts"
 import Account from "./htm/Account.tsx"
 import Guest from "./Guest"
 import AddProduct from "./htm/AddProduct.tsx"
-import ReceiptsList from "./ReceiptsList.tsx"
-import ContactUs from "./ContactUs.tsx"
 import ForgotPassword from "./ForgotPassword.tsx"
 import FAQ from "./FAQ.tsx"
 import Signup from "./Signup.tsx"
-import Reports from "./Reports.tsx"
-import Sells from "./Sells.tsx"
 import { navItems } from "../utils/constants.ts"
 import Home from "./pages/Home.tsx"
 import Login from "./htm/Login.tsx"
@@ -17,7 +13,6 @@ import Shop from "./htm/Shop.tsx"
 import ProductPage from "./htm/ProductPage.tsx"
 import CheckOut from "./htm/CheckOut.tsx"
 import About from "./htm/About.tsx"
-import WishList from "./htm/WishList.tsx"
 import CartPage from "./htm/CartPage.tsx"
 import EditProduct from "./htm/EditProduct.tsx"
 import { useContext } from "react"
@@ -25,15 +20,12 @@ import { ProductsContext } from "../utils/context.ts"
 import Register from "./htm/Register.tsx"
 import Collections from "./htm/Collections.tsx"
 import ResetPassword from "./ResetPassword.tsx"
-import AllOrders from "./htm/AllOrders.tsx"
 import OrderDetails from "./htm/OrderDetails.tsx"
-import CartPage2 from "./htm/CartPage2.tsx"
 import Contact from "./htm/Contact.tsx"
 import SupportCenter from "./htm/SupportCenter.tsx"
 import OrdersAndReturns from "./htm/OrdersAndReturns.tsx"
 import TermsAndConditions from "./htm/TermsAndConditions.tsx"
 import PrivacyPolicy from "./htm/PrivacyPolicy.tsx"
-import ProductPage3 from "./htm/ProductPage3.tsx"
 import AllOrders2 from "./htm/AllOrders2.tsx"
 
 const Main = () => {
@@ -54,7 +46,7 @@ const Main = () => {
         <Route path="/collections" element={<Collections />} />
         <Route path="/shop/:category" element={<Shop />} />
         <Route path="/category/:id/:type" element={<Shop />} />
-        <Route path="/product/:id" element={<ProductPage3 />} />
+        <Route path="/product/:id" element={<ProductPage />} />
 
         <Route path="/product/edit/:id" element={<EditProduct />} />
         <Route path="/checkout" element={<CheckOut />} />

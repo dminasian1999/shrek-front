@@ -1,115 +1,92 @@
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { ProductT } from "../../utils/types.ts"
 import { getPostById } from "../../features/api/postActions.tsx"
-import { addCartList } from "../../features/api/accountActions.ts"
 import { useAppDispatch } from "../../app/hooks.ts"
-import { ringSizes } from "../../utils/constants.ts"
+import { categories, ringSizes } from "../../utils/constants.ts"
 import ProductPageImg from "./ProductPageImg.tsx"
+import ProductPageDetails from "./ProductPageDetails.tsx"
+import { addCartList } from "../../features/api/accountActions.ts"
 
-const ProductPage: React.FC = () => {
+const ProductPage = () => {
   const { id = "" } = useParams()
   const dispatch = useAppDispatch()
-
-  const [product, setProduct] = useState<ProductT | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  // image state
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const selectedImage = product?.imageUrls?.[currentIndex] ?? null
-
-  // size/modal state for rings
   const [selectedSize, setSelectedSize] = useState<string>("")
-  const [isSizeModalOpen, setIsSizeModalOpen] = useState(false)
+  const [product, setProduct] = useState({} as ProductT)
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [isZoomOpen, setIsZoomOpen] = useState(false)
+  const [currentIndex, setCurrentIndex] = useState(0)
 
   useEffect(() => {
-    let mounted = true
-    setLoading(true)
-    getPostById(id)
-      .then(data => {
-        if (!mounted) return
+    const fetchProduct = async () => {
+      setLoading(true)
+      try {
+        const data = await getPostById(id)
         setProduct(data)
+        setSelectedImage(data.imageUrls?.[0] || null)
         setCurrentIndex(0)
-        setError(null)
-      })
-      .catch(() => {
-        if (mounted) setError("Error loading product.")
-      })
-      .finally(() => mounted && setLoading(false))
-
-    return () => {
-      mounted = false
+        setErrorMessage(null)
+      } catch {
+        setErrorMessage("Error loading product.")
+      } finally {
+        setLoading(false)
+      }
     }
+    fetchProduct()
   }, [id])
 
-  if (loading) return <div className="text-center mt-5">Loading...</div>
-  if (!product)
+  // Keyboard navigation for zoom
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (!isZoomOpen) return
+      if (e.key === "Escape") setIsZoomOpen(false)
+      if (e.key === "ArrowRight") nextImage()
+      if (e.key === "ArrowLeft") prevImage()
+    },
+    [isZoomOpen],
+  )
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [handleKeyDown])
+
+  if (loading) {
     return (
-      <div className="text-center mt-5 text-danger">
-        {error ?? "Product not found."}
-      </div>
+      <main className="d-flex flex-column align-items-center justify-content-center vh-100 bg-light text-center">
+        <div className="spinner-border text-primary" style={{ width: "4rem", height: "4rem" }} />
+        <p className="mt-3 fs-5 text-muted">Loading...</p>
+      </main>
     )
+  }
 
-  // move to next / prev image (wrap)
+  if (!product) {
+    return (
+      <main className="container text-center mt-5 text-danger">
+        <h4>{errorMessage || "Product not found."}</h4>
+      </main>
+    )
+  }
+
+  const categoryTitle =
+    categories.find(c => c.route === product.category)?.title ||
+    product.category ||
+    "-"
+
   const nextImage = () => {
-    if (!product?.imageUrls?.length) return
-    setCurrentIndex(i => (i + 1) % product.imageUrls.length)
+    if (!product?.imageUrls) return
+    const next = (currentIndex + 1) % product.imageUrls.length
+    setCurrentIndex(next)
+    setSelectedImage(product.imageUrls[next])
   }
+
   const prevImage = () => {
-    if (!product?.imageUrls?.length) return
-    setCurrentIndex(
-      i => (i - 1 + product.imageUrls.length) % product.imageUrls.length,
-    )
-  }
-
-  // when user clicks main 'Add to cart' button
-  const handleAddToCartRequest = () => {
-    if (product.subCategory === "rings") {
-      setIsSizeModalOpen(true)
-      return
-    }
-    // non-ring: add directly
-    dispatch(
-      addCartList({
-        cartItemId: product.id ?? "",
-        product,
-        quantity: 1,
-      }),
-    )
-  }
-
-  // user confirms size in modal -> add to cart (always qty = 1)
-  const handleAddToCartConfirm = () => {
-    if (!selectedSize) {
-      setError("Please select a size.")
-      return
-    }
-
-    // try find sku from ringSizes, else undefined
-    const found = ringSizes.find(r => r.size === selectedSize)
-    const sku = found?.sku
-
-    // keep product mostly as-is but mark chosen size quantity = 1 if present
-    const newProduct = {
-      ...product,
-      sizeQuantities:
-        product.sizeQuantities?.map(sq =>
-          sq.size === selectedSize ? { ...sq, quantity: 1 } : sq,
-        ) ?? [],
-      sku,
-    }
-
-    dispatch(
-      addCartList({
-        cartItemId: product.id ?? "",
-        product: newProduct,
-        quantity: 1,
-      }),
-    )
-    setIsSizeModalOpen(false)
-    setSelectedSize("")
-    setError(null)
+    if (!product?.imageUrls) return
+    const prev = (currentIndex - 1 + product.imageUrls.length) % product.imageUrls.length
+    setCurrentIndex(prev)
+    setSelectedImage(product.imageUrls[prev])
   }
 
   return (
@@ -126,40 +103,40 @@ const ProductPage: React.FC = () => {
             currentIndex={currentIndex}
             setCurrentIndex={setCurrentIndex}
             setIsZoomOpen={() => {}}
-            // keep next/prev available if the child needs them
           />
         </div>
 
         <div className="col-md-6 card shadow-sm border-0">
-          {/*<ProductPageDetails product={product} onAddToCart={handleAddToCartRequest} />*/}
+          <ProductPageDetails product={product} selectedSize={selectedSize} />
         </div>
       </div>
 
-      {/* Size modal for rings */}
-      {product.subCategory === "rings" && isSizeModalOpen && (
-        <div
-          className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-flex align-items-center justify-content-center"
-          style={{ zIndex: 2000 }}
-        >
-          <div
-            className="modal-content bg-white p-4 rounded shadow-lg"
-            style={{ maxWidth: 450 }}
-          >
-            <div className="modal-header border-bottom-0">
-              <h5 className="modal-title">Select Size</h5>
-              <button
-                type="button"
-                className="btn-close"
-                onClick={() => setIsSizeModalOpen(false)}
-              />
+      {/* Show size modal ONLY if subCategory === "rings" */}
+      {/*{product.subCategory === "rings" && (*/}
+      <div
+        className="modal fade"
+        id="staticBackdrop"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex={-1}
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="staticBackdropLabel">
+                {product.subCategory === "rings" ? "Select Size" : "Add to Cart ?"}
+              </h1>
+
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
             </div>
 
             <div className="modal-body">
               <div className="d-flex flex-wrap gap-2 mb-3">
                 {ringSizes
-                  .filter(r =>
-                    product.sizeQuantities?.some(sq => sq.size === r.size),
-                  )
+                  .filter(r => product.sizeQuantities?.some(sq => sq.size === r.size))
                   .map(r => (
                     <button
                       key={r.size}
@@ -174,65 +151,67 @@ const ProductPage: React.FC = () => {
                       {r.size}
                     </button>
                   ))}
-
-                <button
-                  className={`btn flex-fill text-center rounded-3 ${
-                    selectedSize === "Custom"
-                      ? "bg-primary text-white"
-                      : "btn-outline-secondary"
-                  }`}
-                  style={{ minWidth: 70 }}
-                  onClick={() => setSelectedSize("Custom")}
-                >
-                  Custom
-                </button>
               </div>
-
-              {error && <div className="text-danger mt-2">{error}</div>}
             </div>
 
-            <div className="modal-footer d-flex justify-content-between border-top-0">
-              <button
-                className="btn btn-secondary"
-                onClick={() => setIsSizeModalOpen(false)}
-              >
-                Cancel
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                Close
               </button>
               <button
-                className="btn btn-primary"
-                onClick={handleAddToCartConfirm}
-              >
-                Add to Cart
+                onClick={() =>
+                  dispatch(
+                    addCartList({
+                      cartItemId: product.id!+selectedSize,
+                      product,
+                      selectedSize,
+
+                      quantity: 1,
+                    }),
+                  )
+                }
+                type="button" className="btn btn-primary" data-bs-dismiss="modal">
+                Continue
               </button>
             </div>
           </div>
         </div>
-      )}
 
-      {/* Simple zoom overlay (uses current selectedImage) */}
-      {selectedImage && (
+      </div>
+
+      {/* Zoom Modal */}
+      {isZoomOpen && (
         <div
-          className="position-fixed top-0 start-0 w-100 h-100 d-none"
-          style={{ zIndex: 2001 }}
+          className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-90 d-flex align-items-center justify-content-center"
+          style={{ zIndex: 2000 }}
         >
-          {/* if you want a zoom overlay, re-enable and wire the isZoomOpen flag */}
-          <button className="btn btn-light position-absolute top-0 end-0 m-3">
+          <button
+            className="btn btn-light position-absolute top-0 end-0 m-3"
+            onClick={() => setIsZoomOpen(false)}
+          >
             ✕
           </button>
           <button
             className="btn btn-outline-light position-absolute start-0 m-3 fs-3"
+            style={{ height: 60, width: 60 }}
             onClick={prevImage}
           >
             ‹
           </button>
           <img
-            src={selectedImage}
-            alt="Zoomed"
+            src={product.imageUrls?.[currentIndex] || ""}
+            alt="Zoomed Product"
             className="img-fluid"
-            style={{ maxHeight: "90%", maxWidth: "90%" }}
+            style={{
+              maxHeight: "90%",
+              maxWidth: "90%",
+              objectFit: "contain",
+              transition: "opacity 0.3s ease-in-out",
+            }}
           />
           <button
             className="btn btn-outline-light position-absolute end-0 m-3 fs-3"
+            style={{ height: 60, width: 60 }}
             onClick={nextImage}
           >
             ›

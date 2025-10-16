@@ -1,5 +1,6 @@
 import React from "react"
 import { ringSizes } from "../utils/constants.ts"
+import { ProductT } from "../utils/types.ts"
 type Props = {
   isOpen: boolean
   onClose: () => void
@@ -20,7 +21,7 @@ const SizeModal: React.FC<Props> = ({ isOpen, onClose, product, selectedSize, se
     <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style={{ zIndex: 2002 }}>
       <div className="bg-white p-4 rounded shadow" style={{ width: 520 }}>
         <div className="d-flex justify-content-between align-items-center mb-3">
-          <h5>Select size for {product.title}</h5>
+          <h5>Select size for {product.name}</h5>
           <button className="btn btn-sm btn-light" onClick={onClose}>✕</button>
         </div>
 
