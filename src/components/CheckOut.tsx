@@ -100,7 +100,7 @@ const CheckOut = () => {
     })();
   }, [dispatch, addr.country, totalWeight]);
 
-  const grandTotal = subtotal + shippingPrice;
+  const grandTotal = subtotal + (shippingPrice/3.5);
 
   const inputTypeFor = (field: keyof AddressT) =>
     field === "phone" ? "tel" : "text";
@@ -168,7 +168,7 @@ const CheckOut = () => {
 
           <div className="d-flex justify-content-between border-bottom py-2">
             <span>Shipping</span>
-            <span>{showDash ? "—" : fmt(shippingPrice)}</span>
+            <span>{showDash ? "—" : (fmt(shippingPrice /3.5))}</span>
           </div>
 
           <div className="d-flex justify-content-between border-bottom py-2">

@@ -41,7 +41,7 @@ export default function OrderDetails() {
 
   const subTotal = order.orderItems?.reduce((s, it) => s + (it.quantity ?? 0) * (it.unitPrice ?? 0), 0) || 0;
   const shipping = (profile?.cart?.shippingPrice as number) ?? 0;
-  const total = subTotal + shipping;
+  const total = subTotal + (shipping/3.5);
   const created = order.dateCreated ? new Date(order.dateCreated ).toLocaleString() : "-";
 
   return (
@@ -116,7 +116,7 @@ export default function OrderDetails() {
             <div className="col-md-4">
               <ul className="list-unstyled">
                 <li className="d-flex justify-content-between small text-muted mb-2"><span>Subtotal</span><span>${subTotal.toFixed(2)}</span></li>
-                <li className="d-flex justify-content-between small text-muted mb-2"><span>Shipping</span><span>${shipping.toFixed(2)}</span></li>
+                <li className="d-flex justify-content-between small text-muted mb-2"><span>Shipping</span><span>${(shipping/3.5).toFixed(2)}</span></li>
                 <li className="d-flex justify-content-between fw-bold fs-5"><span>Total</span><span>${total.toFixed(2)}</span></li>
               </ul>
             </div>

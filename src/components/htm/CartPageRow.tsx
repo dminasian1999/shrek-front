@@ -63,6 +63,8 @@ const CartPageRow = ({ cardItem }: { cardItem: CartItem }) => {
       <td>
         <strong>{product.name}</strong>
         <div className="text-muted small">{product.category}</div>
+
+        <div className="text-muted small">{product.sizeQuantities.find(sq => sq.size === cardItem.selectedSize)?.size}</div>
       </td>
       <td>${product.price.toFixed(2)}</td>
       <td>
