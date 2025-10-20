@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../app/hooks.ts";
-import { checkOut, estimateShipping } from "../features/api/accountActions.ts";
-import PayPalCheckout from "../paymant/PayPalCheckout.tsx";
-import { AddressT, OrderT } from "../utils/types.ts";
-import { countries } from "../utils/constants.ts";
+import React, { useEffect, useRef, useState } from "react"
+import { useAppDispatch, useAppSelector } from "../app/hooks.ts"
+import { checkOut, estimateShipping } from "../features/api/accountActions.ts"
+import { AddressT, OrderT } from "../utils/types.ts"
+import { countries } from "../utils/constants.ts"
+import PayPalCheckout2 from "../paymant/PayPalCheckout2.tsx"
 
 const LABELS: Record<keyof AddressT, string> = {
   fullName: "Full Name",
@@ -13,28 +13,28 @@ const LABELS: Record<keyof AddressT, string> = {
   zipCode: "Postal Code",
   country: "Country",
   phone: "Phone Number",
-};
+}
 
-const fmt = (n: number) => `$${n.toFixed(2)}`;
+const fmt = (n: number) => `$${n.toFixed(2)}`
 
 const CheckOut = () => {
-  const dispatch = useAppDispatch();
-  const profile = useAppSelector((s) => s.user.profile);
-  const cartItems = profile?.cart?.items ?? [];
+  const dispatch = useAppDispatch()
+  const profile = useAppSelector(s => s.user.profile)
+  const cartItems = profile?.cart?.items ?? []
 
   // Derived (compute directly on render)
   const subtotal = cartItems.reduce(
     (sum: number, t: any) => sum + (t.product?.price ?? 0) * (t.quantity ?? 0),
-    0
-  );
+    0,
+  )
   const totalWeight = cartItems.reduce(
     (sum: number, t: any) => sum + (t.product?.weight ?? 0) * (t.quantity ?? 0),
-    0
-  );
+    0,
+  )
 
-  const [shippingPrice, setShippingPrice] = useState(0);
-  const [isEstimating, setIsEstimating] = useState(false);
-  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [shippingPrice, setShippingPrice] = useState(0)
+  const [isEstimating, setIsEstimating] = useState(false)
+  const [termsAccepted, setTermsAccepted] = useState(false)
 
   // Address (prefill from profile once available)
   const [addr, setAddr] = useState<AddressT>({
@@ -45,10 +45,10 @@ const CheckOut = () => {
     zipCode: "",
     country: "",
     phone: "",
-  });
+  })
 
   useEffect(() => {
-    const a = profile?.address;
+    const a = profile?.address
     if (a) {
       setAddr({
         fullName: a.fullName ?? "",
@@ -58,72 +58,72 @@ const CheckOut = () => {
         zipCode: a.zipCode ?? "",
         country: a.country ?? "",
         phone: a.phone ?? "",
-      });
+      })
     }
-  }, [profile?.address]);
+  }, [profile?.address])
 
   // Prevent stale async updates: only the latest request can set state
-  const reqIdRef = useRef(0);
+  const reqIdRef = useRef(0)
 
   useEffect(() => {
-    const hasInputs = !!addr.country && totalWeight > 0;
+    const hasInputs = !!addr.country && totalWeight > 0
 
     if (!hasInputs) {
       // No estimation needed: show dash in UI and reset price to 0
-      setIsEstimating(false);
-      setShippingPrice(0);
-      return;
+      setIsEstimating(false)
+      setShippingPrice(0)
+      return
     }
 
-    const id = ++reqIdRef.current; // mark this as the latest request
-    setIsEstimating(true);
+    const id = ++reqIdRef.current // mark this as the latest request
+    setIsEstimating(true)
 
-    (async () => {
+    ;(async () => {
       try {
         const price = await dispatch(
-          estimateShipping({ country: addr.country, weight: totalWeight })
-        ).unwrap();
+          estimateShipping({ country: addr.country, weight: totalWeight }),
+        ).unwrap()
 
         // Only update if this is still the latest request
         if (reqIdRef.current === id) {
-          setShippingPrice(Number(price) || 0);
+          setShippingPrice(Number(price) || 0)
         }
       } catch {
         if (reqIdRef.current === id) {
-          setShippingPrice(0);
+          setShippingPrice(0)
         }
       } finally {
         if (reqIdRef.current === id) {
-          setIsEstimating(false);
+          setIsEstimating(false)
         }
       }
-    })();
-  }, [dispatch, addr.country, totalWeight]);
+    })()
+  }, [dispatch, addr.country, totalWeight])
 
-  const grandTotal = subtotal + (shippingPrice/3.5);
+  const grandTotal = subtotal + shippingPrice / 3.5
 
   const inputTypeFor = (field: keyof AddressT) =>
-    field === "phone" ? "tel" : "text";
+    field === "phone" ? "tel" : "text"
 
   const onAddrChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    const { name, value } = e.target;
-    setAddr((p) => ({ ...p, [name]: value }));
-  };
+    const { name, value } = e.target
+    setAddr(p => ({ ...p, [name]: value }))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     if (!termsAccepted) {
-      alert("Please accept the terms to proceed.");
-      return;
+      alert("Please accept the terms to proceed.")
+      return
     }
 
     const orderItems = (profile?.cart?.items ?? []).map((item: any) => ({
       productId: item.product.id,
       quantity: item.quantity,
       unitPrice: item.product.price,
-    }));
+    }))
 
     const orderPayload: OrderT = {
       userId: profile.login,
@@ -133,26 +133,26 @@ const CheckOut = () => {
       // shippingPrice,
       // totalAmount: grandTotal,
       // totalWeight,
-    };
+    }
 
     try {
-      const resultAction = await dispatch(checkOut(orderPayload));
+      const resultAction = await dispatch(checkOut(orderPayload))
       if (checkOut.fulfilled.match(resultAction)) {
-        alert("Your order(s) have been successfully placed!");
+        alert("Your order(s) have been successfully placed!")
         // TODO: clear cart or navigate
       } else {
-        throw new Error("Order creation failed.");
+        throw new Error("Order creation failed.")
       }
     } catch (error) {
       alert(
         error instanceof Error
           ? error.message
-          : "There was a problem placing your order."
-      );
+          : "There was a problem placing your order.",
+      )
     }
-  };
+  }
 
-  const showDash = !addr.country || totalWeight <= 0 || isEstimating;
+  const showDash = !addr.country || totalWeight <= 0 || isEstimating
 
   return (
     <div className="row g-5">
@@ -168,7 +168,7 @@ const CheckOut = () => {
 
           <div className="d-flex justify-content-between border-bottom py-2">
             <span>Shipping</span>
-            <span>{showDash ? "—" : (fmt(shippingPrice /3.5))}</span>
+            <span>{showDash ? "—" : fmt(shippingPrice / 3.5)}</span>
           </div>
 
           <div className="d-flex justify-content-between border-bottom py-2">
@@ -188,7 +188,7 @@ const CheckOut = () => {
               id="terms"
               required
               checked={termsAccepted}
-              onChange={(e) => setTermsAccepted(e.target.checked)}
+              onChange={e => setTermsAccepted(e.target.checked)}
             />
             <label className="form-check-label" htmlFor="terms">
               I agree with the terms and conditions
@@ -199,7 +199,7 @@ const CheckOut = () => {
 
       {/* Address + Payment */}
       <div className="col-md-7 col-lg-8">
-        <form className="needs-validation"  onSubmit={handleSubmit}>
+        <form className="needs-validation" onSubmit={handleSubmit}>
           <h5 className="mb-3">Billing & Shipping Details</h5>
 
           {/*<div className="row">*/}
@@ -309,7 +309,7 @@ const CheckOut = () => {
                 autoComplete="country-name"
               >
                 <option value="">Select country</option>
-                {countries.map((c) => (
+                {countries.map(c => (
                   <option key={c} value={c}>
                     {c}
                   </option>
@@ -338,8 +338,8 @@ const CheckOut = () => {
           </div>
 
           <div className="row g-3 mt-2">
-            {/* PayPal uses grand total */}
-            <PayPalCheckout amount={grandTotal.toFixed(2)} />
+            {/*<PayPalCheckout amount={grandTotal.toFixed(2)} />*/}
+
             <button
               type="submit"
               className="btn btn-primary w-100 mt-3"
@@ -348,11 +348,13 @@ const CheckOut = () => {
               Proceed To Checkout
             </button>
           </div>
-
+          <div className="row g-3 mt-2">
+            <PayPalCheckout2 amount={grandTotal.toFixed(2)} />
+          </div>
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CheckOut;
+export default CheckOut

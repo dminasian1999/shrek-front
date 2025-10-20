@@ -26,7 +26,6 @@ import SupportCenter from "./htm/SupportCenter.tsx"
 import OrdersAndReturns from "./htm/OrdersAndReturns.tsx"
 import TermsAndConditions from "./htm/TermsAndConditions.tsx"
 import PrivacyPolicy from "./htm/PrivacyPolicy.tsx"
-import AllOrders2 from "./htm/AllOrders2.tsx"
 import AllOrders from "./htm/AllOrders.tsx"
 
 const Main = () => {
