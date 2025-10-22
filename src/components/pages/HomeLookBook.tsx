@@ -2,7 +2,7 @@ import React, { useContext } from "react"
 import { ProductsContext } from "../../utils/context.ts"
 import { categories } from "../../utils/constants.ts"
 
-const LookBook = () => {
+const HomeLookBook = () => {
   const { language } = useContext(ProductsContext)
 
   return (
@@ -34,4 +34,4 @@ const LookBook = () => {
   )
 }
 
-export default LookBook
+export default HomeLookBook

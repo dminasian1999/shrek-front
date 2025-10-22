@@ -350,6 +350,7 @@ const CheckOut = () => {
           </div>
           <div className="row g-3 mt-2">
             <PayPalCheckout2 amount={grandTotal.toFixed(2)} />
+
           </div>
         </form>
       </div>

@@ -20,7 +20,7 @@ const slides = [
 
 ];
 
-const Slideshow = () => {
+const HomeSlideshow = () => {
   return (
     <div id="carouselExampleFade" className="carousel slide carousel-fade">
       <div className="carousel-inner">
@@ -67,4 +67,4 @@ const Slideshow = () => {
   );
 };
 
-export default Slideshow;
+export default HomeSlideshow;

@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 
 const MapLocation1 = () => {
   return (
@@ -11,14 +11,10 @@ const MapLocation1 = () => {
         loading="lazy"
         allowFullScreen
         referrerPolicy="no-referrer-when-downgrade"
-
-
-      src="https://www.google.com/maps?q= 31.773009,35.230216&z=15&output=embed"
+        src="https://www.google.com/maps?q= 31.773009,35.230216&z=15&output=embed"
       />
     </div>
-  )
+  );
+};
 
-
-}
-
-export default MapLocation1
+export default MapLocation1;

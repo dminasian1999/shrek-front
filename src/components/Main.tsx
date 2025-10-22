@@ -9,24 +9,25 @@ import Signup from "./Signup.tsx"
 import { navItems } from "../utils/constants.ts"
 import Home from "./pages/Home.tsx"
 import Login from "./htm/Login.tsx"
-import Shop from "./htm/Shop.tsx"
+import Shop from "./pages/Shop.tsx"
 import ProductPage from "./htm/ProductPage.tsx"
 import CheckOut from "./htm/CheckOut.tsx"
-import About from "./htm/About.tsx"
+import About from "./pages/About.tsx"
 import CartPage from "./htm/CartPage.tsx"
 import EditProduct from "./htm/EditProduct.tsx"
 import { useContext } from "react"
 import { ProductsContext } from "../utils/context.ts"
 import Register from "./htm/Register.tsx"
-import Collections from "./htm/Collections.tsx"
+import Collections from "./pages/Collections.tsx"
 import ResetPassword from "./ResetPassword.tsx"
 import OrderDetails from "./htm/OrderDetails.tsx"
-import Contact from "./htm/Contact.tsx"
+import Contact from "./pages/Contact.tsx"
 import SupportCenter from "./htm/SupportCenter.tsx"
 import OrdersAndReturns from "./htm/OrdersAndReturns.tsx"
 import TermsAndConditions from "./htm/TermsAndConditions.tsx"
 import PrivacyPolicy from "./htm/PrivacyPolicy.tsx"
-import AllOrders from "./htm/AllOrders.tsx"
+import AllOrders from "./pages/AllOrders.tsx"
+import WishList from "./htm/WishList.tsx"
 
 const Main = () => {
   const token = useAppSelector(state => state.token)
@@ -50,6 +51,7 @@ const Main = () => {
 
         <Route path="/product/edit/:id" element={<EditProduct />} />
         <Route path="/about" element={<About />} />
+        <Route path="/wishList" element={<WishList />} />
         <Route path="/account" element={<Account />} />
         <Route path={"/login"} element={token ? <Navigate to={"/"} /> : <Login />}/>
         <Route path={"/register"} element={token ? <Navigate to={"/"} /> : <Register />}/>

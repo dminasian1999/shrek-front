@@ -2,21 +2,44 @@ import React from "react"
 import { adminInfo, categories, links } from "../../utils/constants.ts"
 import { Link } from "react-router-dom"
 
+// --- Refactor: Data for static link lists ---
+const infoLinks = [
+  { path: "/about", label: "About Us" },
+  { path: "/privacy-policy", label: "Privacy Policy" },
+  { path: "/terms-and-conditions", label: "Terms & Conditions" },
+  { path: "/account", label: "My Account" },
+]
+
+const serviceLinks = [
+  { path: "/faq", label: "FAQ's" },
+  { path: "/contact", label: "Contact Us" },
+  { path: "/orders-and-returns", label: "Orders and Returns" },
+  { path: "/support-center", label: "Support Center" },
+]
+
 const Footer = () => {
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Add newsletter submission logic here
+    console.log("Newsletter submitted")
+  }
+
   return (
     <footer className="p-0" id="footer">
       {/* Newsletter Section */}
       <div className="newsletter-section">
-        <div className="row p-0">
-          <div className="col-12 col-sm-12 col-md-12 col-lg-7 d-flex justify-content-start align-items-center">
-            <div className="display-table">
-              <div className="display-table-cell footer-newsletter">
-                <div className="section-header text-center">
+        <div className="container">
+          {" "}
+          {/* --- Refactor: Added container for better alignment --- */}
+          <div className="row p-0">
+            <div className="col-lg-7 d-flex align-items-center">
+              <div className="footer-newsletter w-100">
+                <div className="section-header text-center text-lg-start">
                   <label htmlFor="newsletter-email" className="h2">
                     Sign up for newsletter
                   </label>
                 </div>
-                <form action="#" method="post">
+                <form onSubmit={handleNewsletterSubmit}>
                   <div className="input-group">
                     <input
                       type="email"
@@ -42,27 +65,27 @@ const Footer = () => {
                 </form>
               </div>
             </div>
-          </div>
 
-          {/* Social Icons */}
-          <div className="col-12 col-sm-12 col-md-12 col-lg-5 d-flex justify-content-end align-items-center">
-            <div className="footer-social">
-              <ul className="list--inline site-footer__social-icons social-icons">
-                {links.map(item => (
-                  <li key={item.name}>
-                    <a
-                      href={item.route}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="social-icons__link"
-                      title={item.name}
-                    >
-                      <i className={`icon icon-${item.name}`}></i>
-                      <span className="visually-hidden">{item.route}</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
+            {/* Social Icons */}
+            <div className="col-lg-5 d-flex justify-content-center justify-content-lg-end align-items-center mt-4 mt-lg-0">
+              <div className="footer-social">
+                <ul className="list--inline site-footer__social-icons social-icons">
+                  {links.map(item => (
+                    <li key={item.name}>
+                      <a
+                        href={item.route}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="social-icons__link"
+                        title={item.name}
+                      >
+                        <i className={`icon icon-${item.name}`}></i>
+                        <span className="visually-hidden">{item.route}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -74,7 +97,7 @@ const Footer = () => {
           <div className="footer-top">
             <div className="row">
               {/* Shop Links */}
-              <div className="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
+              <div className="col-md-3 col-lg-3 footer-links">
                 <h4 className="h4">Shop</h4>
                 <ul>
                   {categories.map(c => (
@@ -85,47 +108,32 @@ const Footer = () => {
                 </ul>
               </div>
 
-              {/* Information Links */}
-              <div className="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
+              {/* --- Refactor: Mapped from data array --- */}
+              <div className="col-md-3 col-lg-3 footer-links">
                 <h4 className="h4">Information</h4>
                 <ul>
-                  <li>
-                    <Link to="/about">About Us</Link>
-                  </li>
-                  <li>
-                    <Link to="/privacy-policy">Privacy Policy</Link>
-                  </li>
-                  <li>
-                    <Link to="/terms-and-conditions">Terms & Conditions</Link>
-                  </li>
-                  <li>
-                    <Link to="/account">My Account</Link>
-                  </li>
+                  {infoLinks.map(link => (
+                    <li key={link.path}>
+                      <Link to={link.path}>{link.label}</Link>
+                    </li>
+                  ))}
                 </ul>
               </div>
 
-              {/* Customer Services Links */}
-              <div className="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
+              {/* --- Refactor: Mapped from data array --- */}
+              <div className="col-md-3 col-lg-3 footer-links">
                 <h4 className="h4">Customer Services</h4>
                 <ul>
-                  <li>
-                    <Link to="/faq">FAQ's</Link>
-                  </li>
-                  <li>
-                    <Link to="/contact">Contact Us</Link>
-                  </li>
-                  <li>
-                    <Link to="/orders-and-returns">Orders and Returns</Link>
-                  </li>
-                  <li>
-                    <Link to="/support-center">Support Center</Link>
-                  </li>
+                  {serviceLinks.map(link => (
+                    <li key={link.path}>
+                      <Link to={link.path}>{link.label}</Link>
+                    </li>
+                  ))}
                 </ul>
-
               </div>
 
               {/* Contact Info */}
-              <div className="col-12 col-sm-12 col-md-3 col-lg-3 contact-box">
+              <div className="col-md-3 col-lg-3 contact-box">
                 <h4 className="h4">Contact Us</h4>
                 <ul className="addressFooter">
                   <li>
@@ -147,15 +155,37 @@ const Footer = () => {
 
           <hr />
 
-          {/* Payment Icons */}
+          {/* --- Refactor: Re-structured bottom for a logical 2-col layout --- */}
           <div className="footer-bottom">
-            <div className="row">
-              <div className="col-12 col-sm-12 col-md-6 col-lg-6 order-0 order-md-1 text-right text-md-center">
-                <ul className="payment-icons list--inline d-flex gap-2">
-                  <li><i className="icon fa fa-cc-visa" aria-hidden="true"></i></li>
-                  <li><i className="icon fa fa-cc-mastercard" aria-hidden="true"></i></li>
-                  <li><i className="icon fa fa-cc-paypal" aria-hidden="true"></i></li>
-                  <li><i className="icon fa fa-credit-card" aria-hidden="true"></i></li>
+            <div className="row align-items-center">
+              {/* Copyright */}
+              <div className="col-md-6 text-center text-md-start">
+                <p className="mb-2 mb-md-0">
+                  © {new Date().getFullYear()} Your Store Name. All Rights Reserved.
+                </p>
+              </div>
+
+              {/* Payment Icons */}
+              <div className="col-md-6 text-center text-md-end">
+                <ul
+                  className="payment-icons list--inline d-flex gap-2 justify-content-center justify-content-md-end"
+                >
+                  <li>
+                    <i className="icon fa fa-cc-visa" aria-hidden="true"></i>
+                  </li>
+                  <li>
+                    <i
+                      className="icon fa fa-cc-mastercard"
+                      aria-hidden="true"
+                    ></i>
+                  </li>
+
+                  <li>
+                    <i className="icon fa fa-cc-paypal" aria-hidden="true"></i>
+                  </li>
+                  <li>
+                    <i className="icon fa fa-credit-card" aria-hidden="true"></i>
+                  </li>
                 </ul>
               </div>
             </div>

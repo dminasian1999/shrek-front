@@ -1,3 +1,5 @@
+import { ReactPayPalScriptOptions } from "@paypal/react-paypal-js"
+
 export interface NavItemT {
   title: string
   route: string
@@ -157,6 +159,22 @@ export interface OrderItemT {
   unitPrice: number
 }
 
+export interface OrderData {
+  id: string;
+  details?: Array<{
+    issue: string;
+    description: string;
+  }>;
+  debug_id?: string;
+}
+export const initialOptions: ReactPayPalScriptOptions = {
+
+  clientId: "AVZSRuyu6Goh94yBqag6okxD1DLF7eCNEFnwwg-UlHstWc60BHmB7PQ5e742KLsKgSPimpzpyhM7wxEQ",
+  currency: "USD",
+  intent: "capture",
+  // For sandbox testing:
+  // "data-client-token": "", // (optional) advanced
+};
 export interface OrderT {
   orderId?: string
   userId: string

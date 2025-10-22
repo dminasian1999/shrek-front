@@ -4,8 +4,8 @@ import { OrderItemT, OrderT } from "../../utils/types.ts"
 import { baseUrl } from "../../utils/constants.ts"
 import { useAppSelector } from "../../app/hooks.ts"
 import { Link } from "react-router-dom"
-import OrderRow from "./OrderRow"
-import { useToasts } from "../ToastProvider" // adjust path if needed
+import OrderRow from "../htm/OrderRow.tsx"
+import { useToasts } from "../ToastProvider.tsx" // adjust path if needed
 
 const AllOrders: React.FC = () => {
   const profile = useAppSelector(state => state.user.profile)

@@ -1,24 +1,53 @@
+// ==============================
 import React from "react"
-import Slideshow from "../htm/Slideshow.tsx"
-import CarouselCategories from "../htm/CarouselCategories.tsx"
-import LookBook from "../htm/LookBook.tsx"
-import Contact from "../htm/Contact.tsx"
-import Types from "../htm/Types.tsx"
+import Contact from "./Contact.tsx"
 import Logos from "../htm/Logos.tsx"
+import HomeLookBook from "./HomeLookBook.tsx"
+import HomeSlideshow from "./HomeSlideshow.tsx"
+import HomeCarouselCategories from "./HomeCarouselCategories.tsx"
 
-const Home = () => {
+
+export function Home() {
   return (
-    <div>
-      <Slideshow />
-      <CarouselCategories />
+    <div className="home">
 
-      <LookBook/>
-      <Contact/>
-<Logos/>
 
-      {/*<NewArrivals />*/}
+      <div className="home-section">
+        <div className="home-wrap">
+          <HomeSlideshow />
+        </div>
+      </div>
+
+
+      <div className="home-section home-section--alt">
+        <div className="home-wrap">
+          <HomeCarouselCategories />
+        </div>
+      </div>
+
+
+      <div className="home-section">
+        <div className="home-wrap">
+          <HomeLookBook />
+        </div>
+      </div>
+
+
+      <div className="home-section">
+        <div className="home-wrap">
+          <Contact />
+        </div>
+      </div>
+
+
+      <div className="home-section home-section--alt">
+        <div className="home-wrap">
+          <Logos />
+        </div>
+      </div>
     </div>
   )
 }
+
 
 export default Home
