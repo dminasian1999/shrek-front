@@ -61,6 +61,40 @@ afterEach(() => {
 })
 
 describe("product editor API integration", () => {
+  it("creates a product with Standard inventory and shipping data instead of discarded quantity", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(response(product))
+    vi.stubGlobal("fetch", fetchMock)
+    renderEditor(false)
+    fireEvent.change(screen.getByLabelText("Product name"), {
+      target: { value: "New mug" },
+    })
+    fireEvent.change(screen.getByLabelText("Category"), {
+      target: { value: "ceramics" },
+    })
+    fireEvent.change(screen.getByLabelText("Price (USD)"), {
+      target: { value: "12.50" },
+    })
+    fireEvent.change(screen.getByLabelText("Shipping weight (grams)"), {
+      target: { value: "250" },
+    })
+    fireEvent.change(screen.getByLabelText("Stock for option 1"), {
+      target: { value: "5" },
+    })
+    fireEvent.click(screen.getByRole("button", { name: "Create product" }))
+    await screen.findByRole("heading", { name: "Product created" })
+    const [url, options] = fetchMock.mock.calls[0]
+    expect(url).toContain("/post/staff%40example.com")
+    expect(options.method).toBe("POST")
+    const payload = JSON.parse(options.body)
+    expect(payload).toMatchObject({
+      weight: 250,
+      price: 12.5,
+      sizeQuantities: [{ size: "Standard", quantity: 5 }],
+    })
+    expect(payload).not.toHaveProperty("quantity")
+    expect(screen.queryByRole("button", { name: "Create product" })).toBeNull()
+  })
+
   it("preserves variant sizes, shipping weight and subcategory when saving stock", async () => {
     const fetchMock = vi.fn().mockResolvedValue(response(product))
     vi.stubGlobal("fetch", fetchMock)
