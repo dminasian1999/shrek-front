@@ -34,8 +34,9 @@ const CartPage = () => {
               {errorMessage}
             </p>
           )}
+          {loading && <p role="status">Updating your cart…</p>}
           <div className="table-responsive mb-4">
-            <table className="table align-middle">
+            <table className="table align-middle" aria-busy={loading}>
               <caption className="visually-hidden">
                 Products in your shopping cart
               </caption>
