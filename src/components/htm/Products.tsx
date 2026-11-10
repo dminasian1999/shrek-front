@@ -1,151 +1,234 @@
-import React, { useEffect, useState } from "react";
-import { useAppSelector } from "../../app/hooks.ts";
-import { ProductT } from "../../utils/types.ts";
-import { baseUrlBlog } from "../../utils/constants.ts";
-import { deletePost } from "../../features/api/postActions.tsx";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react"
+import { Link } from "react-router-dom"
+import { useAppSelector } from "../../app/hooks"
+import { baseUrlBlog } from "../../utils/constants"
+import { money, productStock } from "../../utils/commerce"
+import { responseError } from "../../utils/http"
+import type { ProductT } from "../../utils/types"
 
-const Products = () => {
-  const token = useAppSelector(state => state.token);
-  const nav = useNavigate();
-
-  const [products, setProducts] = useState<ProductT[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export default function Products() {
+  const token = useAppSelector(state => state.token)
+  const [products, setProducts] = useState<ProductT[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
+  const [message, setMessage] = useState("")
+  const [retry, setRetry] = useState(0)
+  const [removing, setRemoving] = useState("")
+  const [confirmation, setConfirmation] = useState<ProductT | null>(null)
+  const confirmationRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (confirmation) confirmationRef.current?.focus()
+  }, [confirmation])
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const controller = new AbortController()
+    let active = true
+    setLoading(true)
+    setError("")
+    const load = async () => {
       try {
-        const res = await fetch(`${baseUrlBlog}/posts`);
-        if (!res.ok) throw new Error(`Fetch error: ${res.status}`);
-        const data: ProductT[] = await res.json();
-        setProducts(data);
-      } catch (e: unknown) {
-        if (e instanceof Error) setError(e.message);
-        else setError("Unknown error");
+        const response = await fetch(`${baseUrlBlog}/posts`, {
+          signal: controller.signal,
+        })
+        if (!response.ok)
+          throw await responseError(
+            response,
+            "The product list could not be loaded.",
+          )
+        const data = (await response.json()) as ProductT[]
+        if (active) setProducts(data)
+      } catch (cause: unknown) {
+        if (active && !controller.signal.aborted)
+          setError(
+            cause instanceof Error
+              ? cause.message
+              : "The product list could not be loaded.",
+          )
       } finally {
-        setLoading(false);
+        if (active) setLoading(false)
       }
-    };
-    fetchProducts();
-  }, []);
-
-  const handleDelete = async (prodId: string) => {
-    if (!window.confirm("Are you sure you want to delete this product?")) return;
-
-    try {
-      await deletePost(prodId, token);
-      setProducts(prev => prev.filter(p => p.id !== prodId));
-    } catch (e: unknown) {
-      alert("Error deleting product: " + (e instanceof Error ? e.message : "Unknown error"));
     }
-  };
+    void load()
+    return () => {
+      active = false
+      controller.abort()
+    }
+  }, [retry])
 
-  if (loading)
-    return (
-      <div className="text-center py-5">
-        <div className="spinner-border text-primary" role="status" />
-        <div className="mt-2">Loading products...</div>
-      </div>
-    );
-
-  if (error)
-    return (
-      <div className="alert alert-danger text-center my-4" role="alert">
-        Error: {error}
-      </div>
-    );
+  const remove = async (product: ProductT) => {
+    if (!product.id || removing) return
+    setRemoving(product.id)
+    setError("")
+    setMessage("")
+    try {
+      const response = await fetch(
+        `${baseUrlBlog}/post/${encodeURIComponent(product.id)}`,
+        { method: "DELETE", headers: { Authorization: token } },
+      )
+      if (!response.ok)
+        throw await responseError(
+          response,
+          "The product could not be deleted. Please try again.",
+        )
+      setProducts(previous => previous.filter(item => item.id !== product.id))
+      setConfirmation(null)
+      setMessage(`${product.name} was deleted.`)
+    } catch (cause: unknown) {
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : "The product could not be deleted.",
+      )
+    } finally {
+      setRemoving("")
+    }
+  }
 
   return (
-    <div className="accordion " id="accordionProducts">
-      <div className="accordion-item">
-        <h2 className="accordion-header" id="headingProducts">
-          <button
-            className="accordion-button fw-bold"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#collapseProducts"
-            aria-expanded="true"
-            aria-controls="collapseProducts"
-          >
-            Products
-          </button>
+    <section
+      className="border-top pt-4 mt-4"
+      aria-labelledby="manage-products-title"
+    >
+      <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+        <h2 id="manage-products-title" className="mb-0">
+          Manage products
         </h2>
+        <Link className="btn" to="/new">
+          Add product
+        </Link>
+      </div>
+      {error && (
+        <p className="alert alert-danger" role="alert">
+          {error}{" "}
+          <button
+            type="button"
+            className="btn btn-outline-secondary ms-2"
+            onClick={() => setRetry(value => value + 1)}
+          >
+            Reload list
+          </button>
+        </p>
+      )}
+      {message && (
+        <p className="alert alert-success" role="status">
+          {message}
+        </p>
+      )}
+      {confirmation && (
         <div
-          id="collapseProducts"
-          className="accordion-collapse collapse show"
-          aria-labelledby="headingProducts"
+          ref={confirmationRef}
+          className="alert alert-warning"
+          role="alert"
+          tabIndex={-1}
         >
-          <div className="accordion-body p-0 m-0">
-            <div className="d-flex justify-content-center p-1 ">
-              <button
-                className="btn btn-success"
-                onClick={() => nav("/new")}
-              >
-                <i className="fa fa-plus me-2" />
-                Create New Post
-              </button>
-            </div>
-            <div className="table-responsive">
-              <table className="table table-hover align-middle text-center">
-                <thead className="table-light">
-                <tr>
-                  <th>Image</th>
-                  <th>Name</th>
-                  <th>Category</th>
-                  <th>Quantity</th>
-                  <th>Price</th>
-                  <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {products.map(prod => (
-                  <tr key={prod.id}>
-                    <td>
-                      <img
-                        height={70}
-                        width={70}
-                        className="object-fit-cover rounded border"
-                        src={Array.isArray(prod.imageUrls) ? prod.imageUrls[0] : prod.imageUrls}
-                        alt={prod.name}
-                        onError={(e: any) => {
-                          e.target.src = "https://via.placeholder.com/70";
-                        }}
-                      />
-                    </td>
-                    <td>{prod.name}</td>
-                    <td>
-                      <span className="badge bg-secondary">{prod.category}</span>
-                    </td>
-                    <td>{prod.quantity}</td>
-                    <td>$ {prod.price.toFixed(2)}</td>
-                    <td>
-                        <button
-                          className="fa fa-edit fa-lg me-2 p-0 border-0 text-primary"
-                          onClick={() => nav(`/product/edit/${prod.id}`)}
-                        />
-                        <button
-                          className="fa fa-trash fa-lg me-2 p-0 border-0 text-danger"
-                          onClick={() => prod.id && handleDelete(prod.id)}
-                        />
-                    </td>
-                  </tr>
-                ))}
-                {products.length === 0 && (
-                  <tr>
-                    <td colSpan={8}>
-                      <div className="text-muted">No products found.</div>
-                    </td>
-                  </tr>
-                )}
-                </tbody>
-              </table>
-            </div>
+          <p>
+            Delete <strong>{confirmation.name}</strong>? This removes the
+            product from the shop.
+          </p>
+          <div className="d-flex flex-wrap gap-2">
+            <button
+              type="button"
+              className="btn btn-danger"
+              disabled={Boolean(removing)}
+              onClick={() => void remove(confirmation)}
+            >
+              {removing ? "Deleting…" : "Confirm deletion"}
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline-secondary"
+              disabled={Boolean(removing)}
+              onClick={() => setConfirmation(null)}
+            >
+              Cancel deletion
+            </button>
           </div>
         </div>
-      </div>
-    </div>
-  );
-};
-
-export default Products;
+      )}
+      {loading ? (
+        <p role="status">Loading products…</p>
+      ) : (
+        <div className="table-responsive">
+          <table className="table align-middle">
+            <caption className="visually-hidden">
+              Store products and available inventory
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Image</th>
+                <th scope="col">Product</th>
+                <th scope="col">Category</th>
+                <th scope="col">Stock</th>
+                <th scope="col">Weight</th>
+                <th scope="col">Price</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {products.map(product => (
+                <tr key={product.id}>
+                  <td>
+                    <img
+                      height={70}
+                      width={70}
+                      className="object-fit-contain rounded border"
+                      src={product.imageUrls?.[0] || "/product-placeholder.svg"}
+                      alt=""
+                      onError={event => {
+                        event.currentTarget.onerror = null
+                        event.currentTarget.src = "/product-placeholder.svg"
+                      }}
+                    />
+                  </td>
+                  <th scope="row">
+                    <Link
+                      to={`/product/${encodeURIComponent(product.id || "")}`}
+                    >
+                      {product.name}
+                    </Link>
+                  </th>
+                  <td>{product.category}</td>
+                  <td>{productStock(product)}</td>
+                  <td>
+                    {product.weight ? `${product.weight} g` : "Needs weight"}
+                  </td>
+                  <td>{money(product.price)}</td>
+                  <td>
+                    <div className="d-flex gap-2">
+                      <Link
+                        className="btn btn-outline-secondary"
+                        to={`/product/edit/${encodeURIComponent(product.id || "")}`}
+                        aria-label={`Edit ${product.name}`}
+                      >
+                        Edit
+                      </Link>
+                      <button
+                        type="button"
+                        className="btn btn-outline-danger"
+                        disabled={Boolean(removing)}
+                        onClick={() => {
+                          setConfirmation(product)
+                          setMessage("")
+                        }}
+                        aria-label={`Delete ${product.name}`}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              {products.length === 0 && !error && (
+                <tr>
+                  <td colSpan={7} className="py-4 text-center">
+                    No products yet. Add your first product to get started.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  )
+}
