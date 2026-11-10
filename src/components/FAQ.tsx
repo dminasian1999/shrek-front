@@ -37,7 +37,7 @@ export default function FAQ() {
   return (
     <div className="container public-page">
       <header className="section-heading">
-        <p className="eyebrow">Shopping with Sevan</p>
+        <p className="eyebrow">Shopping with Gejekoushian’s</p>
         <h1>Common questions</h1>
         <p>A few helpful details before you place an order.</p>
       </header>

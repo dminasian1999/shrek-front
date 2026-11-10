@@ -1,99 +1,45 @@
-import { useAppSelector } from "./app/hooks.ts"
-
+import { useEffect, useState } from "react"
+import { useLocation } from "react-router-dom"
 import "./App.css"
 import TopHeader from "./components/htm/TopHeader.tsx"
 import Header from "./components/htm/Header.tsx"
 import Main from "./components/Main.tsx"
-import { baseUrlBlog } from "./utils/constants.ts"
-import { ProductT, ReceiptT } from "./utils/types.ts"
-import { useEffect, useState } from "react"
-import { ProductsContext } from "./utils/context.ts"
 import Footer from "./components/htm/Footer.tsx"
-import { useLocation } from "react-router-dom"
+import { ProductT, ReceiptT } from "./utils/types.ts"
+import { ProductsContext } from "./utils/context.ts"
 
 const App = () => {
-  // const [selectedId, setSelectedId] = useState<string>(
-  //   categories("Armenian")[0]?.title || "",
-  // )
-  const [products, setProducts] = useState([] as ProductT[])
-  const [receipts, setReceipts] = useState([] as ReceiptT[])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [showModal, setShowModal] = useState(false)
+  const [products, setProducts] = useState<ProductT[]>([])
+  const [receipts, setReceipts] = useState<ReceiptT[]>([])
   const [language, setLanguage] = useState("English")
-  const token = useAppSelector(state => state.token)
-
   const location = useLocation()
-
-  // const fetchProducts = async () => {
-  //   try {
-  //     const res = await fetch(${baseUrlBlog}/posts)
-  //     if (!res.ok) throw new Error(Fetch error: ${res.status})
-  //     const data: ProductT[] = await res.json()
-  //     setProducts(data)
-  //   } catch (e: any) {
-  //     console.error(e)
-  //     setError(e.message)
-  //   } finally {
-  //     setLoading(false)
-  //   }
-  // }
-  const fetchReceipts = async () => {
-    try {
-      const res = await fetch(`${baseUrlBlog}/posts/receipts`, {
-        method: "get",
-        headers: { Authorization: token },
-      })
-      if (!res.ok) throw new Error(`Fetch error: ${res.status}`)
-      const data: ReceiptT[] = await res.json()
-      setReceipts(data)
-    } catch (e: any) {
-      console.error(e)
-      setError(e.message)
-    } finally {
-      setLoading(false)
-    }
-  }
-
+  const [showBackToTop, setShowBackToTop] = useState(false)
 
   useEffect(() => {
-    window.scroll(0, 0)
+    const updateScroll = () => setShowBackToTop(window.scrollY > 600)
+    window.addEventListener("scroll", updateScroll, { passive: true })
+    return () => window.removeEventListener("scroll", updateScroll)
+  }, [])
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+    const titles: Record<string, string> = {
+      shop: "Shop", collections: "Collections", about: "Our story", contact: "Contact", "contact-us": "Contact", faq: "Frequently asked questions", cart: "Shopping bag", checkout: "Checkout", login: "Sign in", register: "Create an account", account: "My account", wishlist: "Wishlist", "forgot-password": "Password help", product: "Product",
+    }
+    const segment = location.pathname.split("/")[1]
+    document.title = titles[segment] ? `${titles[segment]} | Gejekoushian’s Armenian Ceramics` : "Gejekoushian’s Armenian Ceramics & Gifts | Jerusalem"
   }, [location.pathname])
+
   return (
-    <ProductsContext.Provider
-      value={{
-        products,
-        setProducts,
-        receipts,
-        setReceipts,
-        language,
-        setLanguage,
-      }}
-    >
-      <div className="container-fluid p-0 ">
-          <TopHeader />
-          <Header />
-          <Main />
-          <section
-            style={{
-              padding: "2rem",
-              backgroundColor: "#f9f9f9",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <h3 style={{ textAlign: "center", marginBottom: "1rem" }}>Оплатить PayPal</h3>
-          </section>
-          <Footer />
-          <span
-            id="site-scroll"
-            className="fixed bottom-4 right-4 bg-black text-white p-2 rounded-full"
-          >
-          <i className="text-xl">↑</i>
-        </span>
-          {/*<QuickViewPopup />*/}
-        </div>
+    <ProductsContext.Provider value={{ products, setProducts, receipts, setReceipts, language, setLanguage }}>
+      <div className="store-app">
+        <a className="skip-link" href="#main-content">Skip to content</a>
+        <TopHeader />
+        <Header />
+        <Main />
+        <Footer />
+        {showBackToTop && <button className="back-to-top" type="button" aria-label="Back to top" onClick={() => window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })}>↑</button>}
+      </div>
     </ProductsContext.Provider>
   )
 }

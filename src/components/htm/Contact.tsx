@@ -55,7 +55,7 @@ const Contact = () => {
     >
       <div className="contact-layout">
         <div>
-          <p className="eyebrow">Sevan Armenian Ceramics Center</p>
+          <p className="eyebrow">Gejekoushian’s Armenian Ceramics & Gifts</p>
           <h2 id="contact-heading">{copy.title}</h2>
           <p>{copy.description}</p>
           <a className="btn btn-primary" href={`mailto:${details.email}`}>

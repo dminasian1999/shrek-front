@@ -5,7 +5,7 @@ const About = () => (
   <div className="container public-page">
     <header className="section-heading">
       <p className="eyebrow">From Jerusalem, with character</p>
-      <h1>Sevan Armenian Ceramics Center</h1>
+      <h1>Gejekoushian’s Armenian Ceramics & Gifts</h1>
       <p>
         Discover Armenian ceramics, gifts, and souvenirs from the Old City of
         Jerusalem.
@@ -14,7 +14,7 @@ const About = () => (
     <div className="contact-layout about-layout">
       <img
         src={ceramics}
-        alt="A selection of decorative ceramics in the Sevan collection"
+        alt="A selection of decorative ceramics in the Gejekoushian’s collection"
         className="about-image"
         width="640"
         height="640"
