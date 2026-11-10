@@ -36,7 +36,11 @@ const CartPageRow = ({
     </>
   )
   const quantityControls = (
-    <div className="cart-quantity" aria-label={`Quantity of ${product.name}`}>
+    <div
+      role="group"
+      className="cart-quantity"
+      aria-label={`Quantity of ${product.name}`}
+    >
       <button
         type="button"
         className="btn btn-outline-secondary"
