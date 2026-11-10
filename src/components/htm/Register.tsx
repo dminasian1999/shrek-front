@@ -1,10 +1,11 @@
 import React, { useContext, useState } from "react"
-import { useAppDispatch } from "../../app/hooks"
+import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { registerUser } from "../../features/api/accountActions"
 import { ProductsContext } from "../../utils/context"
 
 const Register = () => {
   const dispatch = useAppDispatch()
+  const { loading, errorMessage } = useAppSelector(state => state.user)
   const { language } = useContext(ProductsContext)
 
   const [login, setLogin] = useState("")
@@ -12,7 +13,6 @@ const Register = () => {
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [showPassword, setShowPassword] = useState(false)
-  const [agreed, setAgreed] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -23,23 +23,19 @@ const Register = () => {
           ? "Բոլոր դաշտերը պարտադիր են։"
           : language === "Russian"
             ? "Все поля обязательны для заполнения."
-            : "All fields are required."
+            : "All fields are required.",
       )
       return
     }
 
-    if (!agreed) {
-      alert(
-        language === "Armenian"
-          ? "Պարտադիր է ընդունել պայմանները։"
-          : language === "Russian"
-            ? "Вы должны принять условия."
-            : "You must agree to the terms and conditions."
-      )
-      return
-    }
-
-    dispatch(registerUser({ login, password, firstName, lastName }))
+    dispatch(
+      registerUser({
+        login: login.trim().toLowerCase(),
+        password,
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+      }),
+    )
   }
 
   return (
@@ -71,6 +67,7 @@ const Register = () => {
                       : "Email"}
                 </label>
                 <input
+                  disabled={loading}
                   id="email"
                   type="email"
                   className="form-control"
@@ -82,7 +79,7 @@ const Register = () => {
                         : "Enter your email"
                   }
                   value={login}
-                  onChange={(e) => setLogin(e.target.value.trim())}
+                  onChange={e => setLogin(e.target.value.trim())}
                   required
                   autoComplete="email"
                 />
@@ -98,6 +95,7 @@ const Register = () => {
                 </label>
                 <div className="input-group">
                   <input
+                    disabled={loading}
                     id="password"
                     type={showPassword ? "text" : "password"}
                     className="form-control"
@@ -109,7 +107,9 @@ const Register = () => {
                           : "Enter password"
                     }
                     value={password}
-                    onChange={(e) => setPassword(e.target.value.trim())}
+                    minLength={8}
+                    maxLength={72}
+                    onChange={e => setPassword(e.target.value)}
                     required
                     autoComplete="new-password"
                   />
@@ -119,16 +119,16 @@ const Register = () => {
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={
                       showPassword
-                        ? (language === "Armenian"
+                        ? language === "Armenian"
                           ? "Թաքցնել գաղտնաբառը"
                           : language === "Russian"
                             ? "Скрыть пароль"
-                            : "Hide password")
-                        : (language === "Armenian"
+                            : "Hide password"
+                        : language === "Armenian"
                           ? "Ցույց տալ գաղտնաբառը"
                           : language === "Russian"
                             ? "Показать пароль"
-                            : "Show password")
+                            : "Show password"
                     }
                   >
                     <i className={`icon-eye${showPassword ? "-off" : ""}`}></i>
@@ -145,6 +145,7 @@ const Register = () => {
                       : "First Name"}
                 </label>
                 <input
+                  disabled={loading}
                   id="firstName"
                   type="text"
                   className="form-control"
@@ -156,7 +157,7 @@ const Register = () => {
                         : "Enter First Name"
                   }
                   value={firstName}
-                  onChange={(e) => setFirstName(e.target.value.trim())}
+                  onChange={e => setFirstName(e.target.value)}
                   required
                   autoComplete="given-name"
                 />
@@ -171,6 +172,7 @@ const Register = () => {
                       : "Last Name"}
                 </label>
                 <input
+                  disabled={loading}
                   id="lastName"
                   type="text"
                   className="form-control"
@@ -182,38 +184,30 @@ const Register = () => {
                         : "Enter Last Name"
                   }
                   value={lastName}
-                  onChange={(e) => setLastName(e.target.value.trim())}
+                  onChange={e => setLastName(e.target.value)}
                   required
                   autoComplete="family-name"
                 />
               </div>
 
-              <div className="form-check mb-4">
-                <input
-                  type="checkbox"
-                  id="termsConditions"
-                  checked={agreed}
-                  onChange={(e) => setAgreed(e.target.checked)}
-                />
-                <label
-                  className="form-check-label mx-1"
-                  htmlFor="termsConditions"
-                >
-                  {language === "Armenian"
-                    ? "Ես համաձայն եմ պայմանների հետ"
-                    : language === "Russian"
-                      ? "Я согласен с условиями"
-                      : "I agree to the terms and conditions"}
-                </label>
-              </div>
-
+              {errorMessage && (
+                <p className="alert alert-danger" role="alert">
+                  {errorMessage}
+                </p>
+              )}
               <div className="d-grid">
-                <button type="submit" className="btn btn-primary btn-lg">
-                  {language === "Armenian"
-                    ? "Գրանցվել"
-                    : language === "Russian"
-                      ? "Зарегистрироваться"
-                      : "SIGN UP"}
+                <button
+                  disabled={loading}
+                  type="submit"
+                  className="btn btn-primary btn-lg"
+                >
+                  {loading
+                    ? "Creating account…"
+                    : language === "Armenian"
+                      ? "Գրանցվել"
+                      : language === "Russian"
+                        ? "Зарегистрироваться"
+                        : "SIGN UP"}
                 </button>
               </div>
             </form>

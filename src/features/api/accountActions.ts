@@ -1,12 +1,14 @@
+import { responseError } from "../../utils/http"
 import { RootState } from "../../app/store"
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import { baseUrl, createToken } from "../../utils/constants"
 import {
-  AddressT, CartItem,
+  AddressT,
+  CartItem,
   UserEditData,
   UserProfile,
   UserRegister,
-  UserUpdatePassword
+  UserUpdatePassword,
 } from "../../utils/types"
 
 export const registerUser = createAsyncThunk(
@@ -23,63 +25,51 @@ export const registerUser = createAsyncThunk(
       throw new Error(`already exists (${user.login})`)
     }
     if (!res.ok) {
-      throw new Error(`Oops,something went wrong!`)
+      throw await responseError(res)
     }
     const data = await res.json()
     const token = createToken(user.login, user.password)
     return { data, token }
   },
 )
-export const fetchUser = createAsyncThunk(
-  'user/login',
-  async (token: string) => {
+export const fetchUser = createAsyncThunk<
+  { data: UserProfile; token: string },
+  string | { token: string; refresh: true },
+  { state: RootState }
+>(
+  "user/login",
+  async request => {
+    const token = typeof request === "string" ? request : request.token
     const res = await fetch(`${baseUrl}/login`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        "Authorization": token,
-      }
-    });
+        Authorization: token,
+      },
+    })
 
     if (!res.ok) {
       if (res.status === 404) {
-        throw new Error("Account not found!");
-      } else if (res.status === 403) {
-        throw new Error("Invalid credentials!");
+        throw new Error("Account not found!")
+      } else if (res.status === 401 || res.status === 403) {
+        throw new Error("Invalid credentials!")
       } else {
-        throw new Error("An error occurred during login!");
+        throw await responseError(res, "Unable to sign in. Please try again.")
       }
     }
 
-    const data = await res.json();
-    return {data, token};
-  }
-);
-// export const fetchUser = createAsyncThunk(
-//   "user/login",
-//   async (token: string) => {
-//     const res = await fetch(`${baseUrl}/login`, {
-//       method: "POST",
-//       headers: {
-//         "Authorization": token,
-//       },
-//     })
-//
-//     if (!res.ok) {
-//       if (res.status === 404) {
-//         throw new Error("Account not found!")
-//       } else if (res.status === 403) {
-//         throw new Error("Invalid credentials!")
-//       } else {
-//         throw new Error("An error occurred during login!")
-//       }
-//     }
-//
-//     const data = await res.json()
-//     return { data, token }
-//   },
-// )
-export const fetchAllUsers = async () => {
-  const response = await fetch(`${baseUrl}/users`, {
+    const data = await res.json()
+    return { data, token }
+  },
+  {
+    // A background refresh must never authenticate again after the visitor signs out.
+    condition: (request, { getState }) =>
+      typeof request === "string" ||
+      Boolean(request.token && getState().token === request.token),
+  },
+)
+export const fetchAllUsers = async (token: string) => {
+  const response = await fetch(baseUrl, {
+    headers: { Authorization: token },
     // method: 'Get',
     // headers: {
     //     "Authorization": token,
@@ -90,7 +80,7 @@ export const fetchAllUsers = async () => {
 }
 
 export const updateUser = createAsyncThunk<
-  any,
+  UserProfile,
   UserEditData,
   { state: RootState }
 >("user/update", async (user, { getState }) => {
@@ -103,48 +93,57 @@ export const updateUser = createAsyncThunk<
     },
   })
   if (!res.ok) {
-    throw new Error(`Oops,something went wrong!`)
+    throw await responseError(res)
   }
   const data = await res.json()
   return data
 })
-export const removeUser = createAsyncThunk<any, string, { state: RootState }>(
-  "user/delete",
-  async (login, { getState }) => {
-    const res = await fetch(`${baseUrl}/user/${login}`, {
-      method: "Delete",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: getState().token,
-      },
-    })
-    if (!res.ok) {
-      throw new Error(`Oops,something went wrong!`)
-    }
-    return await res.json()
-  },
-)
+export const removeUser = createAsyncThunk<
+  UserProfile,
+  string,
+  { state: RootState }
+>("user/delete", async (login, { getState }) => {
+  const res = await fetch(`${baseUrl}/${encodeURIComponent(login)}`, {
+    method: "Delete",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: getState().token,
+    },
+  })
+  if (!res.ok) {
+    throw await responseError(res)
+  }
+  return await res.json()
+})
 
-export const addRole = createAsyncThunk<any, string, { state: RootState }>(
+export const addRole = createAsyncThunk<void, string, { state: RootState }>(
   "user/addRole",
   async (email, { getState }) => {
-    await fetch(`${baseUrl}/user/${email}/role/MODERATOR`, {
-      method: "PUT",
-      headers: {
-        Authorization: getState().token,
+    const res = await fetch(
+      `${baseUrl}/${encodeURIComponent(email)}/roles/MODERATOR`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: getState().token,
+        },
       },
-    })
+    )
+    if (!res.ok) throw await responseError(res)
   },
 )
-export const removeRole = createAsyncThunk<any, string, { state: RootState }>(
+export const removeRole = createAsyncThunk<void, string, { state: RootState }>(
   "user/removeRole",
   async (email, { getState }) => {
-    await fetch(`${baseUrl}/user/${email}/role/MODERATOR`, {
-      method: "Delete",
-      headers: {
-        Authorization: getState().token,
+    const res = await fetch(
+      `${baseUrl}/${encodeURIComponent(email)}/roles/MODERATOR`,
+      {
+        method: "Delete",
+        headers: {
+          Authorization: getState().token,
+        },
       },
-    })
+    )
+    if (!res.ok) throw await responseError(res)
   },
 )
 export const changePassword = createAsyncThunk<
@@ -159,22 +158,23 @@ export const changePassword = createAsyncThunk<
         getState().user.profile.login,
         password.oldPassword,
       ),
-      "X-Password": password.newPassword,
+      "Content-Type": "application/json",
     },
+    body: JSON.stringify({ newPassword: password.newPassword }),
   })
   if (!res.ok) {
-    throw new Error(`Oops,something went wrong!`)
+    throw await responseError(res)
   }
   return createToken(getState().user.profile.login, password.newPassword)
 })
 
 export const updateAddress = createAsyncThunk<
-  any,
+  UserProfile,
   AddressT,
   { state: RootState }
 >("user/address", async (address, { getState }) => {
   const res = await fetch(
-    `${baseUrl}/address/${getState().user.profile.login}`,
+    `${baseUrl}/address/${encodeURIComponent(getState().user.profile.login)}`,
     {
       method: "Post",
       body: JSON.stringify(address),
@@ -185,39 +185,40 @@ export const updateAddress = createAsyncThunk<
     },
   )
   if (!res.ok) {
-    throw new Error(`Oops,something went wrong!`)
+    throw await responseError(res)
   }
   const data = await res.json()
   return data
 })
 
-export const addWishlist = createAsyncThunk<any, string, { state: RootState }>(
-  "user/addWishList",
-  async (id, { getState }) => {
-    const res = await fetch(
-      `${baseUrl}/${getState().user.profile.login}/wishList/${id}`,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: getState().token,
-          "Content-Type": "application/json",
-        },
+export const addWishlist = createAsyncThunk<
+  UserProfile,
+  string,
+  { state: RootState }
+>("user/addWishList", async (id, { getState }) => {
+  const res = await fetch(
+    `${baseUrl}/${encodeURIComponent(getState().user.profile.login)}/wishList/${encodeURIComponent(id)}`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: getState().token,
+        "Content-Type": "application/json",
       },
-    )
-    if (!res.ok) {
-      throw new Error(`Oops,something went wrong!`)
-    }
-    const data: UserProfile = await res.json()
-    return data
-  },
-)
+    },
+  )
+  if (!res.ok) {
+    throw await responseError(res)
+  }
+  const data: UserProfile = await res.json()
+  return data
+})
 export const removeWishlist = createAsyncThunk<
-  any,
+  UserProfile,
   string,
   { state: RootState }
 >("user/removeWishlist", async (id, { getState }) => {
   const res = await fetch(
-    `${baseUrl}/${getState().user.profile.login}/wishList/${id}`,
+    `${baseUrl}/${encodeURIComponent(getState().user.profile.login)}/wishList/${encodeURIComponent(id)}`,
     {
       method: "Delete",
       headers: {
@@ -226,75 +227,73 @@ export const removeWishlist = createAsyncThunk<
     },
   )
   if (!res.ok) {
-    throw new Error(`Oops,something went wrong!`)
+    throw await responseError(res)
   }
   const data = await res.json()
   return data
 })
 
-export const addCartList = createAsyncThunk<any, CartItem, { state: RootState }>(
-  "user/addCartList",
-  async (cartItem, { getState }) => {
-    const res = await fetch(
-      `${baseUrl}/${getState().user.profile.login}/cartList`,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: getState().token,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(cartItem),
+export const addCartList = createAsyncThunk<
+  UserProfile,
+  CartItem,
+  { state: RootState }
+>("user/addCartList", async (cartItem, { getState }) => {
+  const res = await fetch(
+    `${baseUrl}/${encodeURIComponent(getState().user.profile.login)}/cartList`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: getState().token,
+        "Content-Type": "application/json",
       },
-    )
-    if (!res.ok) {
-      throw new Error(`Oops,something went wrong!`)
-    }
-    const data: UserProfile = await res.json()
-    return data
-  },
-)
+      body: JSON.stringify(cartItem),
+    },
+  )
+  if (!res.ok) {
+    throw await responseError(res)
+  }
+  const data: UserProfile = await res.json()
+  return data
+})
 export const removeCartList = createAsyncThunk<
-  any,
+  UserProfile,
   CartItem,
   { state: RootState }
 >("user/removeCartList", async (cartItem, { getState }) => {
   const res = await fetch(
-    `${baseUrl}/${getState().user.profile.login}/cartList`,
+    `${baseUrl}/${encodeURIComponent(getState().user.profile.login)}/cartList`,
     {
       method: "Delete",
       headers: {
         Authorization: getState().token,
-        'content-type': 'application/json'
+        "content-type": "application/json",
       },
       body: JSON.stringify(cartItem),
-
     },
   )
   if (!res.ok) {
-    throw new Error(`Oops,something went wrong!`)
+    throw await responseError(res)
   }
   const data = await res.json()
   return data
 })
 
-
 export const updateCartList = createAsyncThunk<
-  any,
-  { productId:string, isAdd:boolean },
+  UserProfile,
+  { productId: string; isAdd: boolean },
   { state: RootState }
 >("user/updateCartList", async ({ productId, isAdd }, { getState }) => {
   const res = await fetch(
-    `${baseUrl}/${getState().user.profile.login}/cartList/${productId}/update/${isAdd}`,
+    `${baseUrl}/${encodeURIComponent(getState().user.profile.login)}/cartList/${encodeURIComponent(productId)}/update/${isAdd}`,
     {
       method: "Put",
       headers: {
         Authorization: getState().token,
       },
-
     },
   )
   if (!res.ok) {
-    throw new Error(`Oops,something went wrong!`)
+    throw await responseError(res)
   }
   const data = await res.json()
   return data

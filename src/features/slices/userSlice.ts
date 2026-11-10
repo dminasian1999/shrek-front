@@ -4,10 +4,12 @@ import {
   addCartList,
   addWishlist,
   fetchUser,
-  registerUser, removeCartList,
+  registerUser,
+  removeCartList,
   removeWishlist,
-  updateAddress, updateCartList,
-  updateUser
+  updateAddress,
+  updateCartList,
+  updateUser,
 } from "../api/accountActions.ts"
 
 const userSlice = createSlice({
@@ -29,9 +31,11 @@ const userSlice = createSlice({
     builder
       .addCase(registerUser.fulfilled, (state, action) => {
         state.profile = action.payload.data
+        state.errorMessage = null
         state.loading = false
       })
       .addCase(registerUser.pending, state => {
+        state.errorMessage = null
         state.loading = true
       })
       .addCase(registerUser.rejected, (state, action) => {
@@ -40,9 +44,11 @@ const userSlice = createSlice({
       })
       .addCase(fetchUser.fulfilled, (state, action) => {
         state.profile = action.payload.data
+        state.errorMessage = null
         state.loading = false
       })
       .addCase(fetchUser.pending, state => {
+        state.errorMessage = null
         state.loading = true
       })
       .addCase(fetchUser.rejected, (state, action) => {
@@ -56,6 +62,7 @@ const userSlice = createSlice({
         state.loading = false
       })
       .addCase(updateUser.pending, state => {
+        state.errorMessage = null
         state.loading = true
       })
       .addCase(updateUser.rejected, (state, action) => {
@@ -63,11 +70,12 @@ const userSlice = createSlice({
         state.errorMessage = action.error.message || "Update failed!"
       })
       .addCase(updateAddress.pending, state => {
+        state.errorMessage = null
         state.loading = true
         state.errorMessage = "" // Clear any previous errors
       })
       .addCase(updateAddress.fulfilled, (state, action) => {
-        state.profile  = action.payload
+        state.profile = action.payload
         state.loading = false
       })
       .addCase(updateAddress.rejected, (state, action) => {
@@ -75,11 +83,12 @@ const userSlice = createSlice({
         state.errorMessage = action.error.message || "Address update failed!"
       })
       .addCase(addWishlist.pending, state => {
+        state.errorMessage = null
         state.loading = true
         state.errorMessage = "" // Clear any previous errors
       })
       .addCase(addWishlist.fulfilled, (state, action) => {
-        state.profile  = action.payload
+        state.profile = action.payload
         state.loading = false
       })
       .addCase(addWishlist.rejected, (state, action) => {
@@ -87,11 +96,12 @@ const userSlice = createSlice({
         state.errorMessage = action.error.message || "addWishlist failed!"
       })
       .addCase(removeWishlist.pending, state => {
+        state.errorMessage = null
         state.loading = true
         state.errorMessage = "" // Clear any previous errors
       })
       .addCase(removeWishlist.fulfilled, (state, action) => {
-        state.profile  = action.payload
+        state.profile = action.payload
         state.loading = false
       })
       .addCase(removeWishlist.rejected, (state, action) => {
@@ -99,11 +109,12 @@ const userSlice = createSlice({
         state.errorMessage = action.error.message || "removeWishlist failed!"
       })
       .addCase(addCartList.pending, state => {
+        state.errorMessage = null
         state.loading = true
         state.errorMessage = "" // Clear any previous errors
       })
       .addCase(addCartList.fulfilled, (state, action) => {
-        state.profile  = action.payload
+        state.profile = action.payload
         state.loading = false
       })
       .addCase(addCartList.rejected, (state, action) => {
@@ -111,11 +122,12 @@ const userSlice = createSlice({
         state.errorMessage = action.error.message || "addCartlist failed!"
       })
       .addCase(removeCartList.pending, state => {
+        state.errorMessage = null
         state.loading = true
         state.errorMessage = "" // Clear any previous errors
       })
       .addCase(removeCartList.fulfilled, (state, action) => {
-        state.profile  = action.payload
+        state.profile = action.payload
         state.loading = false
       })
       .addCase(removeCartList.rejected, (state, action) => {
@@ -123,11 +135,12 @@ const userSlice = createSlice({
         state.errorMessage = action.error.message || "removeCartlist failed!"
       })
       .addCase(updateCartList.pending, state => {
+        state.errorMessage = null
         state.loading = true
         state.errorMessage = "" // Clear any previous errors
       })
       .addCase(updateCartList.fulfilled, (state, action) => {
-        state.profile  = action.payload
+        state.profile = action.payload
         state.loading = false
       })
       .addCase(updateCartList.rejected, (state, action) => {

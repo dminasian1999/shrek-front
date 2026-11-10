@@ -1,101 +1,123 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
-import { ProductT } from "../../utils/types.ts";
-import { getPostByIds } from "../../features/api/postActions.tsx";
-import { addCartList, removeWishlist } from "../../features/api/accountActions.ts";
-import { ProductsContext } from "../../utils/context.ts";
-import { categories } from "../../utils/constants.ts";
+import { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
+import { useAppDispatch, useAppSelector } from "../../app/hooks"
+import type { ProductT } from "../../utils/types"
+import { getPostByIds } from "../../features/api/postActions"
+import { removeWishlist } from "../../features/api/accountActions"
+import { money, productStock } from "../../utils/commerce"
 
 const WishList = () => {
-  const { language } = useContext(ProductsContext); // if you still use it elsewhere
-  const user = useAppSelector(state => state.user.profile);
-  const token = useAppSelector(state => state.token);
-  const [products, setProducts] = useState<ProductT[]>([]);
-  const dispatch = useAppDispatch();
-
+  const {
+    profile,
+    loading: saving,
+    errorMessage,
+  } = useAppSelector(state => state.user)
+  const token = useAppSelector(state => state.token)
+  const [products, setProducts] = useState<ProductT[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
+  const [retry, setRetry] = useState(0)
+  const dispatch = useAppDispatch()
   useEffect(() => {
-    if (user?.wishList?.length) {
-      getPostByIds(user.wishList, token).then(setProducts);
+    let active = true
+    setProducts([])
+    setError("")
+    if (!token || !profile.wishList?.length) {
+      setLoading(false)
+      return
     }
-  }, [token, user?.wishList]);
-
+    setLoading(true)
+    getPostByIds(profile.wishList, token)
+      .then(data => {
+        if (active) setProducts(data)
+      })
+      .catch(() => {
+        if (active)
+          setError("Your wishlist could not be loaded. Please try again.")
+      })
+      .finally(() => {
+        if (active) setLoading(false)
+      })
+    return () => {
+      active = false
+    }
+  }, [token, profile.wishList, retry])
   return (
-    <div className="">
-      <h2 className="text-center mb-4">My Wishlist</h2>
-      <div className="table-responsive shadow rounded">
-        <table className="table table-hover align-middle text-center mb-0">
-          <thead className="table-light">
-          <tr>
-            <th>Remove</th>
-            <th>Image</th>
-            <th>Product</th>
-            <th>Unit Price</th>
-            <th>Category</th>
-            <th>Add to Cart</th>
-          </tr>
-          </thead>
-          <tbody>
-          {products.map(p => (
-            <tr key={p.id}>
-              <td>
-                <button
-                  onClick={() => dispatch(removeWishlist(p.id!))}
-                  className="btn btn-sm btn-outline-danger"
-                >
-                  <i className="fa fa-times"></i>
-                </button>
-              </td>
-              <td>
-                <img
-                  src={p.imageUrls?.[0] || "https://via.placeholder.com/60"}
-                  alt={p.name}
-                  className="rounded border"
-                  width={60}
-                  height={60}
-                  onError={(e: any) => {
-                    e.target.src = "https://via.placeholder.com/60";
-                  }}
-                />
-              </td>
-              <td className="fw-semibold">
-                <span>{p.name}</span>
-              </td>
-              <td className="text-success fw-bold">
-                ${p.price.toFixed(2)}
-              </td>
-              <td className="text-muted">
-                {p.category}
-              </td>
-              <td>
-                <button
-                  onClick={() =>
-                    dispatch(
-                      addCartList({
-                        cartItemId: p.id!,
-                        product: p,
-                        quantity: 1,
-                      })
-                    )
-                  }
-                  className="btn btn-sm btn-outline-primary"
-                >
-                  <i className="fa fa-cart-plus me-1"></i> Add to Cart
-                </button>
-              </td>
-            </tr>
-          ))}
-          {products.length === 0 && (
-            <tr>
-              <td colSpan={6}>
-                <div className="py-4 text-muted">Your wishlist is empty.</div>
-              </td>
-            </tr>
+    <div className="container py-4 py-md-5">
+      <h1 className="mb-4">Your wishlist</h1>
+      {!token ? (
+        <>
+          <p>Sign in to save and view your favorite pieces.</p>
+          <Link className="btn" to="/login">
+            Sign in
+          </Link>
+        </>
+      ) : loading ? (
+        <p role="status">Loading your wishlist…</p>
+      ) : error ? (
+        <div>
+          <p role="alert">{error}</p>
+          <button className="btn" onClick={() => setRetry(value => value + 1)}>
+            Try again
+          </button>
+        </div>
+      ) : !products.length ? (
+        <>
+          <p>Your wishlist is empty. Save pieces you love while you browse.</p>
+          <Link className="btn" to="/shop">
+            Explore the shop
+          </Link>
+        </>
+      ) : (
+        <>
+          {errorMessage && (
+            <p role="alert" className="text-danger">
+              {errorMessage}
+            </p>
           )}
-          </tbody>
-        </table>
-      </div>
+          <div className="row g-4">
+            {products.map(product => (
+              <article className="col-6 col-md-4 col-lg-3" key={product.id}>
+                <div className="border rounded h-100 overflow-hidden">
+                  <Link to={`/product/${product.id}`}>
+                    <img
+                      src={product.imageUrls?.[0] || "/product-placeholder.svg"}
+                      alt={product.name}
+                      loading="lazy"
+                      className="w-100"
+                      style={{ aspectRatio: "1", objectFit: "cover" }}
+                    />
+                  </Link>
+                  <div className="p-3">
+                    <h2 className="h6">
+                      <Link to={`/product/${product.id}`}>{product.name}</Link>
+                    </h2>
+                    <p>{money(product.price)}</p>
+                    <p className="small text-muted">
+                      {productStock(product) > 0 ? "In stock" : "Out of stock"}
+                    </p>
+                    <Link
+                      className="btn w-100 mb-2"
+                      to={`/product/${product.id}`}
+                    >
+                      View item
+                    </Link>
+                    <button
+                      className="btn btn-outline-secondary w-100"
+                      disabled={saving}
+                      onClick={() => void dispatch(removeWishlist(product.id!))}
+                      aria-label={`Remove ${product.name} from wishlist`}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </>
+      )}
     </div>
-  );
-};
-
-export default WishList;
+  )
+}
+export default WishList

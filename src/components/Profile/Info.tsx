@@ -1,10 +1,8 @@
 import React from 'react'
 import {useAppSelector} from '../../app/hooks'
-import {useNavigate} from 'react-router-dom';
+
 
 const Info = () => {
-    const user = useAppSelector(state => state.user.profile)
-    const navigate = useNavigate();
     const profile = useAppSelector((state) => state.user.profile);
 
     return (

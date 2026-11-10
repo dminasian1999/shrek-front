@@ -1,12 +1,11 @@
-import {createContext} from "react";
-import {ProductT, ReceiptT} from "./types.ts";
-
+import { createContext } from "react"
+import { ProductT, ReceiptT } from "./types.ts"
 
 export const ProductsContext = createContext({
-    products:[] as ProductT[],
-    setProducts: ([]: ProductT[]) => {},
-    receipts:[] as ReceiptT[],
-    setReceipts: ([] : ReceiptT[]) => {},
-    language:'',
-    setLanguage: (_language:string) => {},
+  products: [] as ProductT[],
+  setProducts: (() => {}) as (products: ProductT[]) => void,
+  receipts: [] as ReceiptT[],
+  setReceipts: (() => {}) as (receipts: ReceiptT[]) => void,
+  language: "",
+  setLanguage: (() => {}) as (language: string) => void,
 })
