@@ -1,291 +1,162 @@
-import React, { useState, useContext } from "react"
-import { useAppDispatch, useAppSelector } from "../../app/hooks.ts"
-import { UserEditData } from "../../utils/types.ts"
-import {
-  changePassword,
-  updateUser,
-} from "../../features/api/accountActions.ts"
-import Breadcrumb from "./Breadcrumb.tsx"
-import Address from "./Address.tsx"
-import PaymentInfo from "./PaymentInfo.tsx"
-import AddProduct from "./AddProduct.tsx"
-import { ProductsContext } from "../../utils/context.ts"
-import Products from "./Products.tsx"
+import { useState } from "react"
+import type { FormEvent } from "react"
+import { useAppDispatch, useAppSelector } from "../../app/hooks"
+import { changePassword, updateUser } from "../../features/api/accountActions"
+import Address from "./Address"
+import Products from "./Products"
+import OrderHistory from "./OrderHistory"
 
 const Account = () => {
   const dispatch = useAppDispatch()
   const profile = useAppSelector(state => state.user.profile)
-  const { language } = useContext(ProductsContext)
-
-  const [user, setUser] = useState({} as UserEditData)
-  const [edit, setEdit] = useState(false)
-  const [updatePassword, setUpdatePassword] = useState(false)
+  const [firstName, setFirstName] = useState(profile.firstName || "")
+  const [lastName, setLastName] = useState(profile.lastName || "")
   const [oldPassword, setOldPassword] = useState("")
   const [newPassword, setNewPassword] = useState("")
   const [repeatPassword, setRepeatPassword] = useState("")
+  const [busy, setBusy] = useState(false)
+  const [message, setMessage] = useState("")
+  const [error, setError] = useState("")
 
-  const resetForm = () => {
-    setUser({} as UserEditData)
-    setOldPassword("")
-    setNewPassword("")
-    setRepeatPassword("")
-  }
-
-  const handleSave = () => {
-    if (edit) {
-      dispatch(updateUser(user))
+  async function save(event: FormEvent, password: boolean) {
+    event.preventDefault()
+    setMessage("")
+    setError("")
+    if (password && newPassword !== repeatPassword) {
+      setError("The new passwords must match.")
+      return
     }
-    if (updatePassword) {
-      if (newPassword !== repeatPassword) {
-        alert(
-          language === "Armenian"
-            ? "Գաղտնաբառերը չեն համընկնում։"
-            : language === "Russian"
-              ? "Пароли не совпадают."
-              : "Passwords do not match."
-        )
-        return
+    setBusy(true)
+    try {
+      if (password) {
+        await dispatch(changePassword({ oldPassword, newPassword })).unwrap()
+        setOldPassword("")
+        setNewPassword("")
+        setRepeatPassword("")
+        setMessage("Your password has been updated.")
+      } else {
+        await dispatch(
+          updateUser({
+            firstName: firstName.trim(),
+            lastName: lastName.trim(),
+          }),
+        ).unwrap()
+        setMessage("Your profile has been saved.")
       }
-      dispatch(changePassword({ oldPassword, newPassword }))
+    } catch (cause) {
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : typeof cause === "object" && cause && "message" in cause
+            ? String(cause.message)
+            : "Unable to save. Please try again.",
+      )
+    } finally {
+      setBusy(false)
     }
-    setEdit(false)
-    setUpdatePassword(false)
-    resetForm()
   }
 
   return (
-    <>
-      <Breadcrumb />
-
-      <div className="accordion" id="accordionUserProfile">
-        <div className="accordion-item">
-          <h2 className="accordion-header" id="headingUser">
-            <button
-              className="accordion-button"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#collapseUser"
-              aria-expanded="true"
-              aria-controls="collapseUser"
-            >
-              {language === "Armenian"
-                ? "Օգտագործողի պրոֆիլ"
-                : language === "Russian"
-                  ? "Профиль пользователя"
-                  : "User Profile"}
+    <section className="container py-5">
+      <h1>My account</h1>
+      <p>Signed in as {profile.login}</p>
+      {error && (
+        <p role="alert" className="alert alert-danger">
+          {error}
+        </p>
+      )}
+      {message && (
+        <p role="status" className="alert alert-success">
+          {message}
+        </p>
+      )}
+      <div className="row g-4 mb-5">
+        <form
+          className="col-12 col-md-6"
+          onSubmit={event => void save(event, false)}
+        >
+          <fieldset disabled={busy}>
+            <legend>Profile details</legend>
+            <label htmlFor="profile-first-name">First name</label>
+            <input
+              id="profile-first-name"
+              className="form-control mb-3"
+              required
+              maxLength={100}
+              autoComplete="given-name"
+              value={firstName}
+              onChange={e => setFirstName(e.target.value)}
+            />
+            <label htmlFor="profile-last-name">Last name</label>
+            <input
+              id="profile-last-name"
+              className="form-control mb-3"
+              required
+              maxLength={100}
+              autoComplete="family-name"
+              value={lastName}
+              onChange={e => setLastName(e.target.value)}
+            />
+            <button className="btn" type="submit">
+              Save profile
             </button>
-          </h2>
-
-          <div
-            id="collapseUser"
-            className="accordion-collapse collapse show"
-            aria-labelledby="headingUser"
-          >
-            <div className="accordion-body">
-              <div className="row gx-3">
-                {/* Profile Picture */}
-                <div className="col-sm-4 col-12 mb-3 d-flex justify-content-center align-items-center text-center">
-                  <div className="fa fa-user-circle fa-5x" />
-                </div>
-
-                {/* User Info */}
-                <div className="col-sm-8 col-12">
-                  <div className="row gx-3">
-                    <div className="col-6">
-                      {/* First Name */}
-                      <div className="mb-3">
-                        <label className="form-label">
-                          {language === "Armenian"
-                            ? "Անուն"
-                            : language === "Russian"
-                              ? "Имя"
-                              : "First Name"}
-                        </label>
-                        {edit ? (
-                          <input
-                            className="form-control"
-                            value={user.firstName || ""}
-                            placeholder="First Name"
-                            onChange={e =>
-                              setUser({
-                                ...user,
-                                firstName: e.target.value.trim(),
-                              })
-                            }
-                          />
-                        ) : (
-                          <h5>{profile.firstName}</h5>
-                        )}
-                      </div>
-
-                      {/* Email */}
-                      <div className="mb-3">
-                        <label className="form-label">Email</label>
-                        <h5>{profile.login}</h5>
-                      </div>
-                    </div>
-
-                    <div className="col-6">
-                      {/* Last Name */}
-                      <div className="mb-3">
-                        <label className="form-label">
-                          {language === "Armenian"
-                            ? "Ազգանուն"
-                            : language === "Russian"
-                              ? "Фамилия"
-                              : "Last Name"}
-                        </label>
-                        {edit ? (
-                          <input
-                            className="form-control"
-                            value={user.lastName || ""}
-                            placeholder="Last Name"
-                            onChange={e =>
-                              setUser({
-                                ...user,
-                                lastName: e.target.value.trim(),
-                              })
-                            }
-                          />
-                        ) : (
-                          <h5>{profile.lastName}</h5>
-                        )}
-                      </div>
-
-                      {/* Role or Password Change */}
-                      {updatePassword ? (
-                        <div className="list-group gap-2">
-                          <input
-                            className="list-group-item"
-                            type="password"
-                            placeholder={
-                              language === "Armenian"
-                                ? "Հին գաղտնաբառ"
-                                : language === "Russian"
-                                  ? "Старый пароль"
-                                  : "Old Password"
-                            }
-                            value={oldPassword}
-                            onChange={e =>
-                              setOldPassword(e.target.value.trim())
-                            }
-                          />
-                          <input
-                            className="list-group-item"
-                            type="password"
-                            placeholder={
-                              language === "Armenian"
-                                ? "Նոր գաղտնաբառ"
-                                : language === "Russian"
-                                  ? "Новый пароль"
-                                  : "New Password"
-                            }
-                            value={newPassword}
-                            onChange={e =>
-                              setNewPassword(e.target.value.trim())
-                            }
-                          />
-                          <input
-                            className="list-group-item"
-                            type="password"
-                            placeholder={
-                              language === "Armenian"
-                                ? "Կրկնել գաղտնաբառը"
-                                : language === "Russian"
-                                  ? "Повторите пароль"
-                                  : "Repeat New Password"
-                            }
-                            value={repeatPassword}
-                            onChange={e =>
-                              setRepeatPassword(e.target.value.trim())
-                            }
-                          />
-                        </div>
-                      ) : (
-                        <div className="mb-3">
-                          <label className="form-label">
-                            {language === "Armenian"
-                              ? "Դերերը"
-                              : language === "Russian"
-                                ? "Роли"
-                                : "Roles"}
-                          </label>
-                          <ul className="mb-0">
-                            {profile.roles.map((role, idx) => (
-                              <li key={idx} className="h6">{role}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Buttons */}
-              <div className="d-flex gap-2 justify-content-end mt-4">
-                {(edit || updatePassword) ? (
-                  <>
-                    <button
-                      className="btn btn-outline-secondary"
-                      onClick={() => {
-                        setEdit(false)
-                        setUpdatePassword(false)
-                        resetForm()
-                      }}
-                    >
-                      {language === "Armenian"
-                        ? "Չեղարկել"
-                        : language === "Russian"
-                          ? "Отмена"
-                          : "Cancel"}
-                    </button>
-                    <button
-                      className="btn btn-primary"
-                      onClick={handleSave}
-                    >
-                      {language === "Armenian"
-                        ? "Պահպանել"
-                        : language === "Russian"
-                          ? "Сохранить"
-                          : "Save"}
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => setEdit(true)}
-                    >
-                      {language === "Armenian"
-                        ? "Խմբագրել օգտատիրոջ տվյալները"
-                        : language === "Russian"
-                          ? "Редактировать профиль"
-                          : "Edit User"}
-                    </button>
-                    <button
-                      className="btn btn-secondary"
-                      onClick={() => setUpdatePassword(true)}
-                    >
-                      {language === "Armenian"
-                        ? "Փոխել գաղտնաբառը"
-                        : language === "Russian"
-                          ? "Изменить пароль"
-                          : "Update Password"}
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+          </fieldset>
+        </form>
+        <form
+          className="col-12 col-md-6"
+          onSubmit={event => void save(event, true)}
+        >
+          <fieldset disabled={busy}>
+            <legend>Change password</legend>
+            <label htmlFor="old-password">Current password</label>
+            <input
+              id="old-password"
+              className="form-control mb-3"
+              type="password"
+              required
+              autoComplete="current-password"
+              value={oldPassword}
+              onChange={e => setOldPassword(e.target.value)}
+            />
+            <label htmlFor="new-password">
+              New password (at least 8 characters)
+            </label>
+            <input
+              id="new-password"
+              className="form-control mb-3"
+              type="password"
+              required
+              minLength={8}
+              maxLength={72}
+              autoComplete="new-password"
+              value={newPassword}
+              onChange={e => setNewPassword(e.target.value)}
+            />
+            <label htmlFor="repeat-password">Confirm new password</label>
+            <input
+              id="repeat-password"
+              className="form-control mb-3"
+              type="password"
+              required
+              autoComplete="new-password"
+              value={repeatPassword}
+              onChange={e => setRepeatPassword(e.target.value)}
+            />
+            <button className="btn" type="submit">
+              Update password
+            </button>
+          </fieldset>
+        </form>
       </div>
-
-      {/* Additional Sections */}
       <Address />
-      <PaymentInfo />
-      {profile.roles.includes("ADMINISTRATOR") && <Products />}
-    </>
+      <OrderHistory />
+      <p className="mt-4">
+        Payment details are entered securely with PayPal at checkout.
+      </p>
+      {profile.roles?.some(
+        role => role === "ADMINISTRATOR" || role === "MODERATOR",
+      ) && <Products />}
+    </section>
   )
 }
 

@@ -17,8 +17,8 @@ img { max-width: 100%; }
 main:focus { outline: none; }
 .store-app { min-width: 0; overflow-wrap: break-word; }
 .container { max-width: 1240px; padding-left: 28px; padding-right: 28px; }
-.skip-link { position: fixed; top: -100px; left: 16px; background: #fff; color: #213d3c; z-index: 10000; padding: 12px 20px; border: 2px solid #294f45; }
-.skip-link:focus { top: 8px; }
+.skip-link { position: fixed; top: 8px; left: 16px; background: #fff; color: #213d3c; z-index: 10000; width: 1px; height: 1px; clip-path: inset(50%); overflow: hidden; white-space: nowrap; padding: 0; border: 2px solid #294f45; }
+.skip-link:focus { clip-path: none; width: auto; height: auto; overflow: visible; padding: 12px 20px; }
 .utility-bar { background: var(--store-green); color: #fff; font-size: 12px; letter-spacing: .03em; }
 .utility-layout, .utility-actions { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .utility-layout { min-height: 38px; }
@@ -223,3 +223,7 @@ main:focus { outline: none; }
   .utility-layout { justify-content: flex-end; }
   .utility-actions { gap: 8px; }
 }
+
+/* Override legacy auto-sized checkbox rules so Bootstrap controls remain visible. */
+.store-app input.form-check-input { width: 1.2em; height: 1.2em; padding: 0; margin-top: .22em; border: 1px solid #87978a; }
+.store-app input.form-check-input:checked { background-color: var(--store-green); border-color: var(--store-green); }

@@ -21,7 +21,7 @@ const Login = () => {
           ? "Խնդրում ենք լրացնել բոլոր դաշտերը։"
           : language === "Russian"
             ? "Пожалуйста, заполните все поля."
-            : "Please fill in all fields."
+            : "Please fill in all fields.",
       )
       return
     }
@@ -50,8 +50,7 @@ const Login = () => {
           <div className="col-12 col-sm-12 col-md-6 col-lg-6 main-col offset-md-3">
             <div className="mb-4">
               <form
-                method="post"
-                action="#"
+                onSubmit={handleSubmit}
                 id="CustomerLoginForm"
                 acceptCharset="UTF-8"
                 className="contact-form"
@@ -59,7 +58,7 @@ const Login = () => {
                 <div className="row">
                   <div className="col-12 col-sm-12 col-md-12 col-lg-12">
                     <div className="form-group">
-                      <label htmlFor="CustomerEmail">
+                      <label htmlFor="email">
                         {language === "Armenian"
                           ? "Էլ. հասցե"
                           : language === "Russian"
@@ -68,6 +67,8 @@ const Login = () => {
                       </label>
                       <input
                         id="email"
+                        name="email"
+                        autoComplete="username"
                         type="email"
                         className="form-control"
                         placeholder={
@@ -87,7 +88,7 @@ const Login = () => {
                   </div>
                   <div className="col-12 col-sm-12 col-md-12 col-lg-12">
                     <div className="form-group">
-                      <label htmlFor="CustomerPassword">
+                      <label htmlFor="password">
                         {language === "Armenian"
                           ? "Գաղտնաբառ"
                           : language === "Russian"
@@ -96,6 +97,8 @@ const Login = () => {
                       </label>
                       <input
                         id="password"
+                        name="password"
+                        autoComplete="current-password"
                         type="password"
                         className="form-control"
                         placeholder={
@@ -118,11 +121,10 @@ const Login = () => {
                     <button
                       type="submit"
                       className="btn mb-3"
-                      onClick={handleSubmit}
                       disabled={loading}
                     >
                       {loading ? (
-                        <div className="spinner-border" />
+                        <span role="status">Signing in…</span>
                       ) : language === "Armenian" ? (
                         "Մուտք գործել"
                       ) : language === "Russian" ? (
@@ -137,13 +139,13 @@ const Login = () => {
                       </div>
                     )}
                     <p className="mb-4">
-                      <a href="#" id="RecoverPassword">
+                      <Link to="/forgot-password" id="RecoverPassword">
                         {language === "Armenian"
                           ? "Մոռացել եք գաղտնաբառը?"
                           : language === "Russian"
                             ? "Забыли пароль?"
                             : "Forgot your password?"}
-                      </a>{" "}
+                      </Link>{" "}
                       &nbsp; | &nbsp;
                       <Link to="/register" id="customer_register_link">
                         {language === "Armenian"

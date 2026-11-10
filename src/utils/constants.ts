@@ -1,9 +1,5 @@
-import banner1 from "../images/slideshow-banners/banner1.jpg"
-import banner2 from "../images/slideshow-banners/banner2.jpg"
-import banner3 from "../images/slideshow-banners/banner3.jpg"
-import banner4 from "../images/slideshow-banners/banner4.jpg"
 
-import logo from "../images/logo/logo.png"
+import logo from "../images/logo/gejekoushian.png"
 import pomegranates from "../images/categories/pomegranates.jpg"
 import mugs from "../images/categories/mugs.jpg"
 import hangings from "../images/categories/hangings.jpg"
@@ -43,10 +39,6 @@ export const collections = [
   { title: "Magnets", route: "magnets", image: magnets },
 ];
 
-export const banner1Img = banner1
-export const banner2Img = banner2
-export const banner3Img = banner3
-export const banner4Img = banner4
 export const logoImg = logo
 export const navItems: NavItemT[] = [
   { title: "Home", route: "home" },
@@ -62,7 +54,7 @@ export const navItems: NavItemT[] = [
   { title: "Shop", route: "shop" },
   { title: "Collections", route: "collections" },
   { title: "About", route: "about" },
-  { title: "Contact", route: "contact" },
+  { title: "Contact", route: "contact-us" },
 ]
 
 export const shopCategories = (language: string) => [
@@ -650,12 +642,13 @@ export const categories = (language: string) => [
   },
 ]
 
-// export const baseUrl = "http://localhost:8080/users"
-// export const baseUrlBlog = "http://localhost:8080"
-export const baseUrl = "https://shrek-back.onrender.com/users";
-export const baseUrlBlog = "https://shrek-back.onrender.com";
-export const createToken = (login: string, password: string) =>
-  `Basic ${window.btoa(login + ":" + password)}`
+// Set VITE_API_BASE_URL for local/staging deployments; never include credentials.
+export const baseUrlBlog = (import.meta.env.VITE_API_BASE_URL || "https://shrek-back.onrender.com").replace(/\/+$/, "")
+export const baseUrl = `${baseUrlBlog}/users`
+export const createToken = (login: string, password: string) => {
+  const bytes = new TextEncoder().encode(`${login.trim()}:${password}`)
+  return `Basic ${btoa(Array.from(bytes, byte => String.fromCharCode(byte)).join(""))}`
+}
 
 export const defaultPic = ""
 
@@ -669,7 +662,7 @@ export const adminInfo = (language: string) => ({
         ? "Украшения"
         : "Jewelry",
   lastName: "Admin",
-  phone: " +9725858585",
+  phone: "+972-54-71-62-237",
   address:
     language === "Armenian"
       ? "Old City, Jerusalem, Israel"
@@ -682,7 +675,7 @@ export const adminInfo = (language: string) => ({
       : language === "Russian"
         ? "Israel"
         : "Israel",
-  email: "sevan@gmail.com",
+  email: "gejekoushiangifts@gmail.com",
 })
 export const allMaterials = [
   "Wood",

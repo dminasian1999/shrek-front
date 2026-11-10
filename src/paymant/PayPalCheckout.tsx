@@ -106,7 +106,7 @@ export default function PayPalCheckout({
                   "Payment has not been confirmed. Please contact the shop before retrying.",
                 )
               onPaid(paid)
-              void dispatch(fetchUser(token))
+              void dispatch(fetchUser({ token, refresh: true }))
             } catch (cause) {
               setError(
                 cause instanceof Error

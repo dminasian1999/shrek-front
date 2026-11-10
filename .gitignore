@@ -25,3 +25,8 @@ dist-ssr
 
 .yalc/
 yalc.lock
+
+# Local credentials and environment overrides
+.env
+.env.*
+!.env.example
