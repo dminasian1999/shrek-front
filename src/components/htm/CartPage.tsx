@@ -1,9 +1,21 @@
+import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { useAppSelector } from "../../app/hooks"
 import CartPageRow from "./CartPageRow"
 import { cartSubtotal, money } from "../../utils/commerce"
+import "./cart.css"
 
 const CartPage = () => {
+  const [compact, setCompact] = useState(
+    () => window.matchMedia?.("(max-width: 767px)").matches ?? false,
+  )
+  useEffect(() => {
+    const viewport = window.matchMedia?.("(max-width: 767px)")
+    if (!viewport) return
+    const update = () => setCompact(viewport.matches)
+    viewport.addEventListener("change", update)
+    return () => viewport.removeEventListener("change", update)
+  }, [])
   const token = useAppSelector(state => state.token)
   const { profile, errorMessage, loading } = useAppSelector(state => state.user)
   const items = profile.cart?.items ?? []
@@ -35,31 +47,39 @@ const CartPage = () => {
             </p>
           )}
           {loading && <p role="status">Updating your cart…</p>}
-          <div className="table-responsive mb-4">
-            <table className="table align-middle" aria-busy={loading}>
-              <caption className="visually-hidden">
-                Products in your shopping cart
-              </caption>
-              <thead>
-                <tr>
-                  <th colSpan={2} scope="col">
-                    Product
-                  </th>
-                  <th scope="col">Price</th>
-                  <th scope="col">Quantity</th>
-                  <th scope="col">Total</th>
-                  <th scope="col">
-                    <span className="visually-hidden">Remove</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map(item => (
-                  <CartPageRow key={item.cartItemId} cardItem={item} />
-                ))}
-              </tbody>
-            </table>
-          </div>
+          {compact ? (
+            <div className="cart-mobile-list mb-4" aria-busy={loading}>
+              {items.map(item => (
+                <CartPageRow key={item.cartItemId} cardItem={item} compact />
+              ))}
+            </div>
+          ) : (
+            <div className="cart-desktop-table mb-4">
+              <table className="table align-middle" aria-busy={loading}>
+                <caption className="visually-hidden">
+                  Products in your shopping cart
+                </caption>
+                <thead>
+                  <tr>
+                    <th colSpan={2} scope="col">
+                      Product
+                    </th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">
+                      <span className="visually-hidden">Remove</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {items.map(item => (
+                    <CartPageRow key={item.cartItemId} cardItem={item} />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
           <div className="row g-4">
             <div className="col-md-7">
               <Link to="/shop">← Continue shopping</Link>
