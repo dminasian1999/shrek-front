@@ -494,7 +494,7 @@ export default function ProductEditor({
                         }
                       />
                     </div>
-                    <div className="col-8 col-sm-4">
+                    <div className="col-12 col-sm-4">
                       <label
                         htmlFor={`editor-stock-${index}`}
                         className="form-label"
@@ -521,7 +521,7 @@ export default function ProductEditor({
                         }
                       />
                     </div>
-                    <div className="col-4 col-sm-3 d-flex align-items-end">
+                    <div className="col-12 col-sm-3 d-flex align-items-end">
                       <button
                         type="button"
                         className="btn btn-outline-danger w-100"
