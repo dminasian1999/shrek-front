@@ -9,7 +9,7 @@ import {
 } from "@testing-library/react"
 import { Provider } from "react-redux"
 import { configureStore } from "@reduxjs/toolkit"
-import { MemoryRouter, Route, Routes } from "react-router-dom"
+import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom"
 import userReducer from "../../features/slices/userSlice"
 import tokenReducer from "../../features/slices/tokenSlice"
 import type { UserProfile } from "../../utils/types"
@@ -279,5 +279,72 @@ describe("commerce regression checks", () => {
     await approve({ orderID: "paypal-order" })
     await screen.findByRole("alert")
     expect(onPaid).not.toHaveBeenCalled()
+  })
+  it("keeps two variants separate and reuses the same cart key for repeated additions", async () => {
+    const variants = {
+      ...product,
+      sizeQuantities: [
+        { size: "Small/round", quantity: 3 },
+        { size: "Large", quantity: 3 },
+      ],
+    }
+    const request = vi
+      .fn()
+      .mockResolvedValueOnce(response(variants))
+      .mockImplementation(() => Promise.resolve(response(profile)))
+    vi.stubGlobal("fetch", request)
+    show(
+      <Routes>
+        <Route path="/product/:id" element={<ProductPage />} />
+      </Routes>,
+      true,
+      profile,
+      "/product/p1",
+    )
+    await screen.findByRole("heading", { name: product.name })
+    fireEvent.click(screen.getByRole("button", { name: "Add to cart" }))
+    await screen.findByRole("status")
+    fireEvent.change(screen.getByLabelText("Size / option"), {
+      target: { value: "Large" },
+    })
+    fireEvent.click(screen.getByRole("button", { name: "Add to cart" }))
+    await waitFor(() => expect(request).toHaveBeenCalledTimes(3))
+    await waitFor(() =>
+      expect(
+        (
+          screen.getByRole("button", {
+            name: "Add to cart",
+          }) as HTMLButtonElement
+        ).disabled,
+      ).toBe(false),
+    )
+    fireEvent.click(screen.getByRole("button", { name: "Add to cart" }))
+    await waitFor(() => expect(request).toHaveBeenCalledTimes(4))
+    const [small, large, repeatedLarge] = request.mock.calls
+      .slice(1)
+      .map(call => JSON.parse(call[1].body))
+    expect(small.selectedSize).toBe("Small/round")
+    expect(large.selectedSize).toBe("Large")
+    expect(small.cartItemId).not.toBe(large.cartItemId)
+    expect(small.cartItemId).not.toContain("/")
+    expect(repeatedLarge.cartItemId).toBe(large.cartItemId)
+  })
+  it("preserves the product destination when a guest signs in to add an item", async () => {
+    const Destination = () => (
+      <p>{(useLocation().state as { from: string }).from}</p>
+    )
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response(product)))
+    show(
+      <Routes>
+        <Route path="/product/:id" element={<ProductPage />} />
+        <Route path="/login" element={<Destination />} />
+      </Routes>,
+      false,
+      profile,
+      "/product/p1",
+    )
+    await screen.findByRole("heading", { name: product.name })
+    fireEvent.click(screen.getByRole("button", { name: "Add to cart" }))
+    expect(await screen.findByText("/product/p1")).toBeTruthy()
   })
 })

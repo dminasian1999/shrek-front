@@ -52,7 +52,9 @@ const ProductPage = () => {
 
   const add = async (wishlist: boolean) => {
     if (!token) {
-      navigate("/login")
+      navigate("/login", {
+        state: { from: `/product/${encodeURIComponent(id)}` },
+      })
       return
     }
     if (!product?.id) return
@@ -63,7 +65,7 @@ const ProductPage = () => {
       else
         await dispatch(
           addCartList({
-            cartItemId: product.id,
+            cartItemId: `${product.id}:${encodeURIComponent(selectedSize)}`,
             product,
             selectedSize,
             quantity: 1,
