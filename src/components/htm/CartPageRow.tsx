@@ -1,85 +1,87 @@
-import React from "react";
-import { useAppDispatch } from "../../app/hooks.ts";
-import { updateCartList, removeCartList } from "../../features/api/accountActions.ts";
-import { CartItem } from "../../utils/types.ts";
+import { Link } from "react-router-dom"
+import { useAppDispatch, useAppSelector } from "../../app/hooks"
+import {
+  updateCartList,
+  removeCartList,
+} from "../../features/api/accountActions"
+import type { CartItem } from "../../utils/types"
+import { money, productStock } from "../../utils/commerce"
 
 const CartPageRow = ({ cardItem }: { cardItem: CartItem }) => {
-  const dispatch = useAppDispatch();
-
-  const handleDecrease = (e: React.MouseEvent) => {
-    e.preventDefault();
-    dispatch(updateCartList({ productId: cardItem.product.id!, isAdd: false }));
-  };
-
-  const handleIncrease = (e: React.MouseEvent) => {
-    e.preventDefault();
-    dispatch(updateCartList({ productId: cardItem.product.id!, isAdd: true }));
-  };
-
-  const handleRemove = (e: React.MouseEvent) => {
-    e.preventDefault();
-    dispatch(
-      removeCartList({
-        cartItemId: cardItem.product.id!,
-        product: cardItem.product,
-        quantity: 1,
-      })
-    );
-  };
-
+  const dispatch = useAppDispatch()
+  const loading = useAppSelector(state => state.user.loading)
+  const { product, quantity, cartItemId } = cardItem
   return (
-    <tr className="align-middle">
+    <tr>
       <td>
-        <img
-          src={cardItem.product.imageUrls[0]}
-          alt={cardItem.product.name}
-          className="img-fluid rounded"
-          style={{ maxWidth: "80px", height: "auto" }}
-        />
+        <Link to={`/product/${product.id}`} tabIndex={-1} aria-hidden="true">
+          <img
+            src={product.imageUrls?.[0] || "/product-placeholder.svg"}
+            alt=""
+            width={72}
+            height={72}
+            className="rounded"
+            style={{ objectFit: "cover", minWidth: 60 }}
+          />
+        </Link>
       </td>
       <td>
-        <strong>{cardItem.product.name}</strong>
-        <div className="text-muted small">{cardItem.product.category}</div>
+        <Link to={`/product/${product.id}`}>{product.name}</Link>
+        {cardItem.selectedSize && (
+          <div className="small text-muted">{cardItem.selectedSize}</div>
+        )}
       </td>
-      <td>${cardItem.product.price.toFixed(2)}</td>
+      <td>{money(product.price)}</td>
       <td>
-        <div className="input-group input-group-sym justify-content-center">
+        <div
+          className="d-flex align-items-center gap-2"
+          style={{ minWidth: 130 }}
+        >
           <button
-            className="btn btn-outline-secondary"
-            onClick={handleDecrease}
-            aria-label="Decrease quantity"
+            type="button"
+            className="btn btn-outline-secondary p-2"
+            disabled={loading || quantity <= 1}
+            onClick={() =>
+              void dispatch(
+                updateCartList({ productId: cartItemId, isAdd: false }),
+              )
+            }
+            aria-label={`Decrease quantity of ${product.name}`}
           >
             −
           </button>
-          <input
-            type="text"
-            className="form-control text-center"
-            value={cardItem.quantity}
-            readOnly
-            aria-label="Quantity"
-            style={{ width: "50px" }}
-          />
+          <span aria-label={`Quantity: ${quantity}`}>{quantity}</span>
           <button
-            className="btn btn-outline-secondary"
-            onClick={handleIncrease}
-            aria-label="Increase quantity"
+            type="button"
+            className="btn btn-outline-secondary p-2"
+            disabled={
+              loading ||
+              quantity >= productStock(product, cardItem.selectedSize)
+            }
+            onClick={() =>
+              void dispatch(
+                updateCartList({ productId: cartItemId, isAdd: true }),
+              )
+            }
+            aria-label={`Increase quantity of ${product.name}`}
           >
             +
           </button>
         </div>
       </td>
-      <td>${(cardItem.product.price * cardItem.quantity).toFixed(2)}</td>
+      <td>{money(product.price * quantity)}</td>
       <td>
         <button
-          className="btn btn-outline-danger btn-sm"
-          onClick={handleRemove}
-          aria-label={`Remove ${cardItem.product.name}`}
+          type="button"
+          className="btn btn-outline-secondary p-2"
+          disabled={loading}
+          onClick={() => void dispatch(removeCartList(cardItem))}
+          aria-label={`Remove ${product.name}`}
         >
-          <i className="fa fa-trash" />
+          ×
         </button>
       </td>
     </tr>
-  );
-};
-
-export default CartPageRow;
+  )
+}
+export default CartPageRow

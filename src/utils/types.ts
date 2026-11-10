@@ -23,6 +23,9 @@ export interface CollectionT {
 // }
 
 export interface ProductT {
+  sizeQuantities?: { size: string; quantity: number }[]
+  subCategory?: string
+  weight?: number
   id?: string
   name: string
   imageUrls: string[]
@@ -34,7 +37,6 @@ export interface ProductT {
   desc: string
   dateCreated?: Date
 }
-
 
 export interface ReceiptT {
   id: string
@@ -76,33 +78,32 @@ export enum UpdateMode {
 export interface cartItem {
   productID: string
 
-quantity: number
+  quantity: number
 }
 
 export interface QueryT {
-  sortField?: string;
-  asc?: boolean;
-  id?: string;
-  name?: string;
-  category?: string;
-  color?: string;
+  sortField?: string
+  asc?: boolean
+  id?: string
+  name?: string
+  category?: string
+  color?: string
   material?: string
-  desc?: string,
-  minPrice?: number,
-  maxPrice?: number,
-  dateCreated?: Date,
-  dateFrom?: Date,
-  dateTo?: Date,
+  desc?: string
+  minPrice?: number
+  maxPrice?: number
+  dateCreated?: Date
+  dateFrom?: Date
+  dateTo?: Date
 }
 export interface UserProfile {
-
   firstName: string
   lastName: string
   login: string
   roles: string[]
   address?: AddressT
-  cart: Cart,
-  paymentMethod?:PaymentMethodT,
+  cart: Cart
+  paymentMethod?: PaymentMethodT
   wishList?: string[]
   orders?: Order[]
 }
@@ -143,21 +144,23 @@ export interface AddressT {
 export interface Order {
   orderId: string
   userId: string
-  status: "pending" | "paid" | "shipped" | "delivered" | "cancelled"
-  orderItems: [OrderItem]
-  totalAmount: 0
+  status: "PENDING" | "PAID" | "SHIPPED" | "DELIVERED" | "CANCELLED"
+  orderItems: OrderItem[]
+  totalAmount: number
+  shippingCost: number
+  currencyCode: string
   shippingAddress: AddressT
-  paymentMethod: "card" | "paypal" | "bank" | "cash"
-  paymentStatus: "unpaid" | "paid" | "failed"
-  createdAt: Date
+  paymentMethod: string
+  dateCreated: string
 }
 
 export interface OrderItem {
-  id: string
-  orderId: string
   productId: string
-  quantity: 0
-  priceAtPurchase: 0
+  product?: ProductT
+  cartItemId?: string
+  selectedSize?: string
+  quantity: number
+  unitPrice: number
 }
 
 export interface Cart {
@@ -167,9 +170,10 @@ export interface Cart {
 }
 
 export interface CartItem {
-  cartItemId: string;
-   product: ProductT;
-  quantity : number;
+  selectedSize?: string
+  cartItemId: string
+  product: ProductT
+  quantity: number
 }
 
 export interface ShipmentTracking {

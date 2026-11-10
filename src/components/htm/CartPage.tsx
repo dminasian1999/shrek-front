@@ -1,140 +1,94 @@
-import React, { useState } from "react"
-import { useAppSelector } from "../../app/hooks.ts";
-import CartPageRow from "./CartPageRow.tsx";
-import PayPalCheckout from "../../paymant/PayPalCheckout.tsx";
+import { Link } from "react-router-dom"
+import { useAppSelector } from "../../app/hooks"
+import CartPageRow from "./CartPageRow"
+import { cartSubtotal, money } from "../../utils/commerce"
 
 const CartPage = () => {
-  const cart = useAppSelector((state) => state.user.profile.cart);
-  const [termsAccepted, setTermsAccepted] = useState(false);
-
+  const token = useAppSelector(state => state.token)
+  const { profile, errorMessage, loading } = useAppSelector(state => state.user)
+  const items = profile.cart?.items ?? []
   return (
-    <div className="px-1">
-      <div className="text-center mb-4">
-        <h1 className="fw-bold">Shopping Cart</h1>
-      </div>
-
-      <div className="alert alert-success text-center">
-        <i className="fa fa-truck me-2" />
-        <strong>Congratulations!</strong> You've got free shipping!
-      </div>
-
-      <div className="table-responsive mb-4">
-        <table className="table table-hover align-middle text-center">
-          <thead className="table-light">
-          <tr>
-            <th colSpan={2}>Product</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Total</th>
-            <th />
-          </tr>
-          </thead>
-          <tbody>
-          {cart.items.map((item) => (
-            <CartPageRow key={item.cartItemId} cardItem={item} />
-          ))}
-          </tbody>
-          <tfoot>
-          <tr>
-            <td colSpan={6}>
-              <a href="/" className="btn btn-outline-secondary w-100 w-md-auto">
-                Continue Shopping
-              </a>
-            </td>
-          </tr>
-          </tfoot>
-        </table>
-      </div>
-
-      <div className="row gy-4">
-        {/* Estimate Shipping */}
-        <div className="col-12 col-md-6">
-          <div className="border rounded p-4 h-100 shadow-sm">
-            <h5 className="fw-bold mb-3">Estimate Shipping and Tax</h5>
-            <form>
-              <div className="mb-3">
-                <label htmlFor="country" className="form-label">Country</label>
-                <select className="form-select" id="country">
-                  <option value="">Select Country</option>
-                  <option>Armenia</option>
-                  <option>United States</option>
-                  <option>Germany</option>
-                  <option>France</option>
-                  <option>United Kingdom</option>
-                </select>
-              </div>
-              <div className="mb-3">
-                <label htmlFor="state" className="form-label">State</label>
-                <input type="text" id="state" className="form-control" />
-              </div>
-              <div className="mb-3">
-                <label htmlFor="zip" className="form-label">Postal Code</label>
-                <input type="text" id="zip" className="form-control" />
-              </div>
-              <button type="button" className="btn btn-secondary w-100">
-                Calculate Shipping
-              </button>
-            </form>
-          </div>
+    <div className="container py-4 py-md-5">
+      <h1 className="mb-4">Your shopping cart</h1>
+      {!token ? (
+        <div className="py-4">
+          <p>Sign in to view your cart and save your favorite pieces.</p>
+          <Link className="btn" to="/login">
+            Sign in
+          </Link>{" "}
+          <Link className="btn btn-outline-secondary" to="/shop">
+            Explore the shop
+          </Link>
         </div>
-
-        {/* Cart Summary */}
-        <div className="col-12 col-md-6">
-          <div className="border rounded p-4 shadow-sm h-100">
-            <h5 className="fw-bold mb-3">Cart Summary</h5>
-            <div className="d-flex justify-content-between border-bottom pb-2">
-              <span>Subtotal</span>
-              <span>${cart.totalPrice?.toFixed(2)}</span>
-            </div>
-            <div className="d-flex justify-content-between border-bottom py-2">
-              <span>Shipping</span>
-              <span>Free</span>
-            </div>
-            <div className="d-flex justify-content-between border-bottom py-2 fw-bold">
-              <span>Grand Total</span>
-              <span>${cart.totalPrice?.toFixed(2)}</span>
-            </div>
-
-            <div className="form-check my-3">
-              <input
-                type="checkbox"
-                className="me-2"
-                id="terms"
-                required
-                checked={termsAccepted}
-                onChange={(e) => setTermsAccepted(e.target.checked)}
-              />
-              <label className="form-check-label" htmlFor="terms">
-                I agree with the terms and conditions
-              </label>
-            </div>
-
-            <PayPalCheckout amount={cart.totalPrice?.toFixed(2)} />
-
-            <button
-              type="submit"
-              className="btn btn-primary w-100 mt-3"
-              disabled={!termsAccepted}
-            >
-              Proceed To Checkout
-            </button>
-
-            <div className="text-center mt-3">
-              <img
-                src="src/images/payment-img.jpg"
-                alt="Accepted payment methods"
-                className="img-fluid"
-                style={{ maxHeight: "60px" }}
-              />
-              <p className="mt-2 mb-0">
-                <a href="#">Checkout with Multiple Addresses</a>
+      ) : !items.length ? (
+        <div className="py-4">
+          <p>Your cart is empty. Find something made to be treasured.</p>
+          <Link className="btn" to="/shop">
+            Explore the shop
+          </Link>
+        </div>
+      ) : (
+        <>
+          {errorMessage && (
+            <p className="alert alert-danger" role="alert">
+              {errorMessage}
+            </p>
+          )}
+          <div className="table-responsive mb-4">
+            <table className="table align-middle">
+              <caption className="visually-hidden">
+                Products in your shopping cart
+              </caption>
+              <thead>
+                <tr>
+                  <th colSpan={2} scope="col">
+                    Product
+                  </th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Total</th>
+                  <th scope="col">
+                    <span className="visually-hidden">Remove</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map(item => (
+                  <CartPageRow key={item.cartItemId} cardItem={item} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="row g-4">
+            <div className="col-md-7">
+              <Link to="/shop">← Continue shopping</Link>
+              <p className="text-muted mt-3">
+                We’ll calculate shipping and confirm the total at checkout.
               </p>
             </div>
+            <div className="col-md-5">
+              <section className="p-4 border rounded">
+                <h2 className="h4">Order summary</h2>
+                <div className="d-flex justify-content-between my-3">
+                  <span>Subtotal</span>
+                  <strong>{money(cartSubtotal(items))}</strong>
+                </div>
+                <p className="small text-muted">
+                  Shipping is calculated at checkout.
+                </p>
+                <Link
+                  className={`btn w-100 ${loading ? "disabled" : ""}`}
+                  aria-disabled={loading}
+                  to="/checkout"
+                >
+                  Proceed to checkout
+                </Link>
+              </section>
+            </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
     </div>
-  );
-};
-
-export default CartPage;
+  )
+}
+export default CartPage

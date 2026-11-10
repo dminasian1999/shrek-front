@@ -1,184 +1,249 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { ProductT } from "../../utils/types.ts";
-import { getPostById } from "../../features/api/postActions.tsx";
-import { addCartList, addWishlist } from "../../features/api/accountActions.ts";
-import { useAppDispatch } from "../../app/hooks.ts";
-import { categories } from "../../utils/constants.ts";
+import { useEffect, useState } from "react"
+import { Link, useNavigate, useParams } from "react-router-dom"
+import type { ProductT } from "../../utils/types"
+import { getPostById } from "../../features/api/postActions"
+import { addCartList, addWishlist } from "../../features/api/accountActions"
+import { useAppDispatch, useAppSelector } from "../../app/hooks"
+import { money, productStock, commerceError } from "../../utils/commerce"
 
 const ProductPage = () => {
-  const { id = "" } = useParams();
-  const dispatch = useAppDispatch();
-
-  const [product, setProduct] = useState<ProductT | null>(null);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { id = "" } = useParams()
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
+  const token = useAppSelector(state => state.token)
+  const busy = useAppSelector(state => state.user.loading)
+  const [product, setProduct] = useState<ProductT | null>(null)
+  const [selectedImage, setSelectedImage] = useState("")
+  const [selectedSize, setSelectedSize] = useState("")
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
+  const [message, setMessage] = useState("")
+  const [retry, setRetry] = useState(0)
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      setLoading(true);
-      try {
-        const data = await getPostById(id);
-        setProduct(data);
-        setSelectedImage(data.imageUrls?.[0] || null);
-        setErrorMessage(null);
-      } catch {
-        setErrorMessage("Error loading product.");
-      } finally {
-        setLoading(false);
-      }
-    };
+    let active = true
+    setLoading(true)
+    setError("")
+    setProduct(null)
+    getPostById(id)
+      .then(data => {
+        if (active) {
+          setProduct(data)
+          setSelectedSize(
+            data.sizeQuantities?.find(variant => variant.quantity > 0)?.size ||
+              "",
+          )
+          setSelectedImage(data.imageUrls?.[0] || "/product-placeholder.svg")
+        }
+      })
+      .catch(() => {
+        if (active)
+          setError(
+            "This product could not be loaded. It may no longer be available.",
+          )
+      })
+      .finally(() => {
+        if (active) setLoading(false)
+      })
+    return () => {
+      active = false
+    }
+  }, [id, retry])
 
-    fetchProduct();
-  }, [id]);
-
-  if (loading) {
-    return (
-      <main className="d-flex flex-column align-items-center justify-content-center vh-100 bg-light text-center">
-        <div className="spinner-border text-primary" style={{ width: "4rem", height: "4rem" }} />
-        <p className="mt-3 fs-5 text-muted">Loading...</p>
-      </main>
-    );
+  const add = async (wishlist: boolean) => {
+    if (!token) {
+      navigate("/login")
+      return
+    }
+    if (!product?.id) return
+    setMessage("")
+    setError("")
+    try {
+      if (wishlist) await dispatch(addWishlist(product.id)).unwrap()
+      else
+        await dispatch(
+          addCartList({
+            cartItemId: product.id,
+            product,
+            selectedSize,
+            quantity: 1,
+          }),
+        ).unwrap()
+      setMessage(wishlist ? "Saved to your wishlist." : "Added to your cart.")
+    } catch (cause) {
+      setError(
+        commerceError(cause, "Unable to save this item. Please try again."),
+      )
+    }
   }
 
-  if (!product) {
+  if (loading)
     return (
-      <main className="container text-center mt-5 text-danger">
-        <h4>{errorMessage || "Product not found."}</h4>
-      </main>
-    );
-  }
-
-  const categoryTitle = categories("English").find(c => c.route === product.category)?.title || product.category || "-";
+      <div className="container py-5" role="status">
+        Loading product…
+      </div>
+    )
+  if (!product)
+    return (
+      <div className="container py-5">
+        <h1>Product unavailable</h1>
+        <p role="alert">{error}</p>
+        <button className="btn" onClick={() => setRetry(value => value + 1)}>
+          Try again
+        </button>{" "}
+        <Link to="/shop">Browse the shop</Link>
+      </div>
+    )
 
   return (
-    <main className="container-fluid p-0">
-      <div className="row">
-        {/* Image Section */}
-        <div className="col-md-6  ">
-          {/* Main Image */}
-          <div className=" rounded shadow-sm mb-3 overflow-hidden position-relative">
-            <img
-              src={selectedImage || ""}
-              alt="Selected Product"
-              className="img-fluid w-100"
-              style={{
-                objectFit: "cover",
-                height: 400,
-                transition: "transform 0.3s ease-in-out",
-              }}
-              onMouseOver={e => (e.currentTarget.style.transform = "scale(1.03)")}
-              onMouseOut={e => (e.currentTarget.style.transform = "scale(1)")}
-            />
-          </div>
-
-          {/* Thumbnails */}
-          <div className="d-flex gap-2 overflow-auto pb-2">
-            {product.imageUrls?.map((url, idx) => (
-              <button
-                key={idx}
-                className={`border p-1 rounded-2 bg-white shadow-sm ${
-                  selectedImage === url ? "border-primary border-3" : "border-light"
-                }`}
-                style={{
-                  width: 80,
-                  height: 80,
-                  flex: "0 0 auto",
-                  backgroundImage: `url(${url})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  cursor: "pointer",
-                  transition: "all 0.2s ease-in-out",
-                }}
-                onClick={() => setSelectedImage(url)}
-                aria-label={`Select image ${idx + 1}`}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Info Section */}
-        <div className="col-md-6 card shadow-sm border-0 ">
-            <div className="card-body">
-              <h2 className="card-title fw-bold mb-3">{product.name}</h2>
-
-              <div className="mb-3">
-                <span className="text-muted me-2 text-decoration-line-through">
-                  ${(product.price * 1.3).toFixed(2)}
-                </span>
-                <span className="text-success fs-4 fw-semibold">${product.price.toFixed(2)}</span>
-              </div>
-
-              <div className="mb-3">
-                <span className="badge bg-light text-dark me-2">ID: {product.id}</span>
-                <span className="badge bg-info text-white">{categoryTitle}</span>
-              </div>
-
-              <div className="mb-3">
-                <strong>Status:</strong>{" "}
-                {product.quantity > 0 ? (
-                  <span className="badge bg-success">In Stock</span>
-                ) : (
-                  <span className="badge bg-danger">Out of Stock</span>
-                )}
-              </div>
-
-              {product.color && (
-                <div className="mb-3 d-flex align-items-center gap-2">
-                  <strong>Color:</strong>
-                  <span
-                    title={product.color}
-                    style={{
-                      width: 20,
-                      height: 20,
-                      backgroundColor: product.color,
-                      borderRadius: "50%",
-                      border: "1px solid #ccc",
-                    }}
+    <div className="container py-4 py-md-5">
+      <nav aria-label="Breadcrumb" className="mb-4">
+        <Link to="/shop">Shop</Link> <span aria-hidden="true">/</span>{" "}
+        <span>{product.name}</span>
+      </nav>
+      <div className="row g-4 g-lg-5">
+        <div className="col-md-6">
+          <img
+            src={selectedImage}
+            alt={product.name}
+            className="w-100 rounded"
+            style={{
+              aspectRatio: "1",
+              objectFit: "contain",
+              background: "#f5f2ee",
+            }}
+            onError={event => {
+              event.currentTarget.src = "/product-placeholder.svg"
+            }}
+          />
+          {product.imageUrls?.length > 1 && (
+            <div className="d-flex gap-2 overflow-auto py-3">
+              {product.imageUrls.map((url, index) => (
+                <button
+                  key={url}
+                  type="button"
+                  onClick={() => setSelectedImage(url)}
+                  aria-label={`View ${product.name}, image ${index + 1}`}
+                  aria-pressed={selectedImage === url}
+                  className="p-1 bg-white rounded"
+                  style={{
+                    flex: "0 0 72px",
+                    border:
+                      selectedImage === url
+                        ? "2px solid #8f392a"
+                        : "1px solid #ddd",
+                  }}
+                >
+                  <img
+                    src={url}
+                    alt=""
+                    width={64}
+                    height={64}
+                    style={{ objectFit: "cover" }}
                   />
-                  <span className="text-capitalize">{product.color}</span>
-                </div>
-              )}
-
-                <div className="mb-3">
-                  <strong>Material:</strong>
-                  <div className="d-flex flex-wrap gap-2 mt-1">
-                      <span  className="badge bg-secondary">{product.material}</span>
-                  </div>
-                </div>
-
-              <div className="mb-3">
-                <strong>Description:</strong>
-                <p className="mt-1 text-break" style={{ whiteSpace: "pre-wrap" }}>
-                  {product.desc || "-"}
-                </p>
-              </div>
-
-              <div className="mb-4">
-                <strong>Created:</strong>{" "}
-                {product.dateCreated ? new Date(product.dateCreated).toLocaleDateString() : "-"}
-              </div>
-
-              <div className="d-flex flex-wrap gap-3">
-                <button
-                  className="btn btn-lg btn-primary px-4"
-                  onClick={() => dispatch(addCartList({ cartItemId: product.id!, product, quantity: 1 }))}
-                >
-                  <i className="fa fa-shopping-cart me-2" /> Add to Cart
                 </button>
-                <button
-                  className="btn btn-lg btn-outline-dark px-4"
-                  onClick={() => dispatch(addWishlist(product.id!))}
-                >
-                  <i className="fa fa-heart me-2" /> Add to Wishlist
-                </button>
-              </div>
+              ))}
             </div>
+          )}
+        </div>
+        <div className="col-md-6">
+          <p className="text-uppercase text-muted small">
+            {product.category?.replace(/-/g, " ")}
+          </p>
+          <h1 className="mb-3">{product.name}</h1>
+          <p className="fs-3 fw-semibold">{money(product.price)}</p>
+          <p>
+            {productStock(product, selectedSize) > 0
+              ? "In stock"
+              : "Currently out of stock"}
+          </p>
+          {Boolean(product.sizeQuantities?.length) && (
+            <div className="mb-4">
+              <label htmlFor="product-size" className="form-label">
+                Size / option
+              </label>
+              <select
+                id="product-size"
+                className="form-select"
+                value={selectedSize}
+                onChange={event => setSelectedSize(event.target.value)}
+              >
+                {product.sizeQuantities!.map(variant => (
+                  <option
+                    value={variant.size}
+                    key={variant.size}
+                    disabled={variant.quantity <= 0}
+                  >
+                    {variant.size}
+                    {variant.quantity <= 0 ? " — out of stock" : ""}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          <p style={{ whiteSpace: "pre-wrap" }}>{product.desc}</p>
+          {(product.material || product.color) && (
+            <dl className="row border-top border-bottom py-3 my-4">
+              {product.material && (
+                <>
+                  <dt className="col-4">Material</dt>
+                  <dd className="col-8">{product.material}</dd>
+                </>
+              )}
+              {product.color && (
+                <>
+                  <dt className="col-4">Color</dt>
+                  <dd className="col-8">{product.color}</dd>
+                </>
+              )}
+            </dl>
+          )}
+          {error && (
+            <p role="alert" className="text-danger">
+              {error}
+            </p>
+          )}
+          {message && (
+            <p role="status" className="text-success">
+              {message}{" "}
+              {!message.includes("wishlist") && (
+                <Link to="/cart">View cart</Link>
+              )}
+            </p>
+          )}
+          <div className="d-flex flex-wrap gap-3">
+            <button
+              type="button"
+              className="btn flex-grow-1"
+              disabled={busy || productStock(product, selectedSize) <= 0}
+              onClick={() => void add(false)}
+            >
+              {productStock(product, selectedSize) <= 0
+                ? "Out of stock"
+                : busy
+                  ? "Saving…"
+                  : "Add to cart"}
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline-secondary"
+              disabled={busy}
+              onClick={() => void add(true)}
+            >
+              Save to wishlist
+            </button>
+          </div>
+          {!token && (
+            <p className="small text-muted mt-3">
+              Sign in to save items and check out.
+            </p>
+          )}
+          <p className="small text-muted mt-4">
+            Shipping is calculated from your delivery address at checkout.
+          </p>
         </div>
       </div>
-    </main>
-  );
-};
-
-export default ProductPage;
+    </div>
+  )
+}
+export default ProductPage
