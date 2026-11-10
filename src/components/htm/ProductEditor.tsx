@@ -320,7 +320,10 @@ export default function ProductEditor({
       {message && (
         <p className="alert alert-success" role="status">
           {message}{" "}
-          <Link to={`/product/${encodeURIComponent(productId || "")}`}>
+          <Link
+            className="text-decoration-underline"
+            to={`/product/${encodeURIComponent(productId || "")}`}
+          >
             View product
           </Link>
         </p>
