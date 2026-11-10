@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from "vitest"
 import {
+  act,
   cleanup,
   fireEvent,
   render,
@@ -20,7 +21,8 @@ const product = (name: string): ProductT => ({
   id: name,
   name,
   imageUrls: [],
-  quantity: 1,
+  quantity: 0,
+  sizeQuantities: [{ size: "Standard", quantity: 1 }],
   price: 10,
   category: "ceramics",
   color: "blue",
@@ -74,11 +76,14 @@ describe("catalog search", () => {
       target: { value: "plate" },
     })
     await screen.findByRole("heading", { name: "Blue plate" })
-    finishOld(response([product("Old mug")]))
+    await act(async () => {
+      finishOld(response([product("Old mug")]))
+    })
     await waitFor(() =>
       expect(screen.queryByRole("heading", { name: "Old mug" })).toBeNull(),
     )
     expect(screen.getByRole("heading", { name: "Blue plate" })).toBeTruthy()
+    expect(screen.getByText("In stock")).toBeTruthy()
     expect(JSON.parse(fetchMock.mock.calls[1][1].body).name).toBe("plate")
   })
 
