@@ -1,0 +1,320 @@
+.catalog-page {
+  padding-top: 44px;
+  padding-bottom: 64px;
+}
+.catalog-intro {
+  margin-bottom: 32px;
+  max-width: 650px;
+}
+.catalog-intro h1 {
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  text-transform: capitalize;
+  margin: 6px 0 12px;
+}
+.catalog-intro p {
+  color: #625a50;
+  font-size: 1rem;
+}
+.catalog-intro .catalog-eyebrow {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: #7c462f;
+  font-weight: 700;
+}
+.catalog-layout {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+.catalog-sidebar {
+  padding: 24px;
+  background: #f8f5ef;
+  border-radius: 12px;
+}
+.catalog-filters > summary {
+  display: none;
+}
+.catalog-filters > .catalog-filter-content {
+  display: block;
+}
+.catalog-sidebar h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+.catalog-sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #ded6c9;
+}
+.catalog-sidebar nav a {
+  padding: 7px 0;
+  color: #4f493f;
+  text-decoration: none;
+  font-size: 0.875rem;
+}
+.catalog-sidebar nav a[aria-current="page"] {
+  color: #7c462f;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.catalog-filter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.catalog-filter-form label,
+.catalog-toolbar label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 0;
+}
+.catalog-filter-form input,
+.catalog-toolbar input,
+.catalog-toolbar select {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid #b8b0a4;
+  border-radius: 6px;
+  padding: 9px 10px;
+  background: #fff;
+  color: #29251f;
+  font: inherit;
+  font-size: 1rem;
+  margin: 0;
+}
+.catalog-price-inputs {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+}
+.catalog-date-filter summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.catalog-date-filter label {
+  margin-top: 12px;
+}
+.catalog-toolbar {
+  display: flex;
+  gap: 16px;
+  align-items: end;
+  margin-bottom: 18px;
+}
+.catalog-toolbar .catalog-search {
+  flex: 1;
+}
+.catalog-toolbar select {
+  max-width: 220px;
+}
+.catalog-results {
+  min-width: 0;
+}
+.catalog-count {
+  margin-bottom: 18px;
+  color: #625a50;
+  font-size: 0.85rem;
+}
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+.catalog-card {
+  border: 1px solid #e0d9ce;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  transition: box-shadow 0.2s;
+  min-width: 0;
+}
+.catalog-card:hover {
+  box-shadow: 0 8px 24px #33271012;
+}
+.catalog-card-link {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  text-decoration: none;
+  color: #29251f;
+}
+.catalog-card-link:hover {
+  color: #29251f;
+}
+.catalog-card-image {
+  width: 100%;
+  aspect-ratio: 1;
+  background: #f6f3ed;
+  overflow: hidden;
+}
+.catalog-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.catalog-card-body {
+  padding: 17px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.catalog-card-body .catalog-card-category {
+  text-transform: capitalize;
+  color: #73695b;
+  font-size: 0.7rem;
+  margin-bottom: 7px;
+}
+.catalog-card h2 {
+  font-size: 1rem;
+  line-height: 1.4;
+  font-weight: 600;
+  margin: 0 0 8px;
+  overflow-wrap: anywhere;
+}
+.catalog-card-description {
+  font-size: 0.8rem;
+  color: #625a50;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.catalog-card-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: auto;
+}
+.catalog-card-meta strong {
+  font-size: 1rem;
+  color: #673e28;
+}
+.catalog-card-meta span {
+  font-size: 0.7rem;
+}
+.catalog-in-stock {
+  color: #35633a;
+}
+.catalog-out-stock {
+  color: #8a3730;
+}
+.catalog-state {
+  text-align: center;
+  padding: 64px 20px;
+  border: 1px solid #e0d9ce;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.catalog-state h2 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+.catalog-state p {
+  font-size: 1rem;
+  max-width: 400px;
+  margin: 0;
+}
+.catalog-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 32px;
+}
+.catalog-pagination span {
+  font-size: 0.875rem;
+}
+.catalog-page :focus-visible,
+.catalog-card :focus-visible {
+  outline: 3px solid #1d679a;
+  outline-offset: 4px;
+}
+@media (max-width: 1100px) {
+  .catalog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .catalog-layout {
+    gap: 24px;
+  }
+}
+@media (max-width: 767px) {
+  .catalog-page {
+    padding-top: 28px;
+    padding-bottom: 40px;
+  }
+  .catalog-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .catalog-sidebar {
+    padding: 16px;
+  }
+  .catalog-filters > summary {
+    display: list-item;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .catalog-filters:not([open]) > .catalog-filter-content {
+    display: none;
+  }
+  .catalog-filters[open] > .catalog-filter-content {
+    display: block;
+    padding-top: 20px;
+  }
+  .catalog-sidebar nav {
+    max-height: 240px;
+    overflow-y: auto;
+  }
+  .catalog-toolbar {
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .catalog-toolbar .catalog-search {
+    flex-basis: 100%;
+  }
+  .catalog-toolbar > label {
+    width: 100%;
+  }
+  .catalog-toolbar select {
+    max-width: none;
+  }
+  .catalog-grid {
+    gap: 12px;
+  }
+  .catalog-card-body {
+    padding: 12px;
+  }
+  .catalog-card h2 {
+    font-size: 0.9rem;
+  }
+  .catalog-card-meta {
+    flex-direction: column;
+    align-items: start;
+    gap: 3px;
+  }
+  .catalog-card-description {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .catalog-card {
+    transition: none;
+  }
+}
