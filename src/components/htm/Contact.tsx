@@ -1,205 +1,90 @@
-import React, { useContext } from "react"
-import MapLocation from "./MapLocation.tsx"
+import { useContext } from "react"
+import { Link } from "react-router-dom"
 import { adminInfo } from "../../utils/constants.ts"
 import { ProductsContext } from "../../utils/context.ts"
 
 const Contact = () => {
-  const {language} = useContext(ProductsContext)
+  const { language } = useContext(ProductsContext)
+  const details = adminInfo(language)
+  const copy =
+    language === "Armenian"
+      ? {
+          title: "Հարց ունե՞ք։ Կապվեք մեզ հետ։",
+          description:
+            "Գրեք մեզ ապրանքի, առաքման կամ ձեր պատվերի վերաբերյալ հարցերով։",
+          email: "Էլ. փոստ",
+          phone: "Հեռախոս",
+          visit: "Գտնվելու վայրը",
+          write: "Գրել նամակ",
+          note: "Հղումը կբացի ձեր էլ. փոստի հավելվածը։ Նամակն ուղարկելուց առաջ կարող եք ավելացնել ձեր հարցը։",
+          help: "Պատվերների վերաբերյալ հարցերի դեպքում նշեք պատվերի համարը։ Մի ուղարկեք գաղտնաբառեր կամ վճարային քարտի տվյալներ։",
+          faq: "Հաճախ տրվող հարցեր",
+          location: "Old City, Jerusalem, Israel",
+        }
+      : language === "Russian"
+        ? {
+            title: "Есть вопрос? Свяжитесь с нами.",
+            description: "Напишите нам об изделиях, доставке или вашем заказе.",
+            email: "Эл. почта",
+            phone: "Телефон",
+            visit: "Где мы находимся",
+            write: "Написать письмо",
+            note: "Ссылка откроет ваше почтовое приложение. Добавьте вопрос перед отправкой письма.",
+            help: "По вопросам заказа укажите его номер. Не отправляйте пароли и данные банковских карт.",
+            faq: "Частые вопросы",
+            location: "Old City, Jerusalem, Israel",
+          }
+        : {
+            title: "A little help choosing?",
+            description:
+              "Ask us about an item, delivery to your destination, or an existing order.",
+            email: "Email",
+            phone: "Phone",
+            visit: "Find us",
+            write: "Email the shop",
+            note: "Opens your email app. Add your question and send your message there.",
+            help: "For an order enquiry, include your order number. Please do not send passwords or payment card details.",
+            faq: "Browse common questions",
+            location: "Old City, Jerusalem, Israel",
+          }
 
   return (
-    <div className={"container"}>
-      <div className="row">
-        {/* Map Component */}
-        <MapLocation />
-
-        {/* Contact Form */}
-        <div className=" col-md-8 mb-4">
-          <h2>{language === "Armenian"
-            ? "Հետադարձ կապ"
-            : language === "Russian"
-              ? "Обратная связь"
-              : "Contact Us"}</h2>
-          <p className="mb-3 text-muted">
-            {language === "Armenian"
-              ? "Սիրով կլսենք ձեր կարծիքը։ Խնդրում ենք լրացնել ձևաթուղթը, և մենք հնարավորինս շուտ կապ կհաստատենք ձեզ հետ։"
-              : language === "Russian"
-                ? "Мы будем рады услышать вас. Пожалуйста, заполните форму ниже, и мы свяжемся с вами как можно скорее."
-                : "We'd love to hear from you. Please fill out the form below and we'll get back to you as soon as possible."}
-          </p>
-
-
-          <form
-            action="http://annimexweb.com/items/belle/assets/php/mail.php"
-            method="post"
-            id="contact_form"
-            className="contact-form d-flex flex-column gap-3"
-          >
-            <div className="row">
-              <div className="col-md-6">
-                <input
-                  type="text"
-                  name="name"
-                  placeholder={
-                    language === "Armenian"
-                      ? "Անուն"
-                      : language === "Russian"
-                        ? "Имя"
-                        : "Name"
-                  }
-                  className="form-control"
-                  required
-                />
-              </div>
-              <div className="col-md-6">
-                <input
-                  type="email"
-                  name="email"
-                  placeholder={
-                    language === "Armenian"
-                      ? "Էլ. հասցե"
-                      : language === "Russian"
-                        ? "Эл. почта"
-                        : "Email"
-                  }
-                  className="form-control"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="row">
-              <div className="col-md-6">
-                <input
-                  type="tel"
-                  name="phone"
-                  pattern="[0-9\-]*"
-                  placeholder={
-                    language === "Armenian"
-                      ? "Հեռախոսահամար"
-                      : language === "Russian"
-                        ? "Номер телефона"
-                        : "Phone Number"
-                  }
-                  className="form-control"
-                  required
-                />
-              </div>
-              <div className="col-md-6">
-                <input
-                  type="text"
-                  name="subject"
-                  placeholder={
-                    language === "Armenian"
-                      ? "Թեմա"
-                      : language === "Russian"
-                        ? "Тема"
-                        : "Subject"
-                  }
-                  className="form-control"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="row">
-              <div className="col-12">
-    <textarea
-      name="message"
-      rows={6}
-      placeholder={
-        language === "Armenian"
-          ? "Ձեր հաղորդագրությունը"
-          : language === "Russian"
-            ? "Ваше сообщение"
-            : "Your Message"
-      }
-      className="form-control"
-      required
-    ></textarea>
-              </div>
-            </div>
-
-            <div>
-              <button type="submit" className="btn btn-primary">
-                {language === "Armenian"
-                  ? "Ուղարկել հաղորդագրությունը"
-                  : language === "Russian"
-                    ? "Отправить сообщение"
-                    : "Send Message"}
-              </button>
-
-            </div>
-          </form>
+    <section
+      className="container contact-section"
+      aria-labelledby="contact-heading"
+    >
+      <div className="contact-layout">
+        <div>
+          <p className="eyebrow">Sevan Armenian Ceramics Center</p>
+          <h2 id="contact-heading">{copy.title}</h2>
+          <p>{copy.description}</p>
+          <a className="btn btn-primary" href={`mailto:${details.email}`}>
+            {copy.write}
+          </a>
+          <p className="contact-note">{copy.note}</p>
+          <p>{copy.help}</p>
+          <Link to="/faq" className="text-link">
+            {copy.faq} <span aria-hidden="true">→</span>
+          </Link>
         </div>
-
-        {/* Sidebar Info */}
-        <div className="col-md-4">
-          <div className="open-hours p-3 rounded shadow-sm bg-light mb-4">
-            <h5 className="mb-3 fa fa-clock  fs-5">
-              {language === "Armenian"
-                ? " Աշխատանքային ժամեր"
-                : language === "Russian"
-                  ? " Часы работы"
-                  : " Opening Hours"}
-            </h5>
-            <ul className="list-unstyled mb-0">
-              <li>
-                <strong>
-                  {language === "Armenian" ? "Երկ.-Շաբ." :
-                    language === "Russian" ? "Пн – Сб:" : "Mon – Sat:"}
-                </strong> 9:00 AM – 11:00 PM
-              </li>
-              <li>
-                <strong>
-                  {language === "Armenian" ? "Կիրակի:" :
-                    language === "Russian" ? "Воскресенье:" : "Sunday:"}
-                </strong> 11:00 AM – 5:00 PM
-              </li>
-            </ul>
+        <address className="contact-card">
+          <div>
+            <h3>{copy.email}</h3>
+            <a href={`mailto:${details.email}`}>{details.email}</a>
           </div>
-
-          <ul className="list-unstyled fs-6 d-flex flex-column gap-3 mb-4">
-            <li>
-              <i className="icon anm anm-map-marker-al me-2"></i>
-              {adminInfo(language).address}
-            </li>
-            <li>
-              <i className="icon anm anm-phone-s me-2"></i>
-              {adminInfo(language).phone}
-            </li>
-            <li>
-              <i className="icon anm anm-envelope-l me-2"></i>
-              {adminInfo(language).email}
-            </li>
-          </ul>
-
-          <ul className="list--inline site-footer__social-icons social-icons d-flex flex-wrap gap-3">
-            {[
-              ["facebook", "Facebook"],
-              ["twitter", "Twitter"],
-              ["pinterest", "Pinterest"],
-              ["instagram", "Instagram"],
-              ["tumblr-alt", "Tumblr"],
-              ["youtube", "YouTube"],
-              ["vimeo-alt", "Vimeo"],
-            ].map(([icon, name]) => (
-              <li key={name}>
-                <a
-                  href="#"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="social-icons__link"
-                  title={name}
-                >
-                  <i className={`icon icon-${icon}`}></i>
-                  <span className="visually-hidden">{name}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
+          <div>
+            <h3>{copy.phone}</h3>
+            <a href={`tel:${details.phone.replace(/[^+\d]/g, "")}`}>
+              {details.phone.trim()}
+            </a>
+          </div>
+          <div>
+            <h3>{copy.visit}</h3>
+            <p>{copy.location}</p>
+          </div>
+        </address>
       </div>
-    </div>
+    </section>
   )
 }
 

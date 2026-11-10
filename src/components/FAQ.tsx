@@ -1,102 +1,61 @@
-import React from 'react';
+import { Link } from "react-router-dom"
+
+const questions = [
+  {
+    question: "How do I find an item?",
+    answer:
+      "Browse the shop or explore a collection, then open an item to see its available details and price. If you need help choosing an item, contact the shop before ordering.",
+  },
+  {
+    question: "How do I place an order?",
+    answer:
+      "Sign in or create an account, add available items to your cart, then review your cart before continuing to checkout. Check the delivery address and the full amount before confirming a payment.",
+  },
+  {
+    question: "Can you deliver to my country?",
+    answer:
+      "Delivery options and charges depend on your destination and the items in your order. If a delivery quote is unavailable at checkout, contact us to confirm the options before paying.",
+  },
+  {
+    question: "What if checkout or payment fails?",
+    answer:
+      "Read the error shown at checkout and check your details before trying again. If you are unsure whether a payment completed, check your payment account and contact the shop with your order reference before making another payment.",
+  },
+  {
+    question: "Can I change or return an order?",
+    answer:
+      "Contact the shop with your order number and the details of your request. Please confirm cancellation, return, and delivery arrangements with us; eligibility depends on the order and its status.",
+  },
+  {
+    question: "How can I ask about an existing order?",
+    answer:
+      "Email the shop and include your order number and the email address used for your account. Please do not include passwords or payment card details.",
+  },
+]
 
 export default function FAQ() {
-    return (
-        <div className="app-body">
-            <div className="container">
-                {/* Breadcrumb */}
-                <div className="row gx-3">
-                    <div className="col-12 col-xl-6">
-                        <ol className="breadcrumb mb-3">
-                            <li className="breadcrumb-item">
-                                <i className="icon-house_siding lh-1"></i>
-                                <a href="index.html" className="text-decoration-none">
-                                    Home
-                                </a>
-                            </li>
-                            <li className="breadcrumb-item">Pages</li>
-                            <li className="breadcrumb-item">FAQ's</li>
-                        </ol>
-                    </div>
-                </div>
-
-                {/* FAQ card */}
-                <div className="row gx-3">
-                    <div className="col-12">
-                        <div className="card mb-3">
-                            <div className="card-body">
-                                <div className="border rounded-3 p-5">
-                                    {/* Search box */}
-                                    <div className="mb-5">
-                                        <h5 className="mb-3">How can we help?</h5>
-                                        <p className="mb-3">
-                                            Search for the topic you need help with or{' '}
-                                            <a href="contact-us.html" className="text-primary">
-                                                Contact our support
-                                            </a>
-                                        </p>
-                                        <div className="input-group w-50">
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                placeholder=""
-                                                autoFocus
-                                            />
-                                            <button className="btn btn-primary" type="button">
-                                                Search
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    {/* Accordion */}
-                                    <div className="row gx-3">
-                                        <div className="col-xxl-12">
-                                            <div className="accordion" id="accordionFaq">
-                                                <div className="accordion-item">
-                                                    <h2 className="accordion-header" id="headingOne">
-                                                        <button
-                                                            className="accordion-button"
-                                                            type="button"
-                                                            data-bs-toggle="collapse"
-                                                            data-bs-target="#collapseOne"
-                                                            aria-expanded="true"
-                                                            aria-controls="collapseOne"
-                                                        >
-                                                            What’s your return policy?
-                                                        </button>
-                                                    </h2>
-                                                    <div
-                                                        id="collapseOne"
-                                                        className="accordion-collapse collapse show"
-                                                        aria-labelledby="headingOne"
-                                                        data-bs-parent="#accordionFaq"
-                                                    >
-                                                        <div className="accordion-body">
-                                                            Discover 100s of premium admin themes & admin dashboards, including multipurpose and responsive landing pages and HTML templates.
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                {/* ...repeat for other questions... */}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Still can’t find your answer */}
-                                    <div className="text-center pt-5 border border-dark p-3 w-50 rounded-3 mt-5 m-auto">
-                                        <h3>Still can’t find your answer?</h3>
-                                        <p className="fw-300">We are happy to help!</p>
-                                        <a href="contact-us.html" className="btn btn-outline-primary">
-                                            Contact us
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    );
+  return (
+    <div className="container public-page">
+      <header className="section-heading">
+        <p className="eyebrow">Shopping with Sevan</p>
+        <h1>Common questions</h1>
+        <p>A few helpful details before you place an order.</p>
+      </header>
+      <div className="faq-list">
+        {questions.map(({ question, answer }) => (
+          <details key={question} className="faq-item">
+            <summary>{question}</summary>
+            <p>{answer}</p>
+          </details>
+        ))}
+      </div>
+      <div className="contact-card mt-4">
+        <h2>Need a hand?</h2>
+        <p>We can help with product questions and order enquiries.</p>
+        <Link className="btn btn-primary" to="/contact">
+          Contact the shop
+        </Link>
+      </div>
+    </div>
+  )
 }
